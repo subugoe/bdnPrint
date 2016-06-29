@@ -70,6 +70,7 @@ Nevertheless, here is an overview of the different files in the repository:
 ## License
 
 Original work Copyright (c) 2015 Hannes Riebl
+
 Modified work Copyright (c) 2015 - 2016 Michelle Rodzis (on behalf of the
 DFG-funded project "Bibliothek der Neologie")
 
