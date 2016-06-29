@@ -1,0 +1,394 @@
+% there seems to be a conflict between hyphenation and the language packages
+\hyphenation{Er-zie-hungs-we-sens Schul-schrif-ten Ab-sicht The-o-phrast's}
+
+% layout
+
+\definelayout[odd]
+  [backspace=52mm, % = (page width - text width) / 2
+                   % = (210mm - 106mm) / 2
+   width=106mm,
+   topspace=48mm,  % = (page height - text height) / 2
+                   %     - header - header distance
+                   % = (297mm - 181mm) / 2 - 4mm - 6mm
+   height=183mm,   % = text height + header + header distance
+                   %     - negative spacing above footnotes
+                   % = 181mm + 4mm + 6mm - 8mm
+   header=12pt,    % =~ 4mm
+   headerdistance=6mm,
+   footer=0mm,
+   margindistance=4mm,
+   margin=20mm]
+
+\definelayout[even]
+  [backspace=52mm,
+   width=106mm,
+   topspace=48mm,
+   height=183mm,
+   header=12pt,
+   headerdistance=6mm,
+   footer=0mm,
+   margindistance=4mm,
+   margin=20mm]
+
+\definehspace[p]
+  [0.5 em]   
+  
+\definehspace[item]
+  [-1.5 em]
+\definehspace[margin-horizontal]
+  [30 px]
+   
+\startsetups[*lessstrict]
+  \setup[reset]
+  \clubpenalty=1000
+  \brokenpenalty=1000
+  \widowpenalty=1000
+\stopsetups
+
+\setuplayout[setups=*lessstrict]
+
+
+
+% font
+
+\usemodule[simplefonts]
+
+ \setmainfont[ebgaramond]
+
+ \definefontfallback[cardoFallback]
+   [name:cardo][0x0-0x10FFFF]
+
+ \definefontsynonym[cardoSynonym]
+   [Serif][fallbacks=cardoFallback]
+
+ \definefont[cardoFont]
+   [cardoSynonym]
+
+\definefontsynonym[ezraSynonym]
+  [name:ezrasil]
+
+\definefont[ezraFont]
+  [ezraSynonym]
+
+ \definefontsynonym[ebSynonym]
+   [name:ebgaramond08regular]
+ 
+ \definefont[ebFont]
+   [ebSynonym]
+
+\definefontsynonym[termesSynonym]
+  [name:termes]
+
+\definefont[termesFont]
+  [termesSynonym]
+  
+\definefontsynonym[linlibSynonym]
+  [name: linlibertinedisplayo]
+  
+\definefont[linlibFont]
+  [linlibSynonym]
+
+\def\dvl{{\termesFont\char"2016}}
+
+\def\ra{{\termesFont\char"2192}}
+
+\def\vl{{\termesFont\char"007C}}
+
+\def\line{{\linlibFont \char"222B}}			% 222B: integral
+\def\p{{\linlibFont \char"222C}}			% 222C: double integral
+\def\noline{{\linlibFont \overstrike{\char"222B}}}	% 222B: integral (struck through)
+\def\nop{{\linlibFont \overstrike{\char"222C}}}		% 222C: double integral(struck through)
+
+\definebodyfontenvironment[10pt]
+  [interlinespace=12.25pt, % xx for footnote markers
+   a=11.5pt, x=8.5pt, xx=7.75pt]
+
+\definebodyfontenvironment[8.5pt]
+  [interlinespace=10.5pt, % xx for footnote markers
+   a=9.78pt, x=7.23pt, xx=6.59pt]
+
+\definefont[petit]
+  [Serif at 8.5pt]
+
+\definefontfamily[garamond]
+  [serif][adobegaramondpro]
+
+\setupbodyfont
+  [garamond, 10pt]
+
+% for lining numbers instead of oldstyle numbers (default)
+\definefontfeature[f:lnum] [lnum=yes] 
+
+
+% header
+
+% \setupheader[text]
+%   [after=\hrule]
+
+\setupheadertexts
+  []
+
+\startsetups[a]
+  \switchtobodyfont[default]
+  \rlap{}
+  \hfill
+  % adapt for publication: information has to be retrieved from TEI body in Struktur.xml
+  {\tfx\it Philologie}
+  \hfill
+  \llap{\pagenumber}
+\stopsetups
+
+\startsetups[b]
+  \switchtobodyfont[default]
+  \rlap{\pagenumber}
+  \hfill
+   % adapt for publication: information has to be retrieved from TEI header in Struktur.xml
+  {\tfx\it J. A. Nösselt, Anweisung zur Bildung angehender Theologen\ \high{1}1786/89–\high{3}1818/19}
+  \hfill
+  \llap{}
+\stopsetups
+
+\setupheadertexts
+  [\setups{a}][][][\setups{b}]
+
+\setuppagenumbering
+  [alternative=doublesided]
+
+
+% text
+
+
+
+\def\emptyEvenPage{%
+  \ifodd\pagenumber\page[empty]\fi%
+}
+
+\def\justifiedPageBreak{%
+  \parfillskip\zeropoint\page\noindent%
+}
+
+\setuphead[part]
+  [before={\blank[20mm, force]},
+   after={\blank[12pt]},
+   align=middle,
+   header=empty,
+   number=no,
+   placehead=yes,
+   style=\tfa]
+
+\setuphead[section]
+  [before={\blank[24pt]},
+   after={\blank[12pt]},
+   align=middle,
+   style=\tfa]
+
+\setupindenting
+  [yes, 4mm, next]
+
+
+\setuplanguage[de]
+  [spacing=packed]
+
+\mainlanguage[de]
+\language[de]
+
+\setupmargindata
+  [style=petit]
+
+\setupnarrower
+  [left=4mm]
+
+% TODO: optimize inter word spacing
+\setuptolerance
+  [verytolerant]
+
+
+% editor
+
+\definenote[editor]
+  [before={\blank[4mm]},
+   after={\blank[-8mm]}]
+
+\setupnotation[editor]
+  [style={\switchtobodyfont[8.5pt]}]
+
+
+% registers
+
+\setupcolumns[align=flushleft]
+
+\defineregister[antIndex]
+\setupregister[antIndex]
+  [compress=yes,
+   indicator=no,
+   pagestyle=\tf,
+   n=1]
+
+\defineregister[bibelIndex]
+\setupregister[bibelIndex]
+  [compress=yes,
+   indicator=no,
+   pagestyle=\tf,
+   n=1]
+
+\defineregister[persIndex]
+\setupregister[persIndex]
+  [compress=yes,
+   indicator=no,
+   pagestyle=\tf,
+   n=1]
+
+\defineregister[sachIndex]
+\setupregister[sachIndex]
+  [compress=yes,
+   indicator=no,
+   pagestyle=\tf,
+   n=1]
+   
+\defineconversion[s][,,,]
+
+\unprotect
+\unexpanded\def\startregisterentry#1% TODO: level
+  {\typo_injectors_check_register
+   \begingroup
+   \ifnum\leftskip=\d_strc_registers_distance
+     \hskip-\d_strc_registers_distance\hbox to 0mm{\endash}\hskip\d_strc_registers_distance
+   \fi
+   \dostarttagged\t!registerentry\empty
+   \global\setconstant\c_strc_registers_page_state\zerocount
+   \ifnum\leftskip=0
+     \hangindent\d_strc_registers_hangindent
+     \hangafter \c_strc_registers_hangafter
+   \fi
+   \typo_injectors_mark_register}
+\protect
+
+
+% lua
+
+\def\margin#1#2#3#4#5{%
+  \begingroup%
+%
+  \startluacode%
+    local note = {
+      id   = "#1";
+      type = "#2";
+      ref  = "#3";
+      note = "#5";
+    }
+
+    note["note"] = string.gsub(note["note"], "\textbackslash", "\\textbackslash")
+
+    notes[key] = note
+    tex.setattribute(1, key)
+    key = key + 1
+  \stopluacode%
+%
+  #4%
+%
+  \endgroup%
+}
+
+\startluacode
+key = 1
+notes = {}
+
+os.remove("id-file.txt")
+os.remove("notes.txt")
+
+idFile = io.open("id-file.txt", "a")
+notesFile = io.open("notes.txt", "a")
+
+processMargins = function(head)
+  for line in node.traverse_id(node.id("hlist"), head) do
+    local lineKeys = {}
+    local lineNote = ""
+
+    for item in node.traverse(line.list) do
+      local itemKey = node.has_attribute(item, 1)
+
+      if itemKey and notes[itemKey] then
+        lineKeys[#lineKeys + 1] = itemKey
+      end
+    end
+
+    local hash = {}
+    local res = {}
+
+    for _, v in ipairs(lineKeys) do
+      if not hash[v] then
+        res[#res + 1] = v
+        hash[v] = true
+      end
+    end
+
+    table.sort(res)
+    lineKeys = res
+
+    if lineKeys[1] then
+      idFile:write(notes[lineKeys[1]]["id"])
+    end
+
+    idFile:write("\n")
+
+    for _, k1 in ipairs(lineKeys) do
+      local v1 = notes[k1]
+      local backslash = false
+
+      if v1["type"] == "omOpen" then
+        for _, k2 in ipairs(lineKeys) do
+          local v2 = notes[k2]
+
+          if v2["type"] == "omClose" and v1["ref"] == v2["ref"] then
+            backslash = true
+          end
+        end
+      end
+
+      if v1["type"] == "omClose" then
+        for _, k2 in ipairs(lineKeys) do
+          local v2 = notes[k2]
+
+          if v2["type"] == "omOpen" and v1["ref"] == v2["ref"] then
+            goto continue
+          end
+        end
+      end
+
+       if v1["type"] == "plClose" then
+        for _, k2 in ipairs(lineKeys) do
+          local v2 = notes[k2]
+
+          if v2["type"] == "plOpen" and v1["ref"] == v2["ref"] then
+            goto continue
+          end
+        end
+      end
+
+      if k1 ~= lineKeys[1] then
+        lineNote = lineNote .. ", "
+      end
+
+      lineNote = lineNote .. v1["note"]
+
+      if backslash then
+        lineNote = lineNote .. "\\textbackslash"
+      end
+
+      ::continue::
+    end
+
+    notesFile:write(lineNote .. "\n")
+  end
+
+  return head
+end
+
+nodes.tasks.appendaction("finalizers", "after", "processMargins")
+\stopluacode
+
+
+\starttext
+
+% for lining numbers instead of oldstyle numbers (default)
+\addff{f:lnum}
