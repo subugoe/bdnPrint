@@ -60,7 +60,7 @@ Nevertheless, here is an overview of the different files in the repository:
 ## Still to be done
 
 * In the near future we will provide a mechanism which sees about historical hyphenation. Since the "Library of Neology" is a project which deals with German (and one Latin) text(s) of the 18th century, there are partially severe differences between the texts' and modern orthography. This currently causes wrong hyphenation behaviour that has to be corrected manually (which in part causes conflicts between ConTeXt's hyphenation command and the selected language package). 
-* Currently the scripts only work with the <front> element of the XML. An implementation for the table of contents and foreword is still missing.
+* Currently the scripts only work with the front element of the XML. An implementation for the table of contents and foreword is still missing.
 * XInclude remains to be considered in `transform-to-tex.xsl`.
 * To denote editorial notes, a scribal abbreviation (E) is inserted into the margin. For x notes, x abbreviations appear. This is currently suppressed by a regex in `postprocess-margins.pl` and needs a better solution.
 
