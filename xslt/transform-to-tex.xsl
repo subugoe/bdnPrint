@@ -6,10 +6,7 @@
     <xsl:preserve-space elements="abbr byline corr docImprint edition head hi
     item label lem note p persName rdg ref sic term titlePart"/>
 
-    <xsl:template match="div"/>
-    <xsl:template match="front"/>
     <xsl:template match="expan"/>
-    <xsl:template match="head"/>
     <xsl:template match="teiHeader"/>
     <xsl:template match="sic"/>
 
@@ -247,6 +244,14 @@
                 <xsl:if test="@unit = 'line'">
                     <xsl:text> \line{}</xsl:text>
                 </xsl:if>
+                
+                <xsl:if test="@unit = 'no-p'">
+                    <xsl:text> \nop{}</xsl:text>
+                </xsl:if>
+                
+                <xsl:if test="@unit = 'no-line'">
+                    <xsl:text> \noline{}</xsl:text>
+                </xsl:if>                
 
                 <xsl:text>{\tfx\high{</xsl:text>
                 <xsl:value-of select="$edt"/>
@@ -275,12 +280,30 @@
                 <xsl:if test="@unit = 'line'">
                     <xsl:text> \line{}</xsl:text>
                 </xsl:if>
+                
+                <xsl:if test="@unit = 'no-p'">
+                    <xsl:text> \nop{}</xsl:text>
+                </xsl:if>
+                
+                <xsl:if test="@unit = 'no-line'">
+                    <xsl:text> \noline{}</xsl:text>
+                </xsl:if>                
 
                 <xsl:text>{\tfx\high{</xsl:text>
                 <xsl:value-of select="$edt"/>
                 <xsl:text>}} </xsl:text>
             </xsl:otherwise>
         </xsl:choose>
+    </xsl:template>
+    
+    
+    <xsl:template match="milestone[@unit = 'fn-break']">
+        <xsl:variable name="edt" select="replace(replace(@edRef, '#', ''), ' ', '')"/>
+        <xsl:variable name="n" select="@n"/>
+        
+        <xsl:text>|</xsl:text>
+            <xsl:value-of select="concat($edt, $n)"/>
+        <xsl:text>|</xsl:text>        
     </xsl:template>
 
 
@@ -291,12 +314,36 @@
     </xsl:template>
 
     <xsl:template match="div[@type = 'section']">
-        <xsl:text>\startsubject[title={</xsl:text>
+        <!--<xsl:text>\startsubject[title={</xsl:text>
         <xsl:call-template name="pbHead"/>
         <xsl:value-of select="head[1]/text()"/>
         <xsl:text>}]</xsl:text>
         <xsl:apply-templates/>
-        <xsl:text>\stopsubject </xsl:text>
+        <xsl:text>\stopsubject </xsl:text>-->
+        <xsl:apply-templates/>
+    </xsl:template>
+    
+    <xsl:template match="head">
+        <!--<xsl:text>\startsubject[title={</xsl:text>
+        <xsl:call-template name="pbHead"/>
+        <xsl:value-of select="."/>
+        <xsl:text>}]</xsl:text>
+        <xsl:apply-templates/>
+        <xsl:text>\stopsubject </xsl:text>  -->
+        
+        <!-- TODO: make it better! -->
+            <xsl:text>{\midaligned{</xsl:text>
+            <xsl:choose>
+                <xsl:when test="ancestor::rdg">
+                    <xsl:text>\switchtobodyfont[8.5pt]</xsl:text>
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:text>\switchtobodyfont[10pt]</xsl:text>                   
+                </xsl:otherwise>
+            </xsl:choose>
+                
+            <xsl:apply-templates/>
+            <xsl:text>\par}} \\</xsl:text>       
     </xsl:template>
 
 
@@ -354,9 +401,9 @@
             </xsl:when>
             
             <xsl:when test="@rend = 'center-aligned'">
-                <xsl:text>\startalignment[center]%</xsl:text>
+                <xsl:text>\startalignment[center]</xsl:text>
                     <xsl:apply-templates/>
-                <xsl:text>\stopalignment%</xsl:text>
+                <xsl:text>\stopalignment</xsl:text>
             </xsl:when>
             
             <xsl:when test="@rend = 'small-caps'">
@@ -405,7 +452,12 @@
     <xsl:template match="index[@indexName = 'classical-authors']/term">
         <xsl:text>\antIndex{</xsl:text>
         <!--<xsl:value-of select="normalize-space(persName/text())"/>-->
-        <xsl:value-of select="persName"/>
+        <!--<xsl:value-of select="persName"/>-->
+        <xsl:value-of select="."/>
+
+    <!-- Achtung: auch Fälle mit zwei term-Elementen!! -->
+        <!-- OS: Wir haben bislang nur wenige Fälle der Indexierung mit zwei <terms>. 
+            Hier sollte sich die Seitenanzeige im Print nur bei dem zweiten Term ausgegeben werden.-->
 
         <xsl:if test="title">
             <xsl:text>+</xsl:text>
@@ -534,11 +586,41 @@
 
 
     <!-- pb -->
-
-    <xsl:template match="p//pb" priority="-1">
+    
+    <xsl:template match="pb">
         <xsl:text>\margin{}{pb}{}{\vl}{</xsl:text>
         <xsl:value-of select="replace(@edRef, '[# ]+', '')"/>
+        
+        <xsl:if test="@type = 'sp'">
+            <xsl:text>[</xsl:text>
+        </xsl:if>              
+        
         <xsl:value-of select="@n"/>
+        
+        <xsl:if test="@type = 'sp'">
+            <xsl:text>]</xsl:text>
+        </xsl:if>
+        
+        <xsl:text>}</xsl:text>
+        <xsl:if test="(following::node())[1][self::index]">
+            <xsl:text> </xsl:text>
+        </xsl:if> 
+    </xsl:template>
+
+  <!--  <xsl:template match="p//pb" priority="-1">
+        <xsl:text>\margin{}{pb}{}{\vl}{</xsl:text>
+        <xsl:value-of select="replace(@edRef, '[# ]+', '')"/>
+
+        <xsl:if test="@type = 'sp'">
+            <xsl:text>[</xsl:text>
+        </xsl:if>              
+        
+        <xsl:value-of select="@n"/>
+        
+        <xsl:if test="@type = 'sp'">
+            <xsl:text>]</xsl:text>
+        </xsl:if>
+        
         <xsl:text>}</xsl:text>
         <xsl:if test="(following::node())[1][self::index]">
             <xsl:text> </xsl:text>
@@ -548,12 +630,42 @@
     <xsl:template match="note//pb" priority="-1">
         <xsl:text>\margin{}{pb}{}{\vl}{</xsl:text>
         <xsl:value-of select="replace(@edRef, '[# ]+', '')"/>
+        
+        <xsl:if test="@type = 'sp'">
+            <xsl:text>[</xsl:text>
+        </xsl:if>              
+        
         <xsl:value-of select="@n"/>
-        <xsl:text>}</xsl:text>
-        <xsl:if test="(following::node())[1][self::index]">
-            <!--<xsl:text> </xsl:text>-->
+        
+        <xsl:if test="@type = 'sp'">
+            <xsl:text>]</xsl:text>
         </xsl:if>
+        
+        <xsl:text>}</xsl:text>
+        <xsl:if test="(following::node())[1][self::index]">-->
+            <!--<xsl:text> </xsl:text>-->
+        <!--</xsl:if>
     </xsl:template>
+    
+    <xsl:template match="head//pb" priority="-1">
+        <xsl:text>\margin{}{pb}{}{\vl}{</xsl:text>
+        <xsl:value-of select="replace(@edRef, '[# ]+', '')"/>
+        
+        <xsl:if test="@type = 'sp'">
+            <xsl:text>[</xsl:text>
+        </xsl:if>              
+        
+        <xsl:value-of select="@n"/>
+        
+        <xsl:if test="@type = 'sp'">
+            <xsl:text>]</xsl:text>
+        </xsl:if>
+        
+        <xsl:text>}</xsl:text>
+        <xsl:if test="(following::node())[1][self::index]">-->
+            <!--<xsl:text> </xsl:text>-->
+       <!-- </xsl:if>
+    </xsl:template>-->
 
     <xsl:template match="rdg[@type != 'ppl' and @type != 'ptl']//pb">
         <xsl:text>{\tf{\vl}</xsl:text>
@@ -663,7 +775,11 @@
             <xsl:apply-templates select="corr"/>
         </xsl:if>
         
-        <xsl:if test="(following::node())[1][self::app]">
+        <xsl:if test="descendant::orig">
+            <xsl:apply-templates select="orig"/>
+        </xsl:if>        
+        
+        <xsl:if test="(following::node())[1][self::app or self::persName or self::choice]">
             <xsl:text> </xsl:text>
         </xsl:if>
     </xsl:template>
@@ -683,4 +799,122 @@
         <xsl:text>\sym{}</xsl:text>
         <xsl:apply-templates/>
     </xsl:template>
+    
+    
+    <xsl:template match="titlePage">
+        <xsl:text>{\startalignment[center]</xsl:text>
+            <xsl:apply-templates/>
+        <xsl:text>\stopalignment}</xsl:text>
+    </xsl:template>
+    
+    <xsl:template match="lem[child::*[1][self::titlePage]]">
+        <xsl:apply-templates/>
+        <xsl:text>\blank[10pt]</xsl:text>
+    </xsl:template>
+    
+    <!-- regel greift nicht. genauer formulieren und siglen nicht vergessen! -->
+    <xsl:template match="rdg[child::*[1][self::titlePage]]">
+        <xsl:apply-templates/>
+        <xsl:text>\blank[10pt]</xsl:text>
+    </xsl:template>    
+    
+    
+    <xsl:template match="titlePart[@type = 'main']">
+        <xsl:apply-templates/>
+    </xsl:template>
+    
+    
+    <xsl:template match="titlePart[@type = 'volume']">
+        <xsl:apply-templates/>
+    </xsl:template>
+    
+    
+    <xsl:template match="choice[parent::titlePart]">
+        <xsl:apply-templates select="descendant::orig[1]/node()[self::text() or self::*]"/>
+    </xsl:template>
+    
+    
+    <xsl:template match="byline">
+        <xsl:apply-templates/>
+    </xsl:template>
+    
+    
+    <xsl:template match="docImprint">
+        <xsl:apply-templates/>
+    </xsl:template>
+    
+    
+    <xsl:template match="docDate">
+        <xsl:apply-templates/>
+    </xsl:template>
+    
+    
+    <xsl:template match="div[@type = 'preface']">
+        <xsl:apply-templates/>
+    </xsl:template>
+    
+    
+    <xsl:template match="div[@type = 'contents']">
+        <xsl:apply-templates/>
+    </xsl:template>
+    
+    
+    <xsl:template match="p[@rend = 'center-aligned']">
+        <xsl:apply-templates/>
+    </xsl:template>
+    
+    
+    <xsl:template match="text">
+        <xsl:apply-templates/>
+    </xsl:template>
+    
+    
+    <xsl:template match="front">
+        <xsl:apply-templates/>
+    </xsl:template>
+    
+    
+    <!--<xsl:template match="list[parent::item]">
+        <ul style="margin-left: 20px;">
+            <xsl:apply-templates/>
+        </ul>
+    </xsl:template>
+    
+    
+    <xsl:template match="item[ancestor::div[@type = 'contents']]">
+        <li class="listItemTOC">
+            <xsl:apply-templates/>
+        </li>
+    </xsl:template>-->
+    
+    
+    <!--<xsl:template match="head[@type = 'main']">
+        <xsl:text>\head </xsl:text>
+            <xsl:apply-templates/>
+        <xsl:text>\par </xsl:text>
+    </xsl:template>-->
+    
+    
+    <!--<xsl:template match="head[@type = 'sub']">
+        <div class="listSubHead">
+            <xsl:apply-templates/>
+        </div>
+    </xsl:template>
+    
+    
+    <xsl:template match="lb[preceding-sibling::*[1][self::head]]"/>
+    
+    
+    <xsl:template match="front//div[@type = 'preface']">
+        <xsl:apply-templates/>
+        <br/>
+        
+        <xsl:apply-templates select=".//app[not(count(rdg) = 1 and rdg[@type = 'ptl' or @type = 'ppl']) and rdg[@type = 'v' or @type = 'pt' or @type = 'pp']]" mode="printnotes"/>
+        
+        <xsl:if test="following-sibling::*[1][self::app/lem/div[@type = 'preface']]">
+            <br/>
+            <br/>
+        </xsl:if>
+    </xsl:template>    -->  
+    
 </xsl:stylesheet>
