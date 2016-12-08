@@ -3,7 +3,7 @@
 [[ -d tmp ]] && rm -rf tmp; mkdir tmp
 
 # change input document here
-java -cp /home/michelle/Programme/SaxonHE9-6-0-7J/saxon9he.jar net.sf.saxon.Transform -o:tmp/tmp-1.tex demo.xml xslt/transform-to-tex.xsl
+java -cp /home/michelle/Programme/SaxonHE9-6-0-7J/saxon9he.jar net.sf.saxon.Transform -o:tmp/tmp-1.tex frontarea.xml xslt/transform-to-tex.xsl
 
 perl perl/fix-whitespace.pl > tmp/tmp-2.tex
 mv tmp/tmp-2.tex tmp/tmp-1.tex
