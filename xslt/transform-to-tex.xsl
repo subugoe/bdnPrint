@@ -323,7 +323,9 @@
             <xsl:text>\textbackslash}}</xsl:text>
         </xsl:if>
 
-        <xsl:if test="rdg[@type = 'pp' or @type = 'pt']"> {\dvl} <xsl:for-each select="rdg[@type = 'pp' or @type = 'pt']">
+        <xsl:if test="rdg[@type = 'pp' or @type = 'pt']"> 
+            <xsl:text>{\dvl} </xsl:text>
+            <xsl:for-each select="rdg[@type = 'pp' or @type = 'pt']">
                 <xsl:apply-templates select="." mode="footnote"/>
             </xsl:for-each>
         </xsl:if>
@@ -340,7 +342,7 @@
                 </xsl:choose>
 
                 <xsl:text>{\switchtobodyfont[8.5pt]</xsl:text>
-                
+
                 <xsl:if test="child::*[1][self::note[@type = 'authorial']]">
                     <xsl:text>\startnarrower[left]</xsl:text>
                 </xsl:if>
@@ -355,17 +357,20 @@
                 <xsl:text>}}{</xsl:text>
                 <xsl:value-of select="replace(@wit, '#', '')"/>
                 <xsl:text>}</xsl:text>
-                
-                <xsl:apply-templates/>
-                
+
+                <xsl:apply-templates select="."/>
+
+                <!-- GENERATE-ID() MACHT PROBLEME. WARUM? -->
+                <!-- WOZU SIND DIE ÜBERHAUPT GUT? -->
                 <xsl:text>\margin{}{plClose}{</xsl:text>
-                <xsl:value-of select="generate-id()"/>
+                <!--<xsl:value-of select="generate-id()"/>-->
                 <xsl:text>}{\tfx\high{</xsl:text>
                 <xsl:value-of select="replace(@wit, '#', '')"/>
                 <xsl:text>}}{</xsl:text>
                 <xsl:value-of select="replace(@wit, '#', '')"/>
                 <xsl:text>}</xsl:text>
-                
+
+
                 <xsl:if test="position() != last()">
                     <xsl:text>
                     \par
@@ -373,7 +378,7 @@
                     \noindent
                 </xsl:text>
                 </xsl:if>
-                
+
 
                 <xsl:if test="child::*[1][self::note[@type = 'authorial']]">
                     <xsl:text>\stopnarrower</xsl:text>
@@ -831,7 +836,7 @@
         </xsl:text>
     </xsl:template>
 
-    <xsl:template match="app[not(@type = 'structural-variance')]/lem/note[@type = 'authorial']">
+    <!--<xsl:template match="app[not(@type = 'structural-variance')]/lem/note[@type = 'authorial']">
         <xsl:variable name="omWitTmp" select="string-join(../../rdg[@type = 'om']/@wit, '')"/>
         <xsl:variable name="omWit" select="replace($omWitTmp, '[^a-z]', '')"/>
         <xsl:text>
@@ -863,12 +868,12 @@
             \blank[6pt]
             \noindent
         </xsl:text>
-    </xsl:template>
+    </xsl:template>-->
 
-    <xsl:template match="rdg/note[@type = 'authorial']">
+    <!--<xsl:template match="rdg/note[@type = 'authorial']">
         <xsl:call-template name="pbBefore"/>
         <xsl:apply-templates/>
-    </xsl:template>
+    </xsl:template>-->
 
     <xsl:template match="note[@type = 'editorial' and @place = 'bottom']">
         <xsl:text>\editor{</xsl:text>
@@ -974,13 +979,13 @@
     <!-- </xsl:if>
     </xsl:template>-->
 
-    <xsl:template match="rdg[@type != 'ppl' and @type != 'ptl']//pb">
+    <!--<xsl:template match="rdg[@type != 'ppl' and @type != 'ptl']//pb">
         <xsl:text>{\tf{\vl}</xsl:text>
         <xsl:variable name="wit" select="@edRef"/>
         <xsl:value-of select="replace($wit, '#', '')"/>
         <xsl:value-of select="@n"/>
         <xsl:text>\vl}</xsl:text>
-    </xsl:template>
+    </xsl:template>-->
 
     <xsl:template match="rdg[@type = 'typo_corr']"/>
 
@@ -1052,7 +1057,6 @@
                     \noindent
                 </xsl:text>
             </xsl:if>-->
-            
         </xsl:if>
         <xsl:value-of select="string('ppl/ptl')"/>
     </xsl:template>
