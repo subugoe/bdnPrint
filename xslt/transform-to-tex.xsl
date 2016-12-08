@@ -50,24 +50,24 @@
             \llap{}
             \stopsetups
         </xsl:text>
-        
+
         <xsl:text>
             \blank[9mm]
 
             \starttabulate[|lp(10mm)|xp(103mm)|]</xsl:text>
-            <xsl:for-each select="//ptr">
-                <xsl:if test="matches(@target, '^#erl_')">
-                    <xsl:variable name="target" select="replace(@target, '^#', '')"/>
-                    <xsl:text>\NC\at[</xsl:text>
-                    <xsl:value-of select="generate-id()"/>
-                    <xsl:text>]\NC\italic{</xsl:text>
-                    <xsl:apply-templates select="//note[@xml:id = $target]/label"/>
-                    <xsl:text>}\crlf\setupindenting[yes, 4mm, next] </xsl:text>
-                    <xsl:apply-templates select="//note[@xml:id = $target]/p"/>
-                    <xsl:text>\NC\AR</xsl:text>
-                </xsl:if>
-            </xsl:for-each>
-            <xsl:text>
+        <xsl:for-each select="//ptr">
+            <xsl:if test="matches(@target, '^#erl_')">
+                <xsl:variable name="target" select="replace(@target, '^#', '')"/>
+                <xsl:text>\NC\at[</xsl:text>
+                <xsl:value-of select="generate-id()"/>
+                <xsl:text>]\NC\italic{</xsl:text>
+                <xsl:apply-templates select="//note[@xml:id = $target]/label"/>
+                <xsl:text>}\crlf\setupindenting[yes, 4mm, next] </xsl:text>
+                <xsl:apply-templates select="//note[@xml:id = $target]/p"/>
+                <xsl:text>\NC\AR</xsl:text>
+            </xsl:if>
+        </xsl:for-each>
+        <xsl:text>
                 \stoptabulate
                 \stoppart
             </xsl:text>
@@ -83,7 +83,314 @@
         <xsl:variable name="omWitTmp" select="string-join(rdg[@type = 'om']/@wit, '')"/>
         <xsl:variable name="omWit" select="replace($omWitTmp, '[^a-z]', '')"/>
 
-        <xsl:if test="starts-with(lem, ';')">
+        <!--<xsl:if test="rdg[@type = 'v']">
+            <xsl:apply-templates select="lem"/>
+            
+            <xsl:for-each select="rdg[@type = 'v']">
+                <xsl:apply-templates select="." mode="footnote"/>
+            </xsl:for-each>
+        </xsl:if>
+        
+        
+        <xsl:if test="rdg[@type = 'om']">
+            <xsl:choose>
+                <xsl:when test="rdg[@type = 'v']">
+                </xsl:when>
+                
+                <xsl:otherwise>
+                    <xsl:for-each select="rdg[@type = 'om']">
+                        <xsl:text>\margin{}{omOpen}{</xsl:text>
+                        <xsl:value-of select="generate-id()"/>
+                        <xsl:text>}{\tfx\high{/</xsl:text>
+                        <xsl:value-of select="@wit"/>
+                        <xsl:text>}}{/</xsl:text>
+                        <xsl:value-of select="@wit"/>
+                        <xsl:text>}</xsl:text>     
+                    </xsl:for-each>
+                    
+                    <xsl:apply-templates select="lem"/>
+                    
+                    <xsl:for-each select="rdg[@type = 'om']">
+                        <xsl:text>\margin{}{omClose}{</xsl:text>
+                        <xsl:value-of select="generate-id()"/>
+                        <xsl:text>}{\tfx\high{</xsl:text>
+                        <xsl:value-of select="$omWit"/>
+                        <xsl:text>\textbackslash}}{</xsl:text>
+                        <xsl:value-of select="$omWit"/>
+                        <xsl:text>\textbackslash}</xsl:text>     
+                    </xsl:for-each>
+                </xsl:otherwise>
+            </xsl:choose>
+        </xsl:if>
+        
+        <xsl:if test="rdg[@type = 'pp']">
+            
+        </xsl:if>
+        
+        <xsl:if test="rdg[@type = 'pt']">
+            
+        </xsl:if>
+        
+        <xsl:if test="rdg[@type = 'ppl']">
+            <xsl:for-each select="rdg[@type ='ppl']">
+                <xsl:value-of select="string('ppl')"/>
+            </xsl:for-each>
+        </xsl:if>
+        
+        <xsl:if test="rdg[@type = 'ptl']">
+            
+        </xsl:if>-->
+
+
+
+        <!--<xsl:choose>
+            <xsl:when test="rdg[@type = 'missing-structure']"/>
+
+            <xsl:when test="rdg[@type = 'om' or @type = 'pp' or @type = 'ppl']">
+                <xsl:if test="not(rdg[@type = 'om'] and substring(lem, 1, 1) = (';', ','))">
+                    <xsl:text> </xsl:text>
+                </xsl:if>
+                
+                <xsl:choose>
+                    <xsl:when test="count(rdg) = 1 and rdg[@type = 'om']">
+                        <xsl:text>\margin{}{omOpen}{</xsl:text>
+                        <xsl:value-of select="generate-id()"/>
+                        <xsl:text>}{\tfx\high{/</xsl:text>
+                        <xsl:value-of select="$omWit"/>
+                        <xsl:text>}}{/</xsl:text>
+                        <xsl:value-of select="$omWit"/>
+                        <xsl:text>}</xsl:text>                       
+                    </xsl:when>
+                    
+                    <xsl:when test="count(rdg) = 1 and rdg[@type = 'pp' or @type = 'ppl']">
+                        <xsl:text>{\tfx\high{/</xsl:text>
+                        <xsl:value-of select="$ppWit"/>
+                        <xsl:text>}}</xsl:text>                        
+                    </xsl:when>
+                    
+                    <xsl:when test="count(rdg) &gt; 1 and rdg[@type = 'v']">
+                        <xsl:if test="rdg[@type = 'om']">
+                            <xsl:text>\margin{}{omOpen}{</xsl:text>
+                            <xsl:value-of select="generate-id()"/>
+                            <xsl:text>}{\tfx\high{/</xsl:text>
+                            <xsl:value-of select="$omWit"/>
+                            <xsl:text>}}{/</xsl:text>
+                            <xsl:value-of select="$omWit"/>
+                            <xsl:text>}</xsl:text>                             
+                        </xsl:if>
+                        
+                        <xsl:if test="count(rdg) &gt; 1 and rdg[@type = 'pp']">
+                            <xsl:text>{\tfx\high{/</xsl:text>
+                            <xsl:value-of select="$ppWit"/>
+                            <xsl:text>}}</xsl:text>                            
+                        </xsl:if>
+                    </xsl:when>
+                    
+                    <xsl:when test="count(rdg) &gt; 1 and rdg[@type = 'typo_corr']">
+                        <xsl:if test="rdg[@type = 'om']">
+                            <xsl:text>\margin{}{omOpen}{</xsl:text>
+                            <xsl:value-of select="generate-id()"/>
+                            <xsl:text>}{\tfx\high{/</xsl:text>
+                            <xsl:value-of select="$omWit"/>
+                            <xsl:text>}}{/</xsl:text>
+                            <xsl:value-of select="$omWit"/>
+                            <xsl:text>}</xsl:text>                             
+                        </xsl:if>
+                    </xsl:when>
+                </xsl:choose>
+        
+            <xsl:apply-templates select="lem"/>
+        
+            <xsl:choose>
+                <xsl:when test="count(rdg) = 1 and rdg[@type = 'om']">
+                    <xsl:text>\margin{}{omClose}{</xsl:text>
+                    <xsl:value-of select="generate-id()"/>
+                    <xsl:text>}{\tfx\high{</xsl:text>
+                    <xsl:value-of select="$omWit"/>
+                    <xsl:text>\textbackslash}}{</xsl:text>
+                    <xsl:value-of select="$omWit"/>
+                    <xsl:text>\textbackslash}</xsl:text>                     
+                </xsl:when>
+                
+                <xsl:when test="count(rdg) = 1 and rdg[@type = 'pp']">
+                    <xsl:text>{\tfx\high{</xsl:text>
+                    <xsl:value-of select="$ppWit"/>
+                    <xsl:text>\textbackslash}}</xsl:text> 
+                    <xsl:text>{\dvl} </xsl:text>
+                    <xsl:apply-templates select="rdg[@type = 'pp']" mode="footnote"/>
+                </xsl:when>
+                
+                <xsl:when test="count(rdg) &gt; 1 and rdg[@type = 'v']">-->
+        <!-- case: if an app has a rdg[@type = 'om'] and a 
+                            rdg[@type = 'v'], the vizualisation should be
+                            <sup>/om</sup>lemlemlem<sup>v om\</sup>.
+                            ATTENTION: the second part of the conditional test 
+                            makes sure that this rule applies if the corresponding lem has only one word in it-->
+        <!--<xsl:if test="rdg[@type = 'v'][preceding-sibling::rdg[@type = 'om'] or following-sibling::rdg[@type = 'om']] 
+                    and (string-length(normalize-space(lem)) - string-length(translate(normalize-space(lem), ' ', '')) + 1 = 1)">   
+                        <xsl:apply-templates select="rdg[@type = 'v']" mode="footnote"/>
+                        <xsl:text> </xsl:text>
+                    </xsl:if>
+                
+                    <xsl:if test="rdg[@type = 'om']">
+                        <xsl:text>\margin{}{omClose}{</xsl:text>
+                        <xsl:value-of select="generate-id()"/>
+                        <xsl:text>}{\tfx\high{</xsl:text>
+                        <xsl:value-of select="$omWit"/>
+                        <xsl:text>\textbackslash}}{</xsl:text>
+                        <xsl:value-of select="$omWit"/>
+                        <xsl:text>\textbackslash}</xsl:text>                   
+                    </xsl:if>
+                
+                    <xsl:if test="rdg[@type = 'pp']">
+                        <xsl:apply-templates select="rdg[@type = 'v']" mode="footnote"/>
+                        <xsl:text> </xsl:text>
+                    
+                        <xsl:text>{\tfx\high{</xsl:text>
+                        <xsl:value-of select="$ppWit"/>
+                        <xsl:text>\textbackslash}}</xsl:text>                    
+                    </xsl:if>
+                </xsl:when>
+            
+                <xsl:when test="count(rdg) &gt; 1 and rdg[@type = 'typo_corr']">
+                    <xsl:if test="rdg[@type = 'om']">
+                        <xsl:text>\margin{}{omClose}{</xsl:text>
+                        <xsl:value-of select="generate-id()"/>
+                        <xsl:text>}{\tfx\high{</xsl:text>
+                        <xsl:value-of select="$omWit"/>
+                        <xsl:text>\textbackslash}}{</xsl:text>
+                        <xsl:value-of select="$omWit"/>
+                        <xsl:text>\textbackslash}</xsl:text>                     
+                    </xsl:if>
+                </xsl:when>
+            </xsl:choose>
+            </xsl:when>
+            
+            <xsl:when test="count(rdg) = 1 and rdg[@type = 'v']">
+                <xsl:apply-templates select="lem"/>
+
+                <xsl:apply-templates select="rdg" mode="footnote"/>
+            </xsl:when>
+        </xsl:choose>-->
+
+        <!-- NEUER ANSATZ -->
+
+        <xsl:if test="rdg[@type = 'pp' or @type = 'ppl']">
+            <xsl:text>{\tfx\high{/</xsl:text>
+            <xsl:for-each select="rdg[@type = 'pp' or @type = 'ppl']">
+                <xsl:value-of select="replace(@wit, '#', '')"/>
+            </xsl:for-each>
+            <xsl:text>}}</xsl:text>
+        </xsl:if>
+
+        <xsl:if test="rdg[@type = 'om']">
+            <xsl:for-each select="rdg[@type = 'om']">
+                <xsl:text>\margin{}{omOpen}{</xsl:text>
+                <xsl:value-of select="generate-id()"/>
+                <xsl:text>}{\tfx\high{/</xsl:text>
+                <xsl:value-of select="replace(@wit, '#', '')"/>
+                <xsl:text>}}{/</xsl:text>
+                <xsl:value-of select="replace(@wit, '#', '')"/>
+                <xsl:text>}</xsl:text>
+            </xsl:for-each>
+        </xsl:if>
+
+        <xsl:apply-templates select="lem"/>
+
+        <xsl:if test="rdg[@type = 'v']">
+            <xsl:for-each select="rdg[@type = 'v']">
+                <xsl:apply-templates select="." mode="footnote"/>
+            </xsl:for-each>
+        </xsl:if>
+
+        <xsl:if test="rdg[@type = 'om']">
+            <xsl:for-each select="rdg[@type = 'om']">
+                <xsl:text>\margin{}{omClose}{</xsl:text>
+                <xsl:value-of select="generate-id()"/>
+                <xsl:text>}{\tfx\high{</xsl:text>
+                <xsl:value-of select="replace(@wit, '#', '')"/>
+                <xsl:text>\textbackslash}}{</xsl:text>
+                <xsl:value-of select="replace(@wit, '#', '')"/>
+                <xsl:text>\textbackslash}</xsl:text>
+            </xsl:for-each>
+        </xsl:if>
+
+        <xsl:if test="rdg[@type = 'pp' or @type = 'ppl']">
+            <xsl:text>{\tfx\high{</xsl:text>
+            <xsl:for-each select="rdg[@type = 'pp' or @type = 'ppl']">
+                <xsl:value-of select="replace(@wit, '#', '')"/>
+            </xsl:for-each>
+            <xsl:text>\textbackslash}}</xsl:text>
+        </xsl:if>
+
+        <xsl:if test="rdg[@type = 'pp' or @type = 'pt']"> {\dvl} <xsl:for-each select="rdg[@type = 'pp' or @type = 'pt']">
+                <xsl:apply-templates select="." mode="footnote"/>
+            </xsl:for-each>
+        </xsl:if>
+
+        <xsl:if test="rdg[@type = 'ppl' or @type = 'ptl']">
+            <xsl:for-each select="rdg[@type = 'ppl' or @type = 'ptl']">
+                <xsl:choose>
+                    <xsl:when test="parent::note/*[1] = .">
+                        <xsl:text>\blank[-6pt]</xsl:text>
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <xsl:text>\blank[6pt]</xsl:text>
+                    </xsl:otherwise>
+                </xsl:choose>
+
+                <xsl:text>{\switchtobodyfont[8.5pt]</xsl:text>
+                
+                <xsl:if test="child::*[1][self::note[@type = 'authorial']]">
+                    <xsl:text>\startnarrower[left]</xsl:text>
+                </xsl:if>
+
+                <xsl:text>\noindent</xsl:text>
+
+                <!-- SOME PROBLEM HERE WITH MODE PL -->
+                <xsl:text>\margin{}{plOpen}{</xsl:text>
+                <xsl:value-of select="generate-id()"/>
+                <xsl:text>}{\tfx\high{</xsl:text>
+                <xsl:value-of select="replace(@wit, '#', '')"/>
+                <xsl:text>}}{</xsl:text>
+                <xsl:value-of select="replace(@wit, '#', '')"/>
+                <xsl:text>}</xsl:text>
+                
+                <xsl:apply-templates/>
+                
+                <xsl:text>\margin{}{plClose}{</xsl:text>
+                <xsl:value-of select="generate-id()"/>
+                <xsl:text>}{\tfx\high{</xsl:text>
+                <xsl:value-of select="replace(@wit, '#', '')"/>
+                <xsl:text>}}{</xsl:text>
+                <xsl:value-of select="replace(@wit, '#', '')"/>
+                <xsl:text>}</xsl:text>
+                
+                <xsl:if test="position() != last()">
+                    <xsl:text>
+                    \par
+                    \blank[6pt]
+                    \noindent
+                </xsl:text>
+                </xsl:if>
+                
+
+                <xsl:if test="child::*[1][self::note[@type = 'authorial']]">
+                    <xsl:text>\stopnarrower</xsl:text>
+                </xsl:if>
+
+                <xsl:text>
+                                }
+                                \blank[6pt]
+                                \noindent
+                            </xsl:text>
+            </xsl:for-each>
+        </xsl:if>
+
+
+
+
+        <!--        <xsl:if test="starts-with(lem, ';')">
             <xsl:text> </xsl:text>
         </xsl:if>
 
@@ -130,7 +437,7 @@
 
         <xsl:if test="rdg[@type = 'pp' or @type = 'ppl']">
             <xsl:text>{\tfx\high{</xsl:text>
-                <xsl:value-of select="$ppWit"/>
+            <xsl:value-of select="$ppWit"/>
             <xsl:text>\textbackslash}}</xsl:text>
         </xsl:if>
 
@@ -141,15 +448,15 @@
                         <xsl:text>\blank[-6pt]</xsl:text>
                     </xsl:when>
                     <xsl:otherwise>
-                    <xsl:text>\blank[6pt]</xsl:text>
+                        <xsl:text>\blank[6pt]</xsl:text>
                     </xsl:otherwise>
                 </xsl:choose>
-                <xsl:text>{\switchtobodyfont[8.5pt]</xsl:text>
-                <!--\startnarrower[left]-->
-                <xsl:text>\noindent</xsl:text>
-                <xsl:apply-templates select="rdg[@type = 'ptl' or @type = 'ppl']" mode="pl"/>
-                <!--\stopnarrower-->
-                <xsl:text>
+                <xsl:text>{\switchtobodyfont[8.5pt]</xsl:text>-->
+        <!--\startnarrower[left]-->
+        <!--<xsl:text>\noindent</xsl:text>
+                <xsl:apply-templates select="rdg[@type = 'ptl' or @type = 'ppl']" mode="pl"/>-->
+        <!--\stopnarrower-->
+        <!-- <xsl:text>
                     }
                     \blank[6pt]
                     \noindent
@@ -158,7 +465,7 @@
                 <xsl:text> {\dvl}</xsl:text>
                 <xsl:apply-templates select="rdg[@type = 'pp']" mode="footnote"/>
             </xsl:when>
-            
+
             <xsl:when test="rdg[@type = 'ptl' or @type = 'ppl']">
                 <xsl:choose>
                     <xsl:when test="parent::note/*[1] = .">
@@ -168,34 +475,34 @@
                         <xsl:text>\blank[6pt]</xsl:text>
                     </xsl:otherwise>
                 </xsl:choose>
-                
+
                 <xsl:text>{\switchtobodyfont[8.5pt]</xsl:text>
-                
+
                 <xsl:if test="rdg[@type = 'ptl' or @type = 'ppl']/(child::*)[1][self::note[@type = 'authorial']]">
                     <xsl:text>\startnarrower[left]</xsl:text>
                 </xsl:if>
-                
+
                 <xsl:text>\noindent</xsl:text>
-                
+
                 <xsl:apply-templates select="rdg" mode="pl"/>
-                
+
                 <xsl:if test="rdg[@type = 'ptl' or @type = 'ppl']/(child::*)[1][self::note[@type = 'authorial']]">
                     <xsl:text>\stopnarrower</xsl:text>
                 </xsl:if>
-                
+
                 <xsl:text>
                     }
                     \blank[6pt]
                     \noindent
                 </xsl:text>
             </xsl:when>
-            
+
             <xsl:otherwise>
                 <xsl:if test="rdg[@type != 'om' and @type != 'typo_corr']">
-                    <xsl:if test="rdg[@type != 'v']">
-                        <!-- <xsl:text>~‖</xsl:text> -->
-                        <!-- <xsl:text>~\|\kern-.1em\|</xsl:text> -->
-                        <xsl:text> {\dvl}</xsl:text>
+                    <xsl:if test="rdg[@type != 'v']">-->
+        <!-- <xsl:text>~‖</xsl:text> -->
+        <!-- <xsl:text>~\|\kern-.1em\|</xsl:text> -->
+        <!--<xsl:text> {\dvl}</xsl:text>
                     </xsl:if>
 
                     <xsl:choose>
@@ -204,20 +511,20 @@
                                 <xsl:when test="rdg[@type = 'v']">
                                     <xsl:apply-templates select="rdg[@type = 'pp']" mode="footnote"/>
                                 </xsl:when>
-                                
+
                                 <xsl:otherwise>
                                     <xsl:apply-templates select="rdg" mode="footnote"/>
                                 </xsl:otherwise>
                             </xsl:choose>
                         </xsl:when>
-                        
+
                         <xsl:otherwise>
                             <xsl:apply-templates select="rdg" mode="footnote"/>
                         </xsl:otherwise>
                     </xsl:choose>
                 </xsl:if>
             </xsl:otherwise>
-        </xsl:choose>
+        </xsl:choose>-->
     </xsl:template>
 
     <!-- app: structural variance. ignoring lems with missing structure -->
@@ -244,14 +551,14 @@
                 <xsl:if test="@unit = 'line'">
                     <xsl:text> \line{}</xsl:text>
                 </xsl:if>
-                
+
                 <xsl:if test="@unit = 'no-p'">
                     <xsl:text> \nop{}</xsl:text>
                 </xsl:if>
-                
+
                 <xsl:if test="@unit = 'no-line'">
                     <xsl:text> \noline{}</xsl:text>
-                </xsl:if>                
+                </xsl:if>
 
                 <xsl:text>{\tfx\high{</xsl:text>
                 <xsl:value-of select="$edt"/>
@@ -280,14 +587,14 @@
                 <xsl:if test="@unit = 'line'">
                     <xsl:text> \line{}</xsl:text>
                 </xsl:if>
-                
+
                 <xsl:if test="@unit = 'no-p'">
                     <xsl:text> \nop{}</xsl:text>
                 </xsl:if>
-                
+
                 <xsl:if test="@unit = 'no-line'">
                     <xsl:text> \noline{}</xsl:text>
-                </xsl:if>                
+                </xsl:if>
 
                 <xsl:text>{\tfx\high{</xsl:text>
                 <xsl:value-of select="$edt"/>
@@ -295,15 +602,15 @@
             </xsl:otherwise>
         </xsl:choose>
     </xsl:template>
-    
-    
+
+
     <xsl:template match="milestone[@unit = 'fn-break']">
         <xsl:variable name="edt" select="replace(replace(@edRef, '#', ''), ' ', '')"/>
         <xsl:variable name="n" select="@n"/>
-        
+
         <xsl:text>|</xsl:text>
-            <xsl:value-of select="concat($edt, $n)"/>
-        <xsl:text>|</xsl:text>        
+        <xsl:value-of select="concat($edt, $n)"/>
+        <xsl:text>|</xsl:text>
     </xsl:template>
 
 
@@ -322,7 +629,7 @@
         <xsl:text>\stopsubject </xsl:text>-->
         <xsl:apply-templates/>
     </xsl:template>
-    
+
     <xsl:template match="head">
         <!--<xsl:text>\startsubject[title={</xsl:text>
         <xsl:call-template name="pbHead"/>
@@ -330,20 +637,20 @@
         <xsl:text>}]</xsl:text>
         <xsl:apply-templates/>
         <xsl:text>\stopsubject </xsl:text>  -->
-        
+
         <!-- TODO: make it better! -->
-            <xsl:text>{\midaligned{</xsl:text>
-            <xsl:choose>
-                <xsl:when test="ancestor::rdg">
-                    <xsl:text>\switchtobodyfont[8.5pt]</xsl:text>
-                </xsl:when>
-                <xsl:otherwise>
-                    <xsl:text>\switchtobodyfont[10pt]</xsl:text>                   
-                </xsl:otherwise>
-            </xsl:choose>
-                
-            <xsl:apply-templates/>
-            <xsl:text>\par}} \\</xsl:text>       
+        <xsl:text>{\midaligned{</xsl:text>
+        <xsl:choose>
+            <xsl:when test="ancestor::rdg">
+                <xsl:text>\switchtobodyfont[8.5pt]</xsl:text>
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:text>\switchtobodyfont[10pt]</xsl:text>
+            </xsl:otherwise>
+        </xsl:choose>
+
+        <xsl:apply-templates/>
+        <xsl:text>\par}} \\</xsl:text>
     </xsl:template>
 
 
@@ -379,7 +686,7 @@
 
     <xsl:template match="hi">
         <xsl:text>\italic{</xsl:text>
-            <xsl:apply-templates/>
+        <xsl:apply-templates/>
         <xsl:text>}</xsl:text>
         <xsl:if test="(following::node())[1][self::app or self::index]">
             <xsl:text> </xsl:text>
@@ -390,55 +697,55 @@
         <xsl:choose>
             <xsl:when test="@rend = 'right-aligned'">
                 <xsl:text>\rightaligned{</xsl:text>
-                    <xsl:apply-templates/>
+                <xsl:apply-templates/>
                 <xsl:text>}</xsl:text>
             </xsl:when>
-            
+
             <xsl:when test="@rend = 'bold'">
                 <xsl:text>\bold{</xsl:text>
-                    <xsl:apply-templates/>
+                <xsl:apply-templates/>
                 <xsl:text>}</xsl:text>
             </xsl:when>
-            
+
             <xsl:when test="@rend = 'center-aligned'">
                 <xsl:text>\startalignment[center]</xsl:text>
-                    <xsl:apply-templates/>
+                <xsl:apply-templates/>
                 <xsl:text>\stopalignment</xsl:text>
             </xsl:when>
-            
+
             <xsl:when test="@rend = 'small-caps'">
                 <xsl:text>{\sc </xsl:text>
-                    <xsl:apply-templates/>
+                <xsl:apply-templates/>
                 <xsl:text>}</xsl:text>
             </xsl:when>
-            
+
             <xsl:when test="@rend = 'compact'">
                 <!-- to be done -->
             </xsl:when>
-            
+
             <xsl:when test="@rend = 'spaced-out'">
                 <!-- to be done -->
             </xsl:when>
-            
+
             <xsl:when test="@rend = 'margin-vertical'">
                 <xsl:text>\\</xsl:text>
                 <xsl:apply-templates/>
             </xsl:when>
-            
+
             <xsl:when test="@rend = 'margin-horizontal'">
                 <xsl:text>\hspace[margin-horizontal]</xsl:text>
                 <xsl:apply-templates/>
             </xsl:when>
-            
+
             <xsl:when test="@rend = 'subscript'">
                 <xsl:text>{\tx\low{</xsl:text>
-                    <xsl:apply-templates/>
+                <xsl:apply-templates/>
                 <xsl:text>}}</xsl:text>
             </xsl:when>
-            
+
             <xsl:when test="@rend = 'superscript'">
                 <xsl:text>\high{{\tx </xsl:text>
-                    <xsl:apply-templates/>
+                <xsl:apply-templates/>
                 <xsl:text>}}</xsl:text>
             </xsl:when>
         </xsl:choose>
@@ -455,7 +762,7 @@
         <!--<xsl:value-of select="persName"/>-->
         <xsl:value-of select="."/>
 
-    <!-- Achtung: auch Fälle mit zwei term-Elementen!! -->
+        <!-- Achtung: auch Fälle mit zwei term-Elementen!! -->
         <!-- OS: Wir haben bislang nur wenige Fälle der Indexierung mit zwei <terms>. 
             Hier sollte sich die Seitenanzeige im Print nur bei dem zweiten Term ausgegeben werden.-->
 
@@ -493,7 +800,7 @@
     <xsl:template match="lb">
         <xsl:text>\crlf </xsl:text>
     </xsl:template>
-    
+
     <xsl:template match="persName">
         <xsl:apply-templates/>
     </xsl:template>
@@ -586,28 +893,28 @@
 
 
     <!-- pb -->
-    
+
     <xsl:template match="pb">
         <xsl:text>\margin{}{pb}{}{\vl}{</xsl:text>
         <xsl:value-of select="replace(@edRef, '[# ]+', '')"/>
-        
+
         <xsl:if test="@type = 'sp'">
             <xsl:text>[</xsl:text>
-        </xsl:if>              
-        
+        </xsl:if>
+
         <xsl:value-of select="@n"/>
-        
+
         <xsl:if test="@type = 'sp'">
             <xsl:text>]</xsl:text>
         </xsl:if>
-        
+
         <xsl:text>}</xsl:text>
         <xsl:if test="(following::node())[1][self::index]">
             <xsl:text> </xsl:text>
-        </xsl:if> 
+        </xsl:if>
     </xsl:template>
 
-  <!--  <xsl:template match="p//pb" priority="-1">
+    <!--  <xsl:template match="p//pb" priority="-1">
         <xsl:text>\margin{}{pb}{}{\vl}{</xsl:text>
         <xsl:value-of select="replace(@edRef, '[# ]+', '')"/>
 
@@ -643,8 +950,8 @@
         
         <xsl:text>}</xsl:text>
         <xsl:if test="(following::node())[1][self::index]">-->
-            <!--<xsl:text> </xsl:text>-->
-        <!--</xsl:if>
+    <!--<xsl:text> </xsl:text>-->
+    <!--</xsl:if>
     </xsl:template>
     
     <xsl:template match="head//pb" priority="-1">
@@ -663,8 +970,8 @@
         
         <xsl:text>}</xsl:text>
         <xsl:if test="(following::node())[1][self::index]">-->
-            <!--<xsl:text> </xsl:text>-->
-       <!-- </xsl:if>
+    <!--<xsl:text> </xsl:text>-->
+    <!-- </xsl:if>
     </xsl:template>-->
 
     <xsl:template match="rdg[@type != 'ppl' and @type != 'ptl']//pb">
@@ -718,7 +1025,7 @@
 
     <xsl:template match="rdg" mode="pl">
         <xsl:if test="@type != 'om' and @type != 'typo_corr'">
-            <xsl:variable name="wit" select="replace(@wit, '[# ]+', '')"/>
+            <!--<xsl:variable name="wit" select="replace(@wit, '[# ]+', '')"/>
 
             <xsl:text>\margin{}{plOpen}{</xsl:text>
             <xsl:value-of select="generate-id()"/>
@@ -744,8 +1051,10 @@
                     \blank[6pt]
                     \noindent
                 </xsl:text>
-            </xsl:if>
+            </xsl:if>-->
+            
         </xsl:if>
+        <xsl:value-of select="string('ppl/ptl')"/>
     </xsl:template>
 
     <xsl:template match="rdg" mode="footnote">
@@ -755,7 +1064,7 @@
             <xsl:text>\</xsl:text>
             <xsl:value-of select="$wit"/>
             <xsl:text>Note{</xsl:text>
-                <xsl:apply-templates/>
+            <xsl:apply-templates/>
             <xsl:text>}</xsl:text>
         </xsl:if>
 
@@ -774,11 +1083,11 @@
         <xsl:if test="descendant::corr">
             <xsl:apply-templates select="corr"/>
         </xsl:if>
-        
+
         <xsl:if test="descendant::orig">
             <xsl:apply-templates select="orig"/>
-        </xsl:if>        
-        
+        </xsl:if>
+
         <xsl:if test="(following::node())[1][self::app or self::persName or self::choice]">
             <xsl:text> </xsl:text>
         </xsl:if>
@@ -799,81 +1108,81 @@
         <xsl:text>\sym{}</xsl:text>
         <xsl:apply-templates/>
     </xsl:template>
-    
-    
+
+
     <xsl:template match="titlePage">
         <xsl:text>{\startalignment[center]</xsl:text>
-            <xsl:apply-templates/>
+        <xsl:apply-templates/>
         <xsl:text>\stopalignment}</xsl:text>
     </xsl:template>
-    
+
     <xsl:template match="lem[child::*[1][self::titlePage]]">
         <xsl:apply-templates/>
         <xsl:text>\blank[10pt]</xsl:text>
     </xsl:template>
-    
+
     <!-- regel greift nicht. genauer formulieren und siglen nicht vergessen! -->
     <xsl:template match="rdg[child::*[1][self::titlePage]]">
         <xsl:apply-templates/>
         <xsl:text>\blank[10pt]</xsl:text>
-    </xsl:template>    
-    
-    
+    </xsl:template>
+
+
     <xsl:template match="titlePart[@type = 'main']">
         <xsl:apply-templates/>
     </xsl:template>
-    
-    
+
+
     <xsl:template match="titlePart[@type = 'volume']">
         <xsl:apply-templates/>
     </xsl:template>
-    
-    
+
+
     <xsl:template match="choice[parent::titlePart]">
         <xsl:apply-templates select="descendant::orig[1]/node()[self::text() or self::*]"/>
     </xsl:template>
-    
-    
+
+
     <xsl:template match="byline">
         <xsl:apply-templates/>
     </xsl:template>
-    
-    
+
+
     <xsl:template match="docImprint">
         <xsl:apply-templates/>
     </xsl:template>
-    
-    
+
+
     <xsl:template match="docDate">
         <xsl:apply-templates/>
     </xsl:template>
-    
-    
+
+
     <xsl:template match="div[@type = 'preface']">
         <xsl:apply-templates/>
     </xsl:template>
-    
-    
+
+
     <xsl:template match="div[@type = 'contents']">
         <xsl:apply-templates/>
     </xsl:template>
-    
-    
+
+
     <xsl:template match="p[@rend = 'center-aligned']">
         <xsl:apply-templates/>
     </xsl:template>
-    
-    
+
+
     <xsl:template match="text">
         <xsl:apply-templates/>
     </xsl:template>
-    
-    
+
+
     <xsl:template match="front">
         <xsl:apply-templates/>
     </xsl:template>
-    
-    
+
+
     <!--<xsl:template match="list[parent::item]">
         <ul style="margin-left: 20px;">
             <xsl:apply-templates/>
@@ -886,15 +1195,15 @@
             <xsl:apply-templates/>
         </li>
     </xsl:template>-->
-    
-    
+
+
     <!--<xsl:template match="head[@type = 'main']">
         <xsl:text>\head </xsl:text>
             <xsl:apply-templates/>
         <xsl:text>\par </xsl:text>
     </xsl:template>-->
-    
-    
+
+
     <!--<xsl:template match="head[@type = 'sub']">
         <div class="listSubHead">
             <xsl:apply-templates/>
@@ -915,6 +1224,6 @@
             <br/>
             <br/>
         </xsl:if>
-    </xsl:template>    -->  
-    
+    </xsl:template>    -->
+
 </xsl:stylesheet>
