@@ -633,6 +633,13 @@
         <xsl:apply-templates/>
         <xsl:text>\stopsubject </xsl:text>-->
         <xsl:apply-templates/>
+        
+        \blank[-20pt]
+        <!--\noindent-->
+    </xsl:template>
+
+    <xsl:template match="divGen[@type = 'Inhalt']">
+        <xsl:text>\placecontent </xsl:text>
     </xsl:template>
 
     <xsl:template match="head">
@@ -641,10 +648,17 @@
         <xsl:value-of select="."/>
         <xsl:text>}]</xsl:text>
         <xsl:apply-templates/>
-        <xsl:text>\stopsubject </xsl:text>  -->
+        <xsl:text>\stopsubject </xsl:text> -->
+        
+        <xsl:text>\subject[</xsl:text>
+        <xsl:value-of select="."/>
+        <xsl:text>]{</xsl:text>
+        <xsl:text>{\switchtobodyfont[10pt]</xsl:text>
+        <xsl:apply-templates/>
+        <xsl:text>\blank[-6pt]}}</xsl:text>
 
         <!-- TODO: make it better! -->
-        <xsl:text>{\midaligned{</xsl:text>
+       <!-- <xsl:text>{\midaligned{</xsl:text>
         <xsl:choose>
             <xsl:when test="ancestor::rdg">
                 <xsl:text>\switchtobodyfont[8.5pt]</xsl:text>
@@ -655,7 +669,7 @@
         </xsl:choose>
 
         <xsl:apply-templates/>
-        <xsl:text>\par}} \\</xsl:text>
+        <xsl:text>\par}} \\</xsl:text>-->
     </xsl:template>
 
 
@@ -701,13 +715,14 @@
     <xsl:template match="hi[@rend]">
         <xsl:choose>
             <xsl:when test="@rend = 'right-aligned'">
+                <xsl:text>\crlf </xsl:text>
                 <xsl:text>\rightaligned{</xsl:text>
                 <xsl:apply-templates/>
                 <xsl:text>}</xsl:text>
             </xsl:when>
 
             <xsl:when test="@rend = 'bold'">
-                <xsl:text>\bold{</xsl:text>
+                <xsl:text>\bold{</xsl:text> 
                 <xsl:apply-templates/>
                 <xsl:text>}</xsl:text>
             </xsl:when>
@@ -765,7 +780,7 @@
         <xsl:text>\antIndex{</xsl:text>
         <!--<xsl:value-of select="normalize-space(persName/text())"/>-->
         <!--<xsl:value-of select="persName"/>-->
-        <xsl:value-of select="."/>
+        <xsl:value-of select="persName"/>
 
         <!-- Achtung: auch Fälle mit zwei term-Elementen!! -->
         <!-- OS: Wir haben bislang nur wenige Fälle der Indexierung mit zwei <terms>. 
@@ -776,13 +791,31 @@
         </xsl:if>
 
         <xsl:apply-templates select="title"/>
+        <xsl:text> </xsl:text>
+        <xsl:apply-templates select="measure"/>
         <xsl:text>}</xsl:text>
     </xsl:template>
 
-    <xsl:template match="index[@indexName = 'bibel']/term">
-        <xsl:text>\bibelIndex{</xsl:text>
-        <xsl:apply-templates/>
-        <xsl:text>}</xsl:text>
+    <xsl:template match="bibl[@type = 'biblical-reference']">
+        <xsl:choose>
+            <xsl:when test="contains(citedRange/@n, ' ')">
+                <xsl:variable name="bib-refs" select="tokenize(citedRange/@n, ' ')"/>
+                <xsl:for-each select="$bib-refs">
+                    <xsl:text>\bibelIndex{</xsl:text>
+                    <xsl:value-of select="substring-before(., ':')"/>
+                    <xsl:text>+</xsl:text>
+                    <xsl:value-of select="replace(substring-after(., ':'), ':', ',')"/>
+                    <xsl:text>}</xsl:text>  
+                </xsl:for-each>
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:text>\bibelIndex{</xsl:text>
+                <xsl:value-of select="substring-before(citedRange/@n, ':')"/>
+                <xsl:text>+</xsl:text>
+                <xsl:value-of select="replace(substring-after(citedRange/@n, ':'), ':', ',')"/>
+                <xsl:text>}</xsl:text>   
+            </xsl:otherwise>
+        </xsl:choose>    
     </xsl:template>
 
     <xsl:template match="index[@indexName = 'persons']/term">
@@ -815,7 +848,8 @@
 
     <xsl:template match="note[@type = 'authorial']" priority="-1">
         <xsl:choose>
-            <xsl:when test="preceding-sibling::*[1][self::note] or preceding-sibling::*[1][self::app/rdg[@type = 'ppl' or 'ptl']] or preceding-sibling::*[1][self::p]">
+            <!--<xsl:when test="preceding-sibling::*[1][self::note] or preceding-sibling::*[1][self::app/rdg[@type = 'ppl' or 'ptl']] or preceding-sibling::*[1][self::p]">-->
+            <xsl:when test="preceding-sibling::*[1][self::note] or preceding-sibling::*[1][self::app/rdg[@type = 'ppl' or 'ptl']]">
                 <xsl:text>\blank[-10pt]</xsl:text>
             </xsl:when>
             <xsl:otherwise>
@@ -836,7 +870,7 @@
         </xsl:text>
     </xsl:template>
 
-    <!--<xsl:template match="app[not(@type = 'structural-variance')]/lem/note[@type = 'authorial']">
+    <xsl:template match="app[not(@type = 'structural-variance')]/lem/note[@type = 'authorial']">
         <xsl:variable name="omWitTmp" select="string-join(../../rdg[@type = 'om']/@wit, '')"/>
         <xsl:variable name="omWit" select="replace($omWitTmp, '[^a-z]', '')"/>
         <xsl:text>
@@ -868,7 +902,7 @@
             \blank[6pt]
             \noindent
         </xsl:text>
-    </xsl:template>-->
+    </xsl:template>
 
     <!--<xsl:template match="rdg/note[@type = 'authorial']">
         <xsl:call-template name="pbBefore"/>
@@ -893,7 +927,7 @@
     <xsl:template match="p">
         <xsl:call-template name="pbBefore"/>
         <xsl:apply-templates/>
-        <xsl:text>\par </xsl:text>
+        <xsl:text>\par</xsl:text>
     </xsl:template>
 
 
@@ -914,9 +948,9 @@
         </xsl:if>
 
         <xsl:text>}</xsl:text>
-        <xsl:if test="(following::node())[1][self::index]">
+        <!--<xsl:if test="(following::node())[1][self::index]">
             <xsl:text> </xsl:text>
-        </xsl:if>
+        </xsl:if>-->
     </xsl:template>
 
     <!--  <xsl:template match="p//pb" priority="-1">
@@ -995,7 +1029,7 @@
             <xsl:text>\margin{}{pb}{}{\vl}{</xsl:text>
             <xsl:value-of select="replace($pb/@edRef, '[# ]+', '')"/>
             <xsl:value-of select="$pb/@n"/>
-            <xsl:text>} </xsl:text>
+            <xsl:text>}</xsl:text>
         </xsl:if>
     </xsl:template>
 
@@ -1005,7 +1039,7 @@
             <xsl:text>\vl\margindata[inouter]{</xsl:text>
             <xsl:value-of select="replace($pb/@edRef, '[# ]+', '')"/>
             <xsl:value-of select="$pb/@n"/>
-            <xsl:text>} </xsl:text>
+            <xsl:text>}</xsl:text>
         </xsl:if>
     </xsl:template>
 
@@ -1096,12 +1130,22 @@
             <xsl:text> </xsl:text>
         </xsl:if>
     </xsl:template>
-
-    <xsl:template match="list">
+    
+    <xsl:template match="list[not(ancestor::div[@type = 'contents'])]">
         <xsl:text>
            \setupindenting[yes,medium]
 	       \setupitemgroup[itemize][indenting={40pt,next}]
 	       \startitemize[packed, joinedup, nowhite, inmargin]
+	    </xsl:text>
+        <xsl:apply-templates/>
+        <xsl:text>\stopitemize</xsl:text>       
+    </xsl:template>
+
+    <xsl:template match="list[ancestor::div[@type = 'contents']]">
+        <xsl:text>
+           \setupindenting[yes,medium]
+	       \setupitemgroup[itemize][indenting={40pt,next}]
+	       \startitemize[packed, paragraph, joinedup]
 	    </xsl:text>
         <xsl:apply-templates/>
         <xsl:text>\stopitemize</xsl:text>
