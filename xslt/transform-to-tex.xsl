@@ -361,7 +361,6 @@
                 <xsl:apply-templates select="."/>
 
                 <!-- GENERATE-ID() MACHT PROBLEME. WARUM? -->
-                <!-- WOZU SIND DIE ÜBERHAUPT GUT? -->
                 <xsl:text>\margin{}{plClose}{</xsl:text>
                 <!--<xsl:value-of select="generate-id()"/>-->
                 <xsl:text>}{\tfx\high{</xsl:text>
