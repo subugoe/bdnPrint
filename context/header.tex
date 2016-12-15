@@ -159,7 +159,7 @@
 
 % text
 
-
+\definehspace[threeem][3em]
 
 \def\emptyEvenPage{%
   \ifodd\pagenumber\page[empty]\fi%
@@ -169,9 +169,33 @@
   \parfillskip\zeropoint\page\noindent%
 }
 
+% \setuphead[part]
+%   [before={\blank[20mm, force]},
+%    after={\blank[12pt]},
+%    align=middle,
+%    header=empty,
+%    number=no,
+%    placehead=yes,
+%    style=\tfa]
+% 
+% \setuphead[section]
+%   [before={\blank[24pt]},
+%    after={\blank[12pt]},
+%    align=middle,
+%    style=\tfa]
+
 \setuphead[part]
-  [before={\blank[20mm, force]},
-   after={\blank[12pt]},
+  [before={\blank[10mm, force]},
+   after={\blank[6pt]},
+   align=middle,
+   header=empty,
+   number=no,
+   placehead=yes,
+   style=\tfa]
+   
+\setuphead[chapter]
+  [before={\blank[10mm, force]},
+   after={\blank[6pt]},
    align=middle,
    header=empty,
    number=no,
@@ -179,8 +203,14 @@
    style=\tfa]
 
 \setuphead[section]
-  [before={\blank[24pt]},
-   after={\blank[12pt]},
+  [before={\blank[12pt]},
+   after={\blank[6pt]},
+   align=middle,
+   style=\tfa]
+   
+\setuphead[subject]
+  [before={\blank[8pt]},
+   after={\blank[4pt]},
    align=middle,
    style=\tfa]
 

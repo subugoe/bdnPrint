@@ -15,62 +15,6 @@
 
     <xsl:template match="TEI">
         <xsl:apply-templates/>
-
-        <xsl:text>
-            \emptyEvenPage
-            \startpart[title={Erläuterungen}]
-    
-            \definelayout[odd]
-            [backspace=48.5mm,
-            width=113mm,
-            height=191mm]
-
-            \definelayout[even]
-            [backspace=48.5mm,
-            width=113mm,
-            height=191mm]
-
-            \setuplayout
-
-            \startsetups[a]
-            \switchtobodyfont[default]
-            \rlap{}
-            \hfill
-            {\tfx\it Erläuterungen}
-            \hfill
-            \llap{\pagenumber}
-            \stopsetups
-
-            \startsetups[b]
-            \switchtobodyfont[default]
-            \rlap{\pagenumber}
-            \hfill
-            {\tfx\it Erläuterungen}
-            \hfill
-            \llap{}
-            \stopsetups
-        </xsl:text>
-
-        <xsl:text>
-            \blank[9mm]
-
-            \starttabulate[|lp(10mm)|xp(103mm)|]</xsl:text>
-        <xsl:for-each select="//ptr">
-            <xsl:if test="matches(@target, '^#erl_')">
-                <xsl:variable name="target" select="replace(@target, '^#', '')"/>
-                <xsl:text>\NC\at[</xsl:text>
-                <xsl:value-of select="generate-id()"/>
-                <xsl:text>]\NC\italic{</xsl:text>
-                <xsl:apply-templates select="//note[@xml:id = $target]/label"/>
-                <xsl:text>}\crlf\setupindenting[yes, 4mm, next] </xsl:text>
-                <xsl:apply-templates select="//note[@xml:id = $target]/p"/>
-                <xsl:text>\NC\AR</xsl:text>
-            </xsl:if>
-        </xsl:for-each>
-        <xsl:text>
-                \stoptabulate
-                \stoppart
-            </xsl:text>
     </xsl:template>
 
 
@@ -334,10 +278,10 @@
             <xsl:for-each select="rdg[@type = 'ppl' or @type = 'ptl']">
                 <xsl:choose>
                     <xsl:when test="parent::note/*[1] = .">
-                        <xsl:text>\blank[-6pt]</xsl:text>
+                        <xsl:text>\blank[-4pt]</xsl:text>
                     </xsl:when>
                     <xsl:otherwise>
-                        <xsl:text>\blank[6pt]</xsl:text>
+                        <xsl:text>\blank[4pt]</xsl:text>
                     </xsl:otherwise>
                 </xsl:choose>
 
@@ -373,11 +317,10 @@
                 <xsl:if test="position() != last()">
                     <xsl:text>
                     \par
-                    \blank[6pt]
+                    \blank[4pt]
                     \noindent
-                </xsl:text>
+                    </xsl:text>
                 </xsl:if>
-
 
                 <xsl:if test="child::*[1][self::note[@type = 'authorial']]">
                     <xsl:text>\stopnarrower</xsl:text>
@@ -385,9 +328,9 @@
 
                 <xsl:text>
                                 }
-                                \blank[6pt]
+                                \blank[4pt]
                                 \noindent
-                            </xsl:text>
+                </xsl:text>             
             </xsl:for-each>
         </xsl:if>
 
@@ -616,32 +559,117 @@
         <xsl:value-of select="concat($edt, $n)"/>
         <xsl:text>|</xsl:text>
     </xsl:template>
-
-
-    <!-- div -->
+    
 
     <xsl:template match="div[@type = 'section-group']">
         <xsl:apply-templates/>
     </xsl:template>
 
+
     <xsl:template match="div[@type = 'section']">
-        <!--<xsl:text>\startsubject[title={</xsl:text>
-        <xsl:call-template name="pbHead"/>
-        <xsl:value-of select="head[1]/text()"/>
-        <xsl:text>}]</xsl:text>
         <xsl:apply-templates/>
-        <xsl:text>\stopsubject </xsl:text>-->
-        <xsl:apply-templates/>
-        
-        \blank[-20pt]
-        <!--\noindent-->
     </xsl:template>
 
     <xsl:template match="divGen[@type = 'Inhalt']">
         <xsl:text>\placecontent </xsl:text>
     </xsl:template>
+    
+    <xsl:template match="div[@type = 'index']">
+        <xsl:text>
+            \emptyEvenPage
+            \startpart[title={Register}]
 
-    <xsl:template match="head">
+            \startsetups[b]
+            \switchtobodyfont[default]
+            \rlap{\pagenumber}
+            \hfill
+            {\tfx\it Register}
+            \hfill
+            \llap{}
+            \stopsetups
+        </xsl:text>
+        
+        <xsl:apply-templates/>
+    </xsl:template>
+
+    <xsl:template match="divGen[@type = 'bibel']">
+        <xsl:text>
+                \startchapter[title={Bibelstellen}]
+ 
+                \startsetups[a]
+                \switchtobodyfont[default]
+                \rlap{}
+                \hfill
+                {\tfx\it Bibelstellen}
+                \hfill
+                \llap{\pagenumber}
+                \stopsetups
+ 
+                \startcolumns
+                \placebibelIndex
+                \stopcolumns
+        </xsl:text>        
+    </xsl:template>
+    
+    <xsl:template match="divGen[@type = 'persons']">
+        <xsl:text>
+                \startchapter[title={Personen}]
+ 
+                \startsetups[a]
+                \switchtobodyfont[default]
+                \rlap{}
+                \hfill
+                {\tfx\it Personen}
+                \hfill
+                \llap{\pagenumber}
+                \stopsetups
+ 
+                \startcolumns
+                \placepersIndex
+                \stopcolumns
+        </xsl:text>
+    </xsl:template>
+    
+    <xsl:template match="divGen[@type = 'classical-authors']">
+        <xsl:text>
+                \startchapter[title={Antike Autoren}]
+ 
+                \startsetups[a]
+                \switchtobodyfont[default]
+                \rlap{}
+                \hfill
+                {\tfx\it Antike Autoren}
+                \hfill
+                \llap{\pagenumber}
+                \stopsetups
+ 
+                {\startcolumns
+                \placeantIndex
+                \stopcolumns}
+        </xsl:text>
+    </xsl:template>
+    
+    <xsl:template match="divGen[@type = 'subjects']">
+        <xsl:text>
+                \startchapter[title={Sachen}]
+ 
+                \startsetups[a]
+                \switchtobodyfont[default]
+                \rlap{}
+                \hfill
+                {\tfx\it Sachen}
+                \hfill
+                \llap{\pagenumber}
+                \stopsetups
+
+                {\startcolumns
+                \placesachIndex
+                \stopcolumns}
+        </xsl:text>
+    </xsl:template>
+    
+
+    <xsl:template match="head[ancestor::group]">
         <!--<xsl:text>\startsubject[title={</xsl:text>
         <xsl:call-template name="pbHead"/>
         <xsl:value-of select="."/>
@@ -652,24 +680,11 @@
         <xsl:text>\subject[</xsl:text>
         <xsl:value-of select="."/>
         <xsl:text>]{</xsl:text>
-        <xsl:text>{\switchtobodyfont[10pt]</xsl:text>
+        <xsl:text>{\switchtobodyfont[9pt]</xsl:text>
         <xsl:apply-templates/>
-        <xsl:text>\blank[-6pt]}}</xsl:text>
-
-        <!-- TODO: make it better! -->
-       <!-- <xsl:text>{\midaligned{</xsl:text>
-        <xsl:choose>
-            <xsl:when test="ancestor::rdg">
-                <xsl:text>\switchtobodyfont[8.5pt]</xsl:text>
-            </xsl:when>
-            <xsl:otherwise>
-                <xsl:text>\switchtobodyfont[10pt]</xsl:text>
-            </xsl:otherwise>
-        </xsl:choose>
-
-        <xsl:apply-templates/>
-        <xsl:text>\par}} \\</xsl:text>-->
+        <xsl:text>\blank[-4pt]}}</xsl:text>
     </xsl:template>
+
 
 
     <!-- Test paragraph -->
@@ -729,7 +744,7 @@
             <xsl:when test="@rend = 'center-aligned'">
                 <xsl:text>\startalignment[center]</xsl:text>
                 <xsl:apply-templates/>
-                <xsl:text>\stopalignment</xsl:text>
+                <xsl:text>\stopalignment </xsl:text>
             </xsl:when>
 
             <xsl:when test="@rend = 'small-caps'">
@@ -806,6 +821,7 @@
                     <xsl:value-of select="replace(substring-after(., ':'), ':', ',')"/>
                     <xsl:text>}</xsl:text>  
                 </xsl:for-each>
+                <xsl:apply-templates select="citedRange"/>
             </xsl:when>
             <xsl:otherwise>
                 <xsl:text>\bibelIndex{</xsl:text>
@@ -813,6 +829,7 @@
                 <xsl:text>+</xsl:text>
                 <xsl:value-of select="replace(substring-after(citedRange/@n, ':'), ':', ',')"/>
                 <xsl:text>}</xsl:text>   
+                <xsl:apply-templates select="citedRange"/>
             </xsl:otherwise>
         </xsl:choose>    
     </xsl:template>
@@ -852,7 +869,7 @@
                 <xsl:text>\blank[-10pt]</xsl:text>
             </xsl:when>
             <xsl:otherwise>
-                <xsl:text>\blank[6pt]</xsl:text>
+                <xsl:text>\blank[4pt]</xsl:text>
             </xsl:otherwise>
         </xsl:choose>
         <xsl:text>
@@ -864,7 +881,7 @@
         <xsl:apply-templates/>
         <xsl:text>
             \stopnarrower}
-            \blank[6pt]
+            \blank[2pt]
             \noindent
         </xsl:text>
     </xsl:template>
@@ -873,11 +890,12 @@
         <xsl:variable name="omWitTmp" select="string-join(../../rdg[@type = 'om']/@wit, '')"/>
         <xsl:variable name="omWit" select="replace($omWitTmp, '[^a-z]', '')"/>
         <xsl:text>
-            \blank[6pt]
+            \blank[4pt]
             {\switchtobodyfont[8.5pt]
             \startnarrower[left]
             \noindent
         </xsl:text>
+        
         <xsl:text>\margin{}{omOpen}{</xsl:text>
         <xsl:value-of select="generate-id()"/>
         <xsl:text>}{\tfx\high{/</xsl:text>
@@ -898,7 +916,7 @@
         <xsl:text>
             \textbackslash}
             \stopnarrower}
-            \blank[6pt]
+            \blank[4pt]
             \noindent
         </xsl:text>
     </xsl:template>
@@ -921,16 +939,19 @@
     </xsl:template>
 
 
-    <!-- p -->
-
     <xsl:template match="p">
         <xsl:call-template name="pbBefore"/>
         <xsl:apply-templates/>
-        <xsl:text>\par</xsl:text>
+        <xsl:text>\par </xsl:text>
     </xsl:template>
+    
 
+    <xsl:template match="p[@rend = 'margin-vertical']">
+        <xsl:text>\crlf </xsl:text>
+        <xsl:apply-templates/>
+        <xsl:text>\par </xsl:text>
+    </xsl:template>  
 
-    <!-- pb -->
 
     <xsl:template match="pb">
         <xsl:text>\margin{}{pb}{}{\vl}{</xsl:text>
@@ -1137,7 +1158,7 @@
 	       \startitemize[packed, joinedup, nowhite, inmargin]
 	    </xsl:text>
         <xsl:apply-templates/>
-        <xsl:text>\stopitemize</xsl:text>       
+        <xsl:text>\stopitemize </xsl:text>       
     </xsl:template>
 
     <xsl:template match="list[ancestor::div[@type = 'contents']]">
@@ -1147,13 +1168,13 @@
 	       \startitemize[packed, paragraph, joinedup]
 	    </xsl:text>
         <xsl:apply-templates/>
-        <xsl:text>\stopitemize</xsl:text>
+        <xsl:text>\stopitemize </xsl:text>
     </xsl:template>
 
     <xsl:template match="item">
         <!-- usage of \sym instead of \item is necessary to get a list without bullets etc. -->
-        <xsl:text>\sym{}</xsl:text>
-        <xsl:apply-templates/>
+                <xsl:text>\sym{}</xsl:text>
+                <xsl:apply-templates/>
     </xsl:template>
 
 
@@ -1170,7 +1191,7 @@
 
     <!-- regel greift nicht. genauer formulieren und siglen nicht vergessen! -->
     <xsl:template match="rdg[child::*[1][self::titlePage]]">
-        <xsl:apply-templates/>
+        <xsl:apply-templates/>d
         <xsl:text>\blank[10pt]</xsl:text>
     </xsl:template>
 
@@ -1229,48 +1250,123 @@
         <xsl:apply-templates/>
     </xsl:template>
 
+    <xsl:template match="seg[@type = 'toc-item' and ancestor::group]">
+        <xsl:choose>
+            <xsl:when test="ancestor::titlePart[@type = 'volume']">
+                <xsl:text>\chapter{</xsl:text>
+                <xsl:apply-templates/>
+                <xsl:text>}</xsl:text>
+            </xsl:when>
+            
+            <xsl:when test="ancestor::titlePart[@type = 'main']">
+                <xsl:text>\part{</xsl:text>
+                <xsl:apply-templates/>
+                <xsl:text>}</xsl:text>
+            </xsl:when>
+            
+            <xsl:when test="ancestor::div[@type = 'chapter']">
+                <xsl:text>\subsection{</xsl:text>
+                <xsl:apply-templates/>
+                <xsl:text>}</xsl:text>
+            </xsl:when>
 
-    <!--<xsl:template match="list[parent::item]">
-        <ul style="margin-left: 20px;">
-            <xsl:apply-templates/>
-        </ul>
+            <xsl:when test="ancestor::div[@type = 'part']">
+                <xsl:text>\section{</xsl:text>
+                <xsl:apply-templates/>
+                <xsl:text>}</xsl:text>
+            </xsl:when>
+            
+            <xsl:when test="ancestor::div[@type = 'introduction']">
+                <xsl:text>\section{</xsl:text>
+                <xsl:apply-templates/>
+                <xsl:text>}</xsl:text>
+            </xsl:when>
+        </xsl:choose>
     </xsl:template>
     
-    
-    <xsl:template match="item[ancestor::div[@type = 'contents']]">
-        <li class="listItemTOC">
-            <xsl:apply-templates/>
-        </li>
-    </xsl:template>-->
-
-
-    <!--<xsl:template match="head[@type = 'main']">
-        <xsl:text>\head </xsl:text>
-            <xsl:apply-templates/>
-        <xsl:text>\par </xsl:text>
-    </xsl:template>-->
-
-
-    <!--<xsl:template match="head[@type = 'sub']">
-        <div class="listSubHead">
-            <xsl:apply-templates/>
-        </div>
-    </xsl:template>
-    
-    
-    <xsl:template match="lb[preceding-sibling::*[1][self::head]]"/>
-    
-    
-    <xsl:template match="front//div[@type = 'preface']">
+    <xsl:template match="back">
         <xsl:apply-templates/>
-        <br/>
-        
-        <xsl:apply-templates select=".//app[not(count(rdg) = 1 and rdg[@type = 'ptl' or @type = 'ppl']) and rdg[@type = 'v' or @type = 'pt' or @type = 'pp']]" mode="printnotes"/>
-        
-        <xsl:if test="following-sibling::*[1][self::app/lem/div[@type = 'preface']]">
-            <br/>
-            <br/>
-        </xsl:if>
-    </xsl:template>    -->
+    </xsl:template>
+    
+    <xsl:template match="div[@type = 'editorialNotes']">
+        <xsl:apply-templates/>
+    </xsl:template>
 
+    <xsl:template match="divGen[@type = 'editorialNotes']">
+        <xsl:text>
+            \emptyEvenPage
+            \startpart[title={Erläuterungen}]
+    
+            \definelayout[odd]
+            [backspace=48.5mm,
+            width=113mm,
+            height=191mm]
+
+            \definelayout[even]
+            [backspace=48.5mm,
+            width=113mm,
+            height=191mm]
+
+            \setuplayout
+
+            \startsetups[a]
+            \switchtobodyfont[default]
+            \rlap{}
+            \hfill
+            {\tfx\it Erläuterungen}
+            \hfill
+            \llap{\pagenumber}
+            \stopsetups
+
+            \startsetups[b]
+            \switchtobodyfont[default]
+            \rlap{\pagenumber}
+            \hfill
+            {\tfx\it Erläuterungen}
+            \hfill
+            \llap{}
+            \stopsetups
+        </xsl:text>
+        
+        <xsl:text>
+            \blank[9mm]
+
+            \starttabulate[|lp(10mm)|xp(103mm)|]</xsl:text>
+        <xsl:for-each select="//ptr">
+            <xsl:if test="matches(@target, '^#erl_')">
+                <xsl:variable name="target" select="replace(@target, '^#', '')"/>
+                <xsl:text>\NC\at[</xsl:text>
+                <xsl:value-of select="generate-id()"/>
+                <xsl:text>]\NC\italic{</xsl:text>
+                <xsl:apply-templates select="//note[@xml:id = $target]/label"/>
+                <xsl:text>}\crlf\setupindenting[yes, 4mm, next] </xsl:text>
+                <xsl:apply-templates select="//note[@xml:id = $target]/p"/>
+                <xsl:text>\NC\AR</xsl:text>
+            </xsl:if>
+        </xsl:for-each>
+        <xsl:text>
+                \stoptabulate
+                \stoppart
+            </xsl:text>
+    </xsl:template>
+    
+    <xsl:template match="div[@type = 'editors']">
+        <xsl:text>\emptyEvenPage </xsl:text>
+        <xsl:apply-templates/>
+    </xsl:template>
+
+    <xsl:template match="space">
+        <xsl:choose>
+            <xsl:when test="@quantity = '3'">
+                <xsl:text>\hspace[threeem] </xsl:text>
+            </xsl:when>
+        </xsl:choose>
+    </xsl:template>
+    
+    
+    <xsl:template match="group">
+        <xsl:text>\emptyEvenPage </xsl:text>
+        <xsl:apply-templates/>
+    </xsl:template>
+    
 </xsl:stylesheet>
