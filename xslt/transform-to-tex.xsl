@@ -571,7 +571,8 @@
     </xsl:template>
 
     <xsl:template match="divGen[@type = 'Inhalt']">
-        <xsl:text>\placecontent </xsl:text>
+        <xsl:text>\placecontent 
+        \emptyEvenPage </xsl:text>
     </xsl:template>
     
     <xsl:template match="div[@type = 'index']">
@@ -594,7 +595,8 @@
 
     <xsl:template match="divGen[@type = 'bibel']">
         <xsl:text>
-                \startchapter[title={Bibelstellen}]
+            \writetolist[chapter]{}{Bibelstellen}
+            \subject[Bibelstellen]{Bibelstellen}
  
                 \startsetups[a]
                 \switchtobodyfont[default]
@@ -613,7 +615,8 @@
     
     <xsl:template match="divGen[@type = 'persons']">
         <xsl:text>
-                \startchapter[title={Personen}]
+            \writetolist[chapter]{}{Personen}
+            \subject[Personen]{Personen}
  
                 \startsetups[a]
                 \switchtobodyfont[default]
@@ -631,8 +634,9 @@
     </xsl:template>
     
     <xsl:template match="divGen[@type = 'classical-authors']">
-        <xsl:text>
-                \startchapter[title={Antike Autoren}]
+        <xsl:text>              
+            \writetolist[chapter]{}{Antike Autoren}
+            \subject[Antike Autoren]{Antike Autoren}
  
                 \startsetups[a]
                 \switchtobodyfont[default]
@@ -651,20 +655,21 @@
     
     <xsl:template match="divGen[@type = 'subjects']">
         <xsl:text>
-                \startchapter[title={Sachen}]
+            \writetolist[chapter]{}{Sachen}
+            \subject[Sachen]{Sachen}
  
-                \startsetups[a]
-                \switchtobodyfont[default]
-                \rlap{}
-                \hfill
-                {\tfx\it Sachen}
-                \hfill
-                \llap{\pagenumber}
-                \stopsetups
+            \startsetups[a]
+            \switchtobodyfont[default]
+            \rlap{}
+            \hfill
+            {\tfx\it Sachen}
+            \hfill
+            \llap{\pagenumber}
+            \stopsetups
 
-                {\startcolumns
-                \placesachIndex
-                \stopcolumns}
+            {\startcolumns
+            \placesachIndex
+            \stopcolumns}
         </xsl:text>
     </xsl:template>
     
@@ -680,26 +685,23 @@
         <xsl:text>\subject[</xsl:text>
         <xsl:value-of select="."/>
         <xsl:text>]{</xsl:text>
-        <xsl:text>{\switchtobodyfont[9pt]</xsl:text>
+        
+        <xsl:choose>
+            <xsl:when test="ancestor::rdg">
+                <xsl:text>{\switchtobodyfont[8pt]</xsl:text>
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:text>{\switchtobodyfont[9pt]</xsl:text>
+            </xsl:otherwise>
+        </xsl:choose>
         <xsl:apply-templates/>
-        <xsl:text>\blank[-4pt]}}</xsl:text>
+        <xsl:text>}}</xsl:text>
+        
+        <xsl:if test="descendant::seg[@type = 'toc-item']">
+            <xsl:apply-templates select="descendant::seg[@type = 'toc-item']"/>
+        </xsl:if>
     </xsl:template>
 
-
-
-    <!-- Test paragraph -->
-
-    <!-- <xsl:template match="div[preceding-sibling::div[1][@n = 150]]">
-    <xsl:text>\startsubject[title={</xsl:text>
-    <xsl:call-template name="pbHead"/>
-    <xsl:value-of select="head[1]/text()"/>
-    <xsl:text>}]</xsl:text>
-    <xsl:apply-templates/>
-    <xsl:text>\stopsubject </xsl:text>
-  </xsl:template> -->
-
-
-    <!-- foreign -->
 
     <xsl:template match="foreign[@xml:lang = 'gr']">
         <!-- ebFont has to be taken away, otherwise diacritica are displayed wrongly -->
@@ -714,8 +716,6 @@
         <xsl:text>}</xsl:text>
     </xsl:template>
 
-
-    <!-- hi -->
 
     <xsl:template match="hi">
         <xsl:text>\italic{</xsl:text>
@@ -947,7 +947,7 @@
     
 
     <xsl:template match="p[@rend = 'margin-vertical']">
-        <xsl:text>\crlf </xsl:text>
+        <xsl:text>\crlf \crlf</xsl:text>
         <xsl:apply-templates/>
         <xsl:text>\par </xsl:text>
     </xsl:template>  
@@ -972,76 +972,10 @@
             <xsl:text> </xsl:text>
         </xsl:if>-->
     </xsl:template>
-
-    <!--  <xsl:template match="p//pb" priority="-1">
-        <xsl:text>\margin{}{pb}{}{\vl}{</xsl:text>
-        <xsl:value-of select="replace(@edRef, '[# ]+', '')"/>
-
-        <xsl:if test="@type = 'sp'">
-            <xsl:text>[</xsl:text>
-        </xsl:if>              
-        
-        <xsl:value-of select="@n"/>
-        
-        <xsl:if test="@type = 'sp'">
-            <xsl:text>]</xsl:text>
-        </xsl:if>
-        
-        <xsl:text>}</xsl:text>
-        <xsl:if test="(following::node())[1][self::index]">
-            <xsl:text> </xsl:text>
-        </xsl:if>
-    </xsl:template>
-
-    <xsl:template match="note//pb" priority="-1">
-        <xsl:text>\margin{}{pb}{}{\vl}{</xsl:text>
-        <xsl:value-of select="replace(@edRef, '[# ]+', '')"/>
-        
-        <xsl:if test="@type = 'sp'">
-            <xsl:text>[</xsl:text>
-        </xsl:if>              
-        
-        <xsl:value-of select="@n"/>
-        
-        <xsl:if test="@type = 'sp'">
-            <xsl:text>]</xsl:text>
-        </xsl:if>
-        
-        <xsl:text>}</xsl:text>
-        <xsl:if test="(following::node())[1][self::index]">-->
-    <!--<xsl:text> </xsl:text>-->
-    <!--</xsl:if>
-    </xsl:template>
     
-    <xsl:template match="head//pb" priority="-1">
-        <xsl:text>\margin{}{pb}{}{\vl}{</xsl:text>
-        <xsl:value-of select="replace(@edRef, '[# ]+', '')"/>
-        
-        <xsl:if test="@type = 'sp'">
-            <xsl:text>[</xsl:text>
-        </xsl:if>              
-        
-        <xsl:value-of select="@n"/>
-        
-        <xsl:if test="@type = 'sp'">
-            <xsl:text>]</xsl:text>
-        </xsl:if>
-        
-        <xsl:text>}</xsl:text>
-        <xsl:if test="(following::node())[1][self::index]">-->
-    <!--<xsl:text> </xsl:text>-->
-    <!-- </xsl:if>
-    </xsl:template>-->
-
-    <!--<xsl:template match="rdg[@type != 'ppl' and @type != 'ptl']//pb">
-        <xsl:text>{\tf{\vl}</xsl:text>
-        <xsl:variable name="wit" select="@edRef"/>
-        <xsl:value-of select="replace($wit, '#', '')"/>
-        <xsl:value-of select="@n"/>
-        <xsl:text>\vl}</xsl:text>
-    </xsl:template>-->
 
     <xsl:template match="rdg[@type = 'typo_corr']"/>
+
 
     <xsl:template name="pbBefore">
         <xsl:variable name="pb" select="preceding-sibling::*[1][self::pb]"/>
@@ -1191,13 +1125,17 @@
 
     <!-- regel greift nicht. genauer formulieren und siglen nicht vergessen! -->
     <xsl:template match="rdg[child::*[1][self::titlePage]]">
-        <xsl:apply-templates/>d
+        <xsl:apply-templates/>
         <xsl:text>\blank[10pt]</xsl:text>
     </xsl:template>
 
 
     <xsl:template match="titlePart[@type = 'main']">
         <xsl:apply-templates/>
+        
+        <xsl:if test="descendant::seg[@type = 'toc-item']">
+            <xsl:apply-templates select="descendant::seg[@type = 'toc-item']"/>
+        </xsl:if>
     </xsl:template>
 
 
@@ -1232,6 +1170,9 @@
 
 
     <xsl:template match="div[@type = 'contents']">
+        <xsl:if test="not(ancestor::group)">
+            
+        </xsl:if>
         <xsl:apply-templates/>
     </xsl:template>
 
@@ -1250,34 +1191,28 @@
         <xsl:apply-templates/>
     </xsl:template>
 
-    <xsl:template match="seg[@type = 'toc-item' and ancestor::group]">
+    <xsl:template match="seg[@type = 'toc-item']">
         <xsl:choose>
             <xsl:when test="ancestor::titlePart[@type = 'volume']">
-                <xsl:text>\chapter{</xsl:text>
+                <xsl:text>\writetolist[chapter]{}{</xsl:text>
                 <xsl:apply-templates/>
                 <xsl:text>}</xsl:text>
             </xsl:when>
             
             <xsl:when test="ancestor::titlePart[@type = 'main']">
-                <xsl:text>\part{</xsl:text>
+                <xsl:text>\writetolist[part]{}{</xsl:text>
                 <xsl:apply-templates/>
                 <xsl:text>}</xsl:text>
             </xsl:when>
             
             <xsl:when test="ancestor::div[@type = 'chapter']">
-                <xsl:text>\subsection{</xsl:text>
+                <xsl:text>\writetolist[subsection]{}{</xsl:text>
                 <xsl:apply-templates/>
                 <xsl:text>}</xsl:text>
             </xsl:when>
 
-            <xsl:when test="ancestor::div[@type = 'part']">
-                <xsl:text>\section{</xsl:text>
-                <xsl:apply-templates/>
-                <xsl:text>}</xsl:text>
-            </xsl:when>
-            
-            <xsl:when test="ancestor::div[@type = 'introduction']">
-                <xsl:text>\section{</xsl:text>
+            <xsl:when test="ancestor::div[@type = 'part' or @type ='introduction']">
+                <xsl:text>\writetolist[section]{}{</xsl:text>
                 <xsl:apply-templates/>
                 <xsl:text>}</xsl:text>
             </xsl:when>
@@ -1295,7 +1230,9 @@
     <xsl:template match="divGen[@type = 'editorialNotes']">
         <xsl:text>
             \emptyEvenPage
-            \startpart[title={Erläuterungen}]
+            \writebetweenlist[part]{\blank[20pt]}
+            \writetolist[part]{}{Erläuterungen}
+            \subject[Erläuterungen]{Erläuterungen}
     
             \definelayout[odd]
             [backspace=48.5mm,
