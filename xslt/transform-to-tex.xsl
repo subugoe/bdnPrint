@@ -815,9 +815,10 @@
             <xsl:when test="contains(citedRange/@n, ' ')">
                 <xsl:variable name="bib-refs" select="tokenize(citedRange/@n, ' ')"/>
                 <xsl:for-each select="$bib-refs">
-                    <xsl:text>\bibelIndex[</xsl:text>
+                    <!--<xsl:text>\bibelIndex[</xsl:text>-->
+                    <xsl:text>\bibelIndex</xsl:text>
                     <!-- in order to sort bible register according to Luther bible -->
-                    <xsl:choose>
+                    <!--<xsl:choose>
                         <xsl:when test="contains(., 'Gen')">
                             <xsl:text>!</xsl:text>
                         </xsl:when>
@@ -866,7 +867,7 @@
                         <xsl:when test="contains(., 'Neh')">
                             <xsl:text>5</xsl:text>
                         </xsl:when>
-                        <xsl:when test="contains(., 'Est')">
+                        <xsl:when test="contains(., 'Est') and not(contains(., 'Zus'))">
                             <xsl:text>6</xsl:text>
                         </xsl:when>
                         <xsl:when test="contains(., 'Ijob')">
@@ -879,177 +880,177 @@
                             <xsl:text>9</xsl:text>
                         </xsl:when>
                         <xsl:when test="contains(., 'Koh')">
-                            <xsl:text>A</xsl:text>
+                            <xsl:text>:</xsl:text>
                         </xsl:when>
-
-                        <!--<xsl:when test="contains(., 'Hld')">
-                            <xsl:text>\char"D4</xsl:text>
+                        <xsl:when test="contains(., 'Hld')">
+                            <xsl:text>;</xsl:text>
                         </xsl:when>
                         <xsl:when test="contains(., 'Jes')">
-                            <xsl:text>\char"D5</xsl:text>
+                            <xsl:text>=</xsl:text>
                         </xsl:when>
                         <xsl:when test="contains(., 'Jer')">
-                            <xsl:text>\char"D6</xsl:text>
+                            <xsl:text>?</xsl:text>
                         </xsl:when>
                         <xsl:when test="contains(., 'Klgl')">
-                            <xsl:text>\char"D8</xsl:text>
+                            <xsl:text>@</xsl:text>
                         </xsl:when>
                         <xsl:when test="contains(., 'Ez')">
-                            <xsl:text>\char"D9</xsl:text>
+                            <xsl:text>A</xsl:text>
                         </xsl:when>
-                        <xsl:when test="contains(., 'Dan')">
-                            <xsl:text>\char"DA</xsl:text>
+                        <xsl:when test="contains(., 'Dan') and not(contains(., 'Zus'))">
+                            <xsl:text>B</xsl:text>
                         </xsl:when>
                         <xsl:when test="contains(., 'Hos')">
-                            <xsl:text>\char"DB</xsl:text>
+                            <xsl:text>C</xsl:text>
                         </xsl:when>
                         <xsl:when test="contains(., 'Joel')">
-                            <xsl:text>\char"DC</xsl:text>
+                            <xsl:text>D</xsl:text>
                         </xsl:when>
                         <xsl:when test="contains(., 'Am')">
-                            <xsl:text>\char"DD</xsl:text>
+                            <xsl:text>E</xsl:text>
                         </xsl:when>
                         <xsl:when test="contains(., 'Obd')">
-                            <xsl:text>\char"DE</xsl:text>
+                            <xsl:text>F</xsl:text>
                         </xsl:when>
                         <xsl:when test="contains(., 'Jona')">
-                            <xsl:text>\char"DF</xsl:text>
+                            <xsl:text>G</xsl:text>
                         </xsl:when>
                         <xsl:when test="contains(., 'Mi')">
-                            <xsl:text>\char"E0</xsl:text>
+                            <xsl:text>H</xsl:text>
                         </xsl:when>
                         <xsl:when test="contains(., 'Nah')">
-                            <xsl:text>\char"E1</xsl:text>
+                            <xsl:text>I</xsl:text>
                         </xsl:when>
                         <xsl:when test="contains(., 'Hab')">
-                            <xsl:text>\char"E2</xsl:text>
+                            <xsl:text>J</xsl:text>
                         </xsl:when>
                         <xsl:when test="contains(., 'Zef')">
-                            <xsl:text>\char"E3</xsl:text>
+                            <xsl:text>K</xsl:text>
                         </xsl:when>
                         <xsl:when test="contains(., 'Hag')">
-                            <xsl:text>\char"E4</xsl:text>
+                            <xsl:text>L</xsl:text>
                         </xsl:when>
                         <xsl:when test="contains(., 'Sach')">
-                            <xsl:text>\char"E5</xsl:text>
+                            <xsl:text>M</xsl:text>
                         </xsl:when>
                         <xsl:when test="contains(., 'Mal')">
-                            <xsl:text>\char"E6</xsl:text>
+                            <xsl:text>N</xsl:text>
                         </xsl:when>
                         <xsl:when test="contains(., 'Jdt')">
-                            <xsl:text>\char"E7</xsl:text>
+                            <xsl:text>O</xsl:text>
                         </xsl:when>
                         <xsl:when test="contains(., 'Weish')">
-                            <xsl:text>\char"E8</xsl:text>
+                            <xsl:text>P</xsl:text>
                         </xsl:when>
                         <xsl:when test="contains(., 'Tob')">
-                            <xsl:text>\char"E9</xsl:text>
+                            <xsl:text>Q</xsl:text>
                         </xsl:when>
                         <xsl:when test="contains(., 'Sir')">
-                            <xsl:text>\char"EA</xsl:text>
+                            <xsl:text>R</xsl:text>
                         </xsl:when>
                         <xsl:when test="contains(., 'Bar')">
-                            <xsl:text>\char"EB</xsl:text>
+                            <xsl:text>S</xsl:text>
                         </xsl:when>
                         <xsl:when test="contains(., '1Makk')">
-                            <xsl:text>\char"EC</xsl:text>
+                            <xsl:text>T</xsl:text>
                         </xsl:when>
                         <xsl:when test="contains(., '2Makk')">
-                            <xsl:text>\char"ED</xsl:text>
+                            <xsl:text>U</xsl:text>
                         </xsl:when>
                         <xsl:when test="contains(., 'ZusEst')">
-                            <xsl:text>\char"EF</xsl:text>
+                            <xsl:text>V</xsl:text>
                         </xsl:when>
                         <xsl:when test="contains(., 'ZusDan')">
-                            <xsl:text>\char"F0</xsl:text>
+                            <xsl:text>W</xsl:text>
                         </xsl:when>
                         <xsl:when test="contains(., 'GebMan')">
-                            <xsl:text>\char"F1</xsl:text>
+                            <xsl:text>X</xsl:text>
                         </xsl:when>
                         <xsl:when test="contains(., 'Mt')">
-                            <xsl:text>\char"F2</xsl:text>
+                            <xsl:text>Y</xsl:text>
                         </xsl:when>
                         <xsl:when test="contains(., 'Mk')">
-                            <xsl:text>\char"F3</xsl:text>
+                            <xsl:text>Z</xsl:text>
                         </xsl:when>
                         <xsl:when test="contains(., 'Lk')">
-                            <xsl:text>\char"F4</xsl:text>
+                            <xsl:text>a</xsl:text>
                         </xsl:when>
                         <xsl:when test="contains(., 'Joh') and (not(contains(substring-before(., ':'), '1')) or not(contains(substring-before(., ':'), '2')) or not(contains(substring-before(., ':'), '3')))">
-                            <xsl:text>\char"F5</xsl:text>
+                            <xsl:text>b</xsl:text>
                         </xsl:when>
                         <xsl:when test="contains(., 'Apg')">
-                            <xsl:text>\char"F6</xsl:text>
+                            <xsl:text>c</xsl:text>
                         </xsl:when>
                         <xsl:when test="contains(., 'Röm')">
-                            <xsl:text>\char"F8</xsl:text>
+                            <xsl:text>d</xsl:text>
                         </xsl:when>
                         <xsl:when test="contains(., '1Kor')">
-                            <xsl:text>\char"F9</xsl:text>
+                            <xsl:text>e</xsl:text>
                         </xsl:when>
                         <xsl:when test="contains(., '2Kor')">
-                            <xsl:text>\char"FA</xsl:text>
+                            <xsl:text>f</xsl:text>
                         </xsl:when>
                         <xsl:when test="contains(., 'Gal')">
-                            <xsl:text>\char"FB</xsl:text>
+                            <xsl:text>g</xsl:text>
                         </xsl:when>
                         <xsl:when test="contains(., 'Eph')">
-                            <xsl:text>\char"FC</xsl:text>
+                            <xsl:text>h</xsl:text>
                         </xsl:when>
                         <xsl:when test="contains(., 'Phil')">
-                            <xsl:text>\char"FD</xsl:text>
+                            <xsl:text>i</xsl:text>
                         </xsl:when>
                         <xsl:when test="contains(., 'Kol')">
-                            <xsl:text>\char"FE</xsl:text>
+                            <xsl:text>j</xsl:text>
                         </xsl:when>
                         <xsl:when test="contains(., '1Thess')">
-                            <xsl:text>\char"FF</xsl:text>
+                            <xsl:text>k</xsl:text>
                         </xsl:when>
                         <xsl:when test="contains(., '2Thess')">
-                            <xsl:text>\char"100</xsl:text>
+                            <xsl:text>l</xsl:text>
                         </xsl:when>
                         <xsl:when test="contains(., '1Tim')">
-                            <xsl:text>\char"101</xsl:text>
+                            <xsl:text>m</xsl:text>
                         </xsl:when>
                         <xsl:when test="contains(., '2Tim')">
-                            <xsl:text>\char"102</xsl:text>
+                            <xsl:text>n</xsl:text>
                         </xsl:when>
                         <xsl:when test="contains(., 'Tit')">
-                            <xsl:text>\char"103</xsl:text>
+                            <xsl:text>o</xsl:text>
                         </xsl:when>
                         <xsl:when test="contains(., 'Phlm')">
-                            <xsl:text>\char"104</xsl:text>
+                            <xsl:text>p</xsl:text>
                         </xsl:when>
                         <xsl:when test="contains(., 'Hebr')">
-                            <xsl:text>\char"105</xsl:text>
+                            <xsl:text>q</xsl:text>
                         </xsl:when>
                         <xsl:when test="contains(., 'Jak')">
-                            <xsl:text>\char"106</xsl:text>
+                            <xsl:text>r</xsl:text>
                         </xsl:when>
                         <xsl:when test="contains(., '1Petr')">
-                            <xsl:text>\char"107</xsl:text>
+                            <xsl:text>s</xsl:text>
                         </xsl:when>
                         <xsl:when test="contains(., '2Petr')">
-                            <xsl:text>\char"108</xsl:text>
+                            <xsl:text>t</xsl:text>
                         </xsl:when>
                         <xsl:when test="contains(., '1Joh')">
-                            <xsl:text>\char"109</xsl:text>
+                            <xsl:text>u</xsl:text>
                         </xsl:when>
                         <xsl:when test="contains(., '2Joh')">
-                            <xsl:text>\char"10A</xsl:text>
+                            <xsl:text>v</xsl:text>
                         </xsl:when>
                         <xsl:when test="contains(., '3Joh')">
-                            <xsl:text>\char"10B</xsl:text>
+                            <xsl:text>w</xsl:text>
                         </xsl:when>
                         <xsl:when test="contains(., 'Jud')">
-                            <xsl:text>\char"10C</xsl:text>
+                            <xsl:text>x</xsl:text>
                         </xsl:when>
                         <xsl:when test="contains(., 'Offb')">
-                            <xsl:text>\char"10D</xsl:text>
-                        </xsl:when>-->
+                            <xsl:text>y</xsl:text>
+                        </xsl:when>
                     </xsl:choose>
-                    <xsl:value-of select="substring-before(., ':')"/>
-                    <xsl:text>]{</xsl:text>
+                    <xsl:value-of select="substring-before(., ':')"/>-->
+                    <xsl:text>{</xsl:text>
+                    <!--<xsl:text>]{</xsl:text>-->
                     <xsl:value-of select="substring-before(., ':')"/>
                     <xsl:text>+</xsl:text>
                     <xsl:value-of select="replace(substring-after(., ':'), ':', ',')"/>
@@ -1058,11 +1059,12 @@
                 <xsl:apply-templates select="citedRange"/>
             </xsl:when>
             <xsl:otherwise>
-                <xsl:text>\bibelIndex[</xsl:text>
+                <!--<xsl:text>\bibelIndex[</xsl:text>-->
+                <xsl:text>\bibelIndex</xsl:text>
                 <!-- in order to sort bible register according to Luther bible -->
-                <xsl:choose>
+                <!--<xsl:choose>
                     <xsl:when test="contains(citedRange/@n, 'Gen')">
-                        <xsl:text>!</xsl:text>
+                        <xsl:text>α</xsl:text>
                     </xsl:when>
                     <xsl:when test="contains(citedRange/@n, 'Ex')">
                         <xsl:text>"</xsl:text>
@@ -1109,7 +1111,7 @@
                     <xsl:when test="contains(citedRange/@n, 'Neh')">
                         <xsl:text>5</xsl:text>
                     </xsl:when>
-                    <xsl:when test="contains(citedRange/@n, 'Est')">
+                    <xsl:when test="contains(citedRange/@n, 'Est') and not(contains(citedRange/@n, 'Zus'))">
                         <xsl:text>6</xsl:text>
                     </xsl:when>
                     <xsl:when test="contains(citedRange/@n, 'Ijob')">
@@ -1122,176 +1124,177 @@
                         <xsl:text>9</xsl:text>
                     </xsl:when>
                     <xsl:when test="contains(citedRange/@n, 'Koh')">
-                        <xsl:text>A</xsl:text>
+                        <xsl:text>:</xsl:text>
                     </xsl:when>
-<!--                    <xsl:when test="contains(citedRange/@n, 'Hld')">
-                        <xsl:text>\char"D4</xsl:text>
+                    <xsl:when test="contains(citedRange/@n, 'Hld')">
+                        <xsl:text>;</xsl:text>
                     </xsl:when>
                     <xsl:when test="contains(citedRange/@n, 'Jes')">
-                        <xsl:text>\char"D5</xsl:text>
+                        <xsl:text>=</xsl:text>
                     </xsl:when>
                     <xsl:when test="contains(citedRange/@n, 'Jer')">
-                        <xsl:text>\char"D6</xsl:text>
+                        <xsl:text>?</xsl:text>
                     </xsl:when>
                     <xsl:when test="contains(citedRange/@n, 'Klgl')">
-                        <xsl:text>\char"D8</xsl:text>
+                        <xsl:text>@</xsl:text>
                     </xsl:when>
                     <xsl:when test="contains(citedRange/@n, 'Ez')">
-                        <xsl:text>\char"D9</xsl:text>
+                        <xsl:text>A</xsl:text>
                     </xsl:when>
-                    <xsl:when test="contains(citedRange/@n, 'Dan')">
-                        <xsl:text>\char"DA</xsl:text>
+                    <xsl:when test="contains(citedRange/@n, 'Dan')  and not(contains(citedRange/@n, 'Zus'))">
+                        <xsl:text>B</xsl:text>
                     </xsl:when>
                     <xsl:when test="contains(citedRange/@n, 'Hos')">
-                        <xsl:text>\char"DB</xsl:text>
+                        <xsl:text>C</xsl:text>
                     </xsl:when>
                     <xsl:when test="contains(citedRange/@n, 'Joel')">
-                        <xsl:text>\char"DC</xsl:text>
+                        <xsl:text>D</xsl:text>
                     </xsl:when>
                     <xsl:when test="contains(citedRange/@n, 'Am')">
-                        <xsl:text>\char"DD</xsl:text>
+                        <xsl:text>E</xsl:text>
                     </xsl:when>
                     <xsl:when test="contains(citedRange/@n, 'Obd')">
-                        <xsl:text>\char"DE</xsl:text>
+                        <xsl:text>F</xsl:text>
                     </xsl:when>
                     <xsl:when test="contains(citedRange/@n, 'Jona')">
-                        <xsl:text>\char"DF</xsl:text>
+                        <xsl:text>G</xsl:text>
                     </xsl:when>
                     <xsl:when test="contains(citedRange/@n, 'Mi')">
-                        <xsl:text>\char"E0</xsl:text>
+                        <xsl:text>H</xsl:text>
                     </xsl:when>
                     <xsl:when test="contains(citedRange/@n, 'Nah')">
-                        <xsl:text>\char"E1</xsl:text>
+                        <xsl:text>I</xsl:text>
                     </xsl:when>
                     <xsl:when test="contains(citedRange/@n, 'Hab')">
-                        <xsl:text>\char"E2</xsl:text>
+                        <xsl:text>J</xsl:text>
                     </xsl:when>
                     <xsl:when test="contains(citedRange/@n, 'Zef')">
-                        <xsl:text>\char"E3</xsl:text>
+                        <xsl:text>K</xsl:text>
                     </xsl:when>
                     <xsl:when test="contains(citedRange/@n, 'Hag')">
-                        <xsl:text>\char"E4</xsl:text>
+                        <xsl:text>L</xsl:text>
                     </xsl:when>
                     <xsl:when test="contains(citedRange/@n, 'Sach')">
-                        <xsl:text>\char"E5</xsl:text>
+                        <xsl:text>M</xsl:text>
                     </xsl:when>
                     <xsl:when test="contains(citedRange/@n, 'Mal')">
-                        <xsl:text>\char"E6</xsl:text>
+                        <xsl:text>N</xsl:text>
                     </xsl:when>
                     <xsl:when test="contains(citedRange/@n, 'Jdt')">
-                        <xsl:text>\char"E7</xsl:text>
+                        <xsl:text>O</xsl:text>
                     </xsl:when>
                     <xsl:when test="contains(citedRange/@n, 'Weish')">
-                        <xsl:text>\char"E8</xsl:text>
+                        <xsl:text>P</xsl:text>
                     </xsl:when>
                     <xsl:when test="contains(citedRange/@n, 'Tob')">
-                        <xsl:text>\char"E9</xsl:text>
+                        <xsl:text>Q</xsl:text>
                     </xsl:when>
                     <xsl:when test="contains(citedRange/@n, 'Sir')">
-                        <xsl:text>\char"EA</xsl:text>
+                        <xsl:text>R</xsl:text>
                     </xsl:when>
                     <xsl:when test="contains(citedRange/@n, 'Bar')">
-                        <xsl:text>\char"EB</xsl:text>
+                        <xsl:text>S</xsl:text>
                     </xsl:when>
                     <xsl:when test="contains(citedRange/@n, '1Makk')">
-                        <xsl:text>\char"EC</xsl:text>
+                        <xsl:text>T</xsl:text>
                     </xsl:when>
                     <xsl:when test="contains(citedRange/@n, '2Makk')">
-                        <xsl:text>\char"ED</xsl:text>
+                        <xsl:text>U</xsl:text>
                     </xsl:when>
                     <xsl:when test="contains(citedRange/@n, 'ZusEst')">
-                        <xsl:text>\char"EF</xsl:text>
+                        <xsl:text>V</xsl:text>
                     </xsl:when>
                     <xsl:when test="contains(citedRange/@n, 'ZusDan')">
-                        <xsl:text>\char"F0</xsl:text>
+                        <xsl:text>W</xsl:text>
                     </xsl:when>
                     <xsl:when test="contains(citedRange/@n, 'GebMan')">
-                        <xsl:text>\char"F1</xsl:text>
+                        <xsl:text>X</xsl:text>
                     </xsl:when>
                     <xsl:when test="contains(citedRange/@n, 'Mt')">
-                        <xsl:text>\char"F2</xsl:text>
+                        <xsl:text>Y</xsl:text>
                     </xsl:when>
                     <xsl:when test="contains(citedRange/@n, 'Mk')">
-                        <xsl:text>\char"F3</xsl:text>
+                        <xsl:text>Z</xsl:text>
                     </xsl:when>
                     <xsl:when test="contains(citedRange/@n, 'Lk')">
-                        <xsl:text>\char"F4</xsl:text>
+                        <xsl:text>a</xsl:text>
                     </xsl:when>
                     <xsl:when test="contains(citedRange/@n, 'Joh') and (not(contains(substring-before(citedRange/@n, ':'), '1')) or not(contains(substring-before(citedRange/@n, ':'), '2')) or not(contains(substring-before(citedRange/@n, ':'), '3')))">
-                        <xsl:text>\char"F5</xsl:text>
+                        <xsl:text>b</xsl:text>
                     </xsl:when>
                     <xsl:when test="contains(citedRange/@n, 'Apg')">
-                        <xsl:text>\char"F6</xsl:text>
+                        <xsl:text>c</xsl:text>
                     </xsl:when>
                     <xsl:when test="contains(citedRange/@n, 'Röm')">
-                        <xsl:text>\char"F8</xsl:text>
+                        <xsl:text>d</xsl:text>
                     </xsl:when>
                     <xsl:when test="contains(citedRange/@n, '1Kor')">
-                        <xsl:text>\char"F9</xsl:text>
+                        <xsl:text>e</xsl:text>
                     </xsl:when>
                     <xsl:when test="contains(citedRange/@n, '2Kor')">
-                        <xsl:text>\char"FA</xsl:text>
+                        <xsl:text>f</xsl:text>
                     </xsl:when>
                     <xsl:when test="contains(citedRange/@n, 'Gal')">
-                        <xsl:text>\char"FB</xsl:text>
+                        <xsl:text>g</xsl:text>
                     </xsl:when>
                     <xsl:when test="contains(citedRange/@n, 'Eph')">
-                        <xsl:text>\char"FC</xsl:text>
+                        <xsl:text>h</xsl:text>
                     </xsl:when>
                     <xsl:when test="contains(citedRange/@n, 'Phil')">
-                        <xsl:text>\char"FD</xsl:text>
+                        <xsl:text>i</xsl:text>
                     </xsl:when>
                     <xsl:when test="contains(citedRange/@n, 'Kol')">
-                        <xsl:text>\char"FE</xsl:text>
+                        <xsl:text>j</xsl:text>
                     </xsl:when>
                     <xsl:when test="contains(citedRange/@n, '1Thess')">
-                        <xsl:text>\char"FF</xsl:text>
+                        <xsl:text>k</xsl:text>
                     </xsl:when>
                     <xsl:when test="contains(citedRange/@n, '2Thess')">
-                        <xsl:text>\char"100</xsl:text>
+                        <xsl:text>l</xsl:text>
                     </xsl:when>
                     <xsl:when test="contains(citedRange/@n, '1Tim')">
-                        <xsl:text>\char"101</xsl:text>
+                        <xsl:text>m</xsl:text>
                     </xsl:when>
                     <xsl:when test="contains(citedRange/@n, '2Tim')">
-                        <xsl:text>\char"102</xsl:text>
+                        <xsl:text>n</xsl:text>
                     </xsl:when>
                     <xsl:when test="contains(citedRange/@n, 'Tit')">
-                        <xsl:text>\char"103</xsl:text>
+                        <xsl:text>o</xsl:text>
                     </xsl:when>
                     <xsl:when test="contains(citedRange/@n, 'Phlm')">
-                        <xsl:text>\char"104</xsl:text>
+                        <xsl:text>p</xsl:text>
                     </xsl:when>
                     <xsl:when test="contains(citedRange/@n, 'Hebr')">
-                        <xsl:text>\char"105</xsl:text>
+                        <xsl:text>q</xsl:text>
                     </xsl:when>
                     <xsl:when test="contains(citedRange/@n, 'Jak')">
-                        <xsl:text>\char"106</xsl:text>
+                        <xsl:text>r</xsl:text>
                     </xsl:when>
                     <xsl:when test="contains(citedRange/@n, '1Petr')">
-                        <xsl:text>\char"107</xsl:text>
+                        <xsl:text>s</xsl:text>
                     </xsl:when>
                     <xsl:when test="contains(citedRange/@n, '2Petr')">
-                        <xsl:text>\char"108</xsl:text>
+                        <xsl:text>t</xsl:text>
                     </xsl:when>
                     <xsl:when test="contains(citedRange/@n, '1Joh')">
-                        <xsl:text>\char"109</xsl:text>
+                        <xsl:text>u</xsl:text>
                     </xsl:when>
                     <xsl:when test="contains(citedRange/@n, '2Joh')">
-                        <xsl:text>\char"10A</xsl:text>
+                        <xsl:text>v</xsl:text>
                     </xsl:when>
                     <xsl:when test="contains(citedRange/@n, '3Joh')">
-                        <xsl:text>\char"10B</xsl:text>
+                        <xsl:text>w</xsl:text>
                     </xsl:when>
                     <xsl:when test="contains(citedRange/@n, 'Jud')">
-                        <xsl:text>\char"10C</xsl:text>
+                        <xsl:text>x</xsl:text>
                     </xsl:when>
                     <xsl:when test="contains(citedRange/@n, 'Offb')">
-                        <xsl:text>\char"10D</xsl:text>
-                    </xsl:when>-->
+                        <xsl:text>y</xsl:text>
+                    </xsl:when>
                 </xsl:choose>
-                <xsl:value-of select="substring-before(citedRange/@n, ':')"/>
-                <xsl:text>]{</xsl:text>
+                <xsl:value-of select="substring-before(citedRange/@n, ':')"/>-->
+                <!--<xsl:text>]{</xsl:text>-->
+                <xsl:text>{</xsl:text>
                 <xsl:value-of select="substring-before(citedRange/@n, ':')"/>
                 <xsl:text>+</xsl:text>
                 <xsl:value-of select="replace(substring-after(citedRange/@n, ':'), ':', ',')"/>

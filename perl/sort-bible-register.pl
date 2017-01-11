@@ -29,10 +29,10 @@ my %sortingMap = (
   "Esra"   => "\x{6F}",
   "Neh"    => "\x{70}",
   "Est"    => "\x{71}",
-  "Hi"     => "\x{72}",
+  "Ijob"   => "\x{72}",
   "Ps"     => "\x{73}",
   "Spr"    => "\x{74}",
-  "Pred"   => "\x{75}",
+  "Koh"   => "\x{75}",
   "Hld"    => "\x{76}",
   "Jes"    => "\x{77}",
   "Jer"    => "\x{78}",
@@ -58,9 +58,9 @@ my %sortingMap = (
   "Bar"    => "\x{18C}",
   "1Makk"  => "\x{18D}",
   "2Makk"  => "\x{192}",
-  "St. zu Est" => "\x{195}",
-  "St. zu Dan" => "\x{199}",
-  "Man"    => "\x{19A}",
+  "ZusEst" => "\x{195}",
+  "ZusDan" => "\x{199}",
+  "GebMan" => "\x{19A}",
   "Mt"     => "\x{19B}",
   "Mk"     => "\x{19E}",
   "Lk"     => "\x{1A3}",
@@ -84,8 +84,8 @@ my %sortingMap = (
   "1Joh"   => "\x{225}",
   "2Joh"   => "\x{234}",
   "3Joh"   => "\x{235}",
-  "Hebr"   => "\x{236}",
-  "Jak"    => "\x{237}",
+#  "Hebr"   => "\x{236}",
+#  "Jak"    => "\x{237}",
   "Jud"    => "\x{238}",
   "Offb"   => "\x{239}"
 );
@@ -95,7 +95,7 @@ while ($tail =~ /(\\bibelIndex\{.*?\})/g) {
 
   my $passage = $1;
   $passage =~ s/.*\{(.*)\}/$1/;
-  my $sortingKey = $passage;
+  my $sortingKey = $passage;  
 
   if ($passage =~ "St. zu Est") {
     $passage =~ s/St\. zu Est /St\. zu Est+/;
@@ -104,8 +104,14 @@ while ($tail =~ /(\\bibelIndex\{.*?\})/g) {
     $passage =~ s/St\. zu Dan /St\. zu Dan+/;
     $sortingKey = "St. zu Dan"
   } else {
-    $passage =~ s/(.*?) /$1+/;
-    $sortingKey =~ s/(.*?) .*/$1/;
+    #$passage =~ s/(.*?) /$1+/;
+    #$sortingKey =~ s/(.*?) .*/$1/;
+    # weiter Debuggen! Problem: SortingKex hat die Form mt+2,1 daher kein Match in Map!!
+    $passage =~ s/(.*?) //;
+    $sortingKey =~ s/([1-3]{0,}[A-Z][a-zäöü]+)/$1/;
+    
+    print STDERR "$sortingKey\n";
+    
   }
 
   my $sortingValue = $sortingMap{$sortingKey};
