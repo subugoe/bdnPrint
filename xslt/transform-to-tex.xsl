@@ -896,10 +896,11 @@
         <xsl:choose>
             <!--<xsl:when test="preceding-sibling::*[1][self::note] or preceding-sibling::*[1][self::app/rdg[@type = 'ppl' or 'ptl']] or preceding-sibling::*[1][self::p]">-->
             <xsl:when test="preceding-sibling::*[1][self::note] or preceding-sibling::*[1][self::app/rdg[@type = 'ppl' or 'ptl']]">
-                <xsl:text>\blank[-10pt]</xsl:text>
+                <!--<xsl:text>\blank[-10pt]</xsl:text>-->
+                <xsl:text>\blank[-5pt]</xsl:text>
             </xsl:when>
             <xsl:otherwise>
-                <xsl:text>\blank[4pt]</xsl:text>
+                <xsl:text>\blank[5pt]</xsl:text>
             </xsl:otherwise>
         </xsl:choose>
         <xsl:text>
@@ -1338,6 +1339,13 @@
     <xsl:template match="group">
         <xsl:text>\emptyEvenPage </xsl:text>
         <xsl:apply-templates/>
+    </xsl:template>
+    
+    <xsl:template match="supplied">
+        <!-- TO BE DONE -->
+        <!--<xsl:text>\[</xsl:text>-->
+        <xsl:apply-templates/>
+        <!--<xsl:text>\]</xsl:text>-->
     </xsl:template>
 
 </xsl:stylesheet>
