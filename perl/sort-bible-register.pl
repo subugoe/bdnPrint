@@ -38,81 +38,66 @@ my %sortingMap = (
   "Jer"    => "\x{78}",
   "Klgl"   => "\x{79}",
   "Ez"     => "\x{7A}",
-  "Dan"    => "\x{DF}",
-  "Hos"    => "\x{E6}",
-  "Joel"   => "\x{F0}",
-  "Am"     => "\x{F8}",
-  "Obd"    => "\x{FE}",
-  "Jona"   => "\x{111}",
-  "Mi"     => "\x{127}",
-  "Nah"    => "\x{131}",
-  "Hab"    => "\x{138}",
-  "Zef"    => "\x{142}",
-  "Hag"    => "\x{14B}",
-  "Sach"   => "\x{153}",
-  "Mal"    => "\x{167}",
-  "Jdt"    => "\x{180}",
-  "Weish"  => "\x{183}",
-  "Tob"    => "\x{185}",
-  "Sir"    => "\x{188}",
-  "Bar"    => "\x{18C}",
-  "1Makk"  => "\x{18D}",
-  "2Makk"  => "\x{192}",
-  "ZusEst" => "\x{195}",
-  "ZusDan" => "\x{199}",
-  "GebMan" => "\x{19A}",
-  "Mt"     => "\x{19B}",
-  "Mk"     => "\x{19E}",
-  "Lk"     => "\x{1A3}",
-  "Joh"    => "\x{1A5}",
-  "Apg"    => "\x{1A8}‎",
-  "Röm"    => "\x{1AA}",
-  "1Kor"   => "\x{1AB}",
-  "2Kor"   => "\x{1AD}",
-  "Gal"    => "\x{1B4}",
-  "Eph"    => "\x{1B6}",
-  "Phil"   => "\x{1B9}",
-  "Kol"    => "\x{1BA}",
-  "1Thess" => "\x{1BD}‎",
-  "2Thess" => "\x{1BE}‎",
-  "1Tim"   => "\x{1BF}",
-  "2Tim"   => "\x{1DD}",
-  "Tit"    => "\x{1E5}",
-  "Phlm"   => "\x{21D}",
-  "1Petr"  => "\x{221}",
-  "2Petr"  => "\x{223}",
-  "1Joh"   => "\x{225}",
-  "2Joh"   => "\x{234}",
-  "3Joh"   => "\x{235}",
-#  "Hebr"   => "\x{236}",
-#  "Jak"    => "\x{237}",
-  "Jud"    => "\x{238}",
-  "Offb"   => "\x{239}"
+  "Dan"    => "\x{F0}",
+  "Hos"    => "\x{FE}",
+  "Joel"   => "\x{131}",
+  "Am"     => "\x{138}",
+  "Obd"    => "\x{14B}",
+  "Jona"   => "\x{185}",
+  "Mi"     => "\x{18D}",
+  "Nah"    => "\x{195}",
+  "Hab"    => "\x{19B}",
+  "Zef"    => "\x{1A3}",
+  "Hag"    => "\x{1A8}",
+  "Sach"   => "\x{1AA}",
+  "Mal"    => "\x{1B9}",
+  "Jdt"    => "\x{1BD}",
+  "Weish"  => "\x{1BE}",
+  "Tob"    => "\x{1BF}",
+  "Sir"    => "\x{1DD}",
+  "Bar"    => "\x{21D}",
+  "1Makk"  => "\x{223}",
+  "2Makk"  => "\x{237}",
+  "ZusEst" => "\x{238}",
+  "ZusDan" => "\x{239}",
+  # from now on new
+  "GebMan" => "\x{241}",
+  "Mt"     => "\x{251}",
+  "Mk"     => "\x{259}",
+  "Lk"     => "\x{283}",
+  "Joh"    => "\x{292}",
+  "Apg"    => "\x{298}‎",
+  "Röm"    => "\x{2A3}",
+  "1Kor"   => "\x{2A4}",
+  "2Kor"   => "\x{2A6}",
+  "Gal"    => "\x{2A7}",
+  "Eph"    => "\x{2A8}",
+  "Phil"   => "\x{2AB}",
+  "Kol"    => "\x{2AC}",
+  "1Thess" => "‎\x{E02}",
+  "2Thess" => "\x{E03}‎",
+  "1Tim"   => "\x{E04}",
+  "2Tim"   => "\x{E05}",
+  "Tit"    => "\x{E06}",
+  "Phlm"   => "\x{E07}",
+  "1Petr"  => "\x{E08}",
+  "2Petr"  => "\x{E09}",
+  "1Joh"   => "\x{E0A}",
+  "2Joh"   => "\x{E0B}",
+  "3Joh"   => "\x{E0C}",
+  "Hebr"   => "\x{E0D}",
+  "Jak"    => "\x{E0E}",
+  "Jud"    => "\x{E0F}",
+  "Offb"   => "\x{E11}"
 );
+
 
 while ($tail =~ /(\\bibelIndex\{.*?\})/g) {
   my $move = $tail;
 
   my $passage = $1;
   $passage =~ s/.*\{(.*)\}/$1/;
-  my $sortingKey = $passage;  
-
-  if ($passage =~ "St. zu Est") {
-    $passage =~ s/St\. zu Est /St\. zu Est+/;
-    $sortingKey = "St. zu Est";
-  } elsif ($passage =~ "St. zu Dan") {
-    $passage =~ s/St\. zu Dan /St\. zu Dan+/;
-    $sortingKey = "St. zu Dan"
-  } else {
-    #$passage =~ s/(.*?) /$1+/;
-    #$sortingKey =~ s/(.*?) .*/$1/;
-    # weiter Debuggen! Problem: SortingKex hat die Form mt+2,1 daher kein Match in Map!!
-    $passage =~ s/(.*?) //;
-    $sortingKey =~ s/([1-3]{0,}[A-Z][a-zäöü]+)/$1/;
-    
-    print STDERR "$sortingKey\n";
-    
-  }
+  my ($sortingKey) = $passage =~ /(.+)\+/;  
 
   my $sortingValue = $sortingMap{$sortingKey};
 
