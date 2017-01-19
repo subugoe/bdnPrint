@@ -227,7 +227,7 @@
             <xsl:text>}}</xsl:text>
         </xsl:if>
 
-        <xsl:if test="rdg[@type = 'om']">
+        <xsl:if test="rdg[@type = 'om'] and not(lem/note[@type = 'authorial'])">
             <xsl:for-each select="rdg[@type = 'om']">
                 <xsl:text>\margin{}{omOpen}{</xsl:text>
                 <xsl:value-of select="generate-id()"/>
@@ -247,7 +247,7 @@
             </xsl:for-each>
         </xsl:if>
 
-        <xsl:if test="rdg[@type = 'om']">
+        <xsl:if test="rdg[@type = 'om'] and not(lem/note[@type = 'authorial'])">
             <xsl:for-each select="rdg[@type = 'om']">
                 <xsl:text>\margin{}{omClose}{</xsl:text>
                 <xsl:value-of select="generate-id()"/>
@@ -829,12 +829,17 @@
                 <xsl:value-of select="replace(substring-after(citedRange/@from, ':'), ':', ',')"/>
                 <xsl:text>\endash</xsl:text>
                 
+                <xsl:variable name="to-tmp" select="citedRange/@to"/>
+                
                 <xsl:choose>
-                    <xsl:when test="contains(citedRange/@from, substring-before(citedRange/@to, ','))">
-                        <xsl:value-of select="substring-after(citedRange/@to, ',')"/>
+                    <xsl:when test="contains(citedRange/@from, concat(substring-before($to-tmp, ':'), ':', substring-before(substring-after($to-tmp, ':'), ':')))">
+                        <xsl:value-of select="replace(substring-after($to-tmp, ':'), ':', ',')"/>
+                    </xsl:when>
+                    <xsl:when test="contains(citedRange/@from, substring-before($to-tmp, ':'))">
+                        <xsl:value-of select="substring-after(substring-after($to-tmp, ':'), ':')"/>
                     </xsl:when>
                     <xsl:otherwise>
-                        <xsl:value-of select="replace(substring-after(citedRange/@to, ':'), ':', ',')"/>
+                        <xsl:value-of select="replace(substring-after($to-tmp, ':'), ':', ',')"/>
                     </xsl:otherwise>
                 </xsl:choose>
                 
@@ -979,7 +984,9 @@
     <xsl:template match="p">
         <xsl:call-template name="pbBefore"/>
         <xsl:apply-templates/>
-        <xsl:text>\par </xsl:text>
+        <xsl:if test="not(parent::rdg[@type = 'ppl' or @type = 'ptl']) and (following-sibling::* or preceding-sibling::*)">
+            <xsl:text>\par </xsl:text>
+        </xsl:if>
     </xsl:template>
 
 
@@ -1157,14 +1164,14 @@
 
     <xsl:template match="lem[child::*[1][self::titlePage]]">
         <xsl:apply-templates/>
-        <xsl:text>\blank[10pt]</xsl:text>
+        <!--<xsl:text>\blank[10pt]</xsl:text>-->
     </xsl:template>
 
     <!-- regel greift nicht. genauer formulieren und siglen nicht vergessen! -->
-    <xsl:template match="rdg[child::*[1][self::titlePage]]">
+    <!--<xsl:template match="rdg[child::*[1][self::titlePage]]">
         <xsl:apply-templates/>
         <xsl:text>\blank[10pt]</xsl:text>
-    </xsl:template>
+    </xsl:template>-->
 
 
     <xsl:template match="titlePart[@type = 'main']">
