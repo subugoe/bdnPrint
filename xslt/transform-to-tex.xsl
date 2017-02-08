@@ -568,11 +568,12 @@
 
     <xsl:template match="div[@type = 'section']">
         <xsl:apply-templates/>
+        <xsl:text>\blank[2*big]</xsl:text>
     </xsl:template>
 
     <xsl:template match="divGen[@type = 'Inhalt']">
         <xsl:text>\placecontent 
-        \emptyEvenPage </xsl:text>
+        \page[empty] </xsl:text>
     </xsl:template>
 
     <xsl:template match="div[@type = 'index']">
@@ -742,9 +743,9 @@
             </xsl:when>
 
             <xsl:when test="@rend = 'center-aligned'">
-                <xsl:text>\startalignment[center]</xsl:text>
+                <xsl:text>\midaligned{</xsl:text>
                 <xsl:apply-templates/>
-                <xsl:text>\stopalignment </xsl:text>
+                <xsl:text>}</xsl:text>
             </xsl:when>
 
             <xsl:when test="@rend = 'small-caps'">
@@ -998,7 +999,19 @@
 
 
     <xsl:template match="pb">
-        <xsl:text>\margin{}{pb}{}{\vl}{</xsl:text>
+        <xsl:if test="preceding::node()[1][self::app or self::hi]">
+            <xsl:text> </xsl:text>
+        </xsl:if>
+        
+        <xsl:choose>
+            <xsl:when test="preceding-sibling::node()[1][self::pb]">
+                <xsl:text>\margin{}{pb}{}{}{</xsl:text>
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:text>\margin{}{pb}{}{\vl}{</xsl:text>
+            </xsl:otherwise>
+        </xsl:choose>
+      
         <xsl:value-of select="replace(@edRef, '[# ]+', '')"/>
 
         <xsl:if test="@type = 'sp'">
@@ -1010,11 +1023,41 @@
         <xsl:if test="@type = 'sp'">
             <xsl:text>]</xsl:text>
         </xsl:if>
-
+        <xsl:choose>
+            <xsl:when test="following-sibling::node()[1][self::pb]">
+                <xsl:text>;</xsl:text>
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:text></xsl:text>
+            </xsl:otherwise>
+        </xsl:choose>
         <xsl:text>}</xsl:text>
-        <!--<xsl:if test="(following::node())[1][self::index]">
+        
+        <xsl:text>\margintext{</xsl:text>
+        <xsl:value-of select="replace(@edRef, '[# ]+', '')"/>
+        
+        <xsl:if test="@type = 'sp'">
+            <xsl:text>[</xsl:text>
+        </xsl:if>
+        
+        <xsl:value-of select="@n"/>
+        
+        <xsl:if test="@type = 'sp'">
+            <xsl:text>]</xsl:text>
+        </xsl:if>
+        <xsl:choose>
+            <xsl:when test="following-sibling::node()[1][self::pb]">
+                <xsl:text>;</xsl:text>
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:text></xsl:text>
+            </xsl:otherwise>
+        </xsl:choose>
+        <xsl:text>}</xsl:text>
+        
+        <xsl:if test="(following::node())[1][self::index or self::app or self::hi] and not(preceding-sibling::node()[self::hi])">
             <xsl:text> </xsl:text>
-        </xsl:if>-->
+        </xsl:if>
     </xsl:template>
 
 
@@ -1209,13 +1252,16 @@
 
 
     <xsl:template match="div[@type = 'preface']">
+        <!--<xsl:text>\page[empty]</xsl:text>-->
         <xsl:apply-templates/>
     </xsl:template>
 
 
     <xsl:template match="div[@type = 'contents']">
-        <xsl:if test="not(ancestor::group)"> </xsl:if>
-        <xsl:apply-templates/>
+        <xsl:if test="not(ancestor::group)"> 
+            <!--<xsl:text>\page[empty]</xsl:text>-->
+            <xsl:apply-templates/>
+        </xsl:if>       
     </xsl:template>
 
 
@@ -1231,6 +1277,9 @@
 
     <xsl:template match="front">
         <xsl:apply-templates/>
+        <xsl:if test="ancestor::group">
+            <xsl:text>\setuppagenumber[1,state=start]</xsl:text>
+        </xsl:if>
     </xsl:template>
 
     <xsl:template match="seg[@type = 'toc-item']">
@@ -1337,7 +1386,7 @@
     <xsl:template match="space">
         <xsl:choose>
             <xsl:when test="@quantity = '3'">
-                <xsl:text>\hspace[threeem] </xsl:text>
+                <xsl:text>\hspace[twoem] </xsl:text>
             </xsl:when>
         </xsl:choose>
     </xsl:template>
