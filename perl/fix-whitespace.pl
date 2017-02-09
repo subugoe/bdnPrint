@@ -35,9 +35,14 @@ $tail =~ s/} ;/};/g;
 $tail =~ s/ \)/\)/g;
 $tail =~ s/} \)/}\)/g;
 $tail =~ s/\( \\/\(\\/g;
+$tail =~ s/ \?/\?/g;
+$tail =~ s/} \\italic\{,/}\\italic\{,/g;
+$tail =~ s/} :/}:/g;
+$tail =~ s/} \\italic\{:/}\\italic\{:/g;
 
 # German quotation marks
 $tail =~ s/"(.+?)"/\\quotation\{$1}/g;
+
 
 # remove vertical whitespace before headings, might need further improvement
 for (my $i=0; $i <= 9; $i++) {

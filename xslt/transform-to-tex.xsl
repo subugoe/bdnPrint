@@ -472,6 +472,11 @@
                 </xsl:if>
             </xsl:otherwise>
         </xsl:choose>-->
+        
+        <xsl:if test="following::node()[1][self::app]">
+            <xsl:text> </xsl:text>
+        </xsl:if>
+        
     </xsl:template>
 
     <!-- app: structural variance. ignoring lems with missing structure -->
@@ -487,7 +492,7 @@
     <!-- structural variance: scribal abbreviations. declared in header.tex. -->
 
     <xsl:template match="milestone[@type = 'structure']">
-        <xsl:variable name="edt" select="replace(@edRef, '^#', '')"/>
+        <xsl:variable name="edt" select="replace(@edRef, '#', '')"/>
         <xsl:variable name="parent" select="(parent::rdg)[1]/@type"/>
         <xsl:choose>
             <xsl:when test="($parent = 'ppl' or $parent = 'ptl') and not(preceding-sibling::*)">
@@ -722,7 +727,9 @@
         <xsl:text>\italic{</xsl:text>
         <xsl:apply-templates/>
         <xsl:text>}</xsl:text>
-        <xsl:if test="(following::node())[1][self::app or self::index]">
+        <xsl:if test="(following::node())[1][self::app or self::index or self::hi] or 
+            (child::persName and (following::node())[1][self::pb]) or 
+            (following::node()[1][self::pb] and following::node()[2][self::text()])">
             <xsl:text> </xsl:text>
         </xsl:if>
     </xsl:template>
@@ -1055,7 +1062,7 @@
         </xsl:choose>
         <xsl:text>}</xsl:text>
         
-        <xsl:if test="(following::node())[1][self::index or self::app or self::hi] and not(preceding-sibling::node()[self::hi])">
+        <xsl:if test="(following::node())[1][self::index or self::app or (self::hi and not(preceding-sibling::node()[self::hi]))]">
             <xsl:text> </xsl:text>
         </xsl:if>
     </xsl:template>
