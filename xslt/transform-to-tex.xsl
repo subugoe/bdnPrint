@@ -495,7 +495,7 @@
         <xsl:variable name="edt" select="replace(@edRef, '#', '')"/>
         <xsl:variable name="parent" select="(parent::rdg)[1]/@type"/>
         <xsl:choose>
-            <xsl:when test="($parent = 'ppl' or $parent = 'ptl') and not(preceding-sibling::*)">
+            <xsl:when test="($parent = 'ppl' or $parent = 'ptl') and not(preceding-sibling::node())">
                 <xsl:if test="@unit = 'p'">
                     <xsl:text> \p{}</xsl:text>
                 </xsl:if>
@@ -522,12 +522,13 @@
                 <xsl:if test="@unit = 'p'">
                     <!-- hidden element necessary, otherwise no display of hspace 
                     at the beginning of a paragraph -->
-                    <xsl:text>
+                    <!--<xsl:text>
                         \starteffect[hidden]
                             .
                         \stopeffect
                         \hspace[p]
-                    </xsl:text>
+                    </xsl:text>-->
+                    <xsl:text>\par </xsl:text>
                 </xsl:if>
             </xsl:when>
 
@@ -714,6 +715,10 @@
         <!--<xsl:text>{\ebFont </xsl:text>-->
         <xsl:apply-templates/>
         <!--<xsl:text>}</xsl:text>-->
+        
+        <xsl:if test="following::node()[1][self::bibl or self::app]">
+            <xsl:text> </xsl:text>
+        </xsl:if>
     </xsl:template>
 
     <xsl:template match="foreign[@xml:lang = 'he']">
@@ -724,6 +729,10 @@
 
 
     <xsl:template match="hi">
+        <xsl:if test="preceding::node()[1][self::pb] and starts-with(., '\W')">
+            <xsl:text> </xsl:text>
+        </xsl:if>
+        
         <xsl:text>\italic{</xsl:text>
         <xsl:apply-templates/>
         <xsl:text>}</xsl:text>
@@ -737,10 +746,15 @@
     <xsl:template match="hi[@rend]">
         <xsl:choose>
             <xsl:when test="@rend = 'right-aligned'">
-                <xsl:text>\crlf </xsl:text>
-                <xsl:text>\rightaligned{</xsl:text>
-                <xsl:apply-templates/>
-                <xsl:text>}</xsl:text>
+                <xsl:if test="not(ancestor::rdg[@type = 'pp' or @type = 'pt'])">
+                    <xsl:text>\crlf </xsl:text>
+                    <xsl:text>\rightaligned{</xsl:text>
+                    <xsl:apply-templates/>
+                    <xsl:text>}</xsl:text>
+                </xsl:if>
+                <xsl:if test="ancestor::rdg[@type = 'pp' or @type = 'pt']">
+                    <xsl:apply-templates/>
+                </xsl:if>
             </xsl:when>
 
             <xsl:when test="@rend = 'bold'">
@@ -750,9 +764,18 @@
             </xsl:when>
 
             <xsl:when test="@rend = 'center-aligned'">
-                <xsl:text>\midaligned{</xsl:text>
-                <xsl:apply-templates/>
-                <xsl:text>}</xsl:text>
+                <xsl:choose>
+                    <xsl:when test="child::lb">
+                        <xsl:text>\startalignment[center]</xsl:text>
+                        <xsl:apply-templates/>
+                        <xsl:text>\stopalignment</xsl:text>
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <xsl:text>\midaligned{</xsl:text>
+                        <xsl:apply-templates/>
+                        <xsl:text>}</xsl:text>
+                    </xsl:otherwise>
+                </xsl:choose>
             </xsl:when>
 
             <xsl:when test="@rend = 'small-caps'">
@@ -875,6 +898,10 @@
                 <xsl:apply-templates select="citedRange"/>
             </xsl:otherwise>
         </xsl:choose>
+        
+        <xsl:if test="following::node()[1][self::bibl[@type = 'biblical-reference']]">
+            <xsl:text> </xsl:text>
+        </xsl:if>
     </xsl:template>
 
     <xsl:template match="index[@indexName = 'persons']/term">
@@ -998,10 +1025,15 @@
     </xsl:template>
 
 
-    <xsl:template match="p[@rend = 'margin-vertical']">
+    <xsl:template match="div[not(@type = 'editors')]/p[@rend = 'margin-vertical']">
+        <xsl:text>\crlf \crlf</xsl:text>
+        <xsl:apply-templates/>c
+        <xsl:text>\par </xsl:text>
+    </xsl:template>
+    
+    <xsl:template match="div[@type = 'editors']/p[@rend = 'margin-vertical']">
         <xsl:text>\crlf \crlf</xsl:text>
         <xsl:apply-templates/>
-        <xsl:text>\par </xsl:text>
     </xsl:template>
 
 
@@ -1164,6 +1196,9 @@
     <xsl:template match="choice">
         <xsl:if test="descendant::abbr">
             <xsl:apply-templates select="abbr"/>
+            <xsl:if test="following::node()[1][self::index]">
+                <xsl:text> </xsl:text>
+            </xsl:if>   
         </xsl:if>
 
         <xsl:if test="descendant::corr">
@@ -1174,7 +1209,7 @@
             <xsl:apply-templates select="orig"/>
         </xsl:if>
 
-        <xsl:if test="(following::node())[1][self::app or self::persName or self::choice]">
+        <xsl:if test="(following::node())[1][self::app or self::persName or self::choice or self::bibl]">
             <xsl:text> </xsl:text>
         </xsl:if>
     </xsl:template>
@@ -1265,7 +1300,7 @@
 
 
     <xsl:template match="div[@type = 'contents']">
-        <xsl:if test="not(ancestor::group)"> 
+        <xsl:if test="ancestor::group"> 
             <!--<xsl:text>\page[empty]</xsl:text>-->
             <xsl:apply-templates/>
         </xsl:if>       
@@ -1405,10 +1440,20 @@
     </xsl:template>
     
     <xsl:template match="supplied">
-        <!-- TO BE DONE -->
+        <!-- TO BE DONE -->c
         <!--<xsl:text>\[</xsl:text>-->
         <xsl:apply-templates/>
         <!--<xsl:text>\]</xsl:text>-->
+    </xsl:template>
+    
+    <xsl:template match="back/p">
+        <xsl:apply-templates/>
+    </xsl:template>
+    
+    <xsl:template match="div[type = 'editors']/head">
+        <xsl:text>\midaligned{</xsl:text>
+        <xsl:apply-templates/>
+        <xsl:text>}</xsl:text>
     </xsl:template>
 
 </xsl:stylesheet>
