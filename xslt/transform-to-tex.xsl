@@ -495,7 +495,7 @@
         <xsl:variable name="edt" select="replace(@edRef, '#', '')"/>
         <xsl:variable name="parent" select="(parent::rdg)[1]/@type"/>
         <xsl:choose>
-            <xsl:when test="($parent = 'ppl' or $parent = 'ptl') and not(preceding-sibling::node())">
+            <xsl:when test="ancestor::rdg[@type = 'ppl' or @type = 'ptl'] and not(preceding-sibling::node())">
                 <xsl:if test="@unit = 'p'">
                     <xsl:text> \p{}</xsl:text>
                 </xsl:if>
@@ -517,19 +517,36 @@
                 <xsl:text>}} </xsl:text>
             </xsl:when>
 
-            <xsl:when test="$parent = 'ppl' or $parent = 'ptl'">
-                <xsl:text>\\</xsl:text>
-                <xsl:if test="@unit = 'p'">
+            <xsl:when test="ancestor::rdg[@type = 'ppl' or @type = 'ptl']">
+                <xsl:text>\crlf </xsl:text>
+                <xsl:choose>
+                    <xsl:when test="@unit = 'p' and (not(preceding-sibling::*[1][self::list]) and not(preceding-sibling::*[1][self::seg][child::*[last()][self::list]]))">
+                        <!-- hidden element necessary, otherwise no display of hspace 
+                    at the beginning of a paragraph -->
+                        <!--<xsl:text>
+                        \starteffect[hidden]
+                            .
+                        \stopeffect
+                        \hspace[p]"
+                    </xsl:text>-->
+                        <xsl:text>\par </xsl:text>                       
+                    </xsl:when>
+                    
+                    <xsl:when test="@unit = 'p' and (preceding-sibling::*[1][self::list] or preceding-sibling::*[1][self::seg][child::*[last()][self::list]])">
+                        <xsl:text>\setupindenting[yes, 20pt] </xsl:text>
+                    </xsl:when>
+                </xsl:choose>
+                <!--<xsl:if test="@unit = 'p' and not(preceding-sibling::*[1][self::list]) and not(preceding-sibling::*[1][self::seg][child::*[last()][self::list]])">-->
                     <!-- hidden element necessary, otherwise no display of hspace 
                     at the beginning of a paragraph -->
                     <!--<xsl:text>
                         \starteffect[hidden]
                             .
                         \stopeffect
-                        \hspace[p]
+                        \hspace[p]"
                     </xsl:text>-->
-                    <xsl:text>\par </xsl:text>
-                </xsl:if>
+                    <!--<xsl:text>\par </xsl:text>
+                </xsl:if>-->
             </xsl:when>
 
             <xsl:otherwise>
@@ -1038,7 +1055,7 @@
 
 
     <xsl:template match="pb">
-        <xsl:if test="preceding::node()[1][self::app or self::hi]">
+        <xsl:if test="preceding::*[1][self::app or self::hi] and preceding::node()[1][not(matches(., '\w'))]">
             <xsl:text> </xsl:text>
         </xsl:if>
         
@@ -1094,7 +1111,9 @@
         </xsl:choose>
         <xsl:text>}</xsl:text>
         
-        <xsl:if test="(following::node())[1][self::index or self::app or (self::hi and not(preceding-sibling::node()[self::hi]))]">
+        <!-- second part of conditional statement: for cases where preceding::node()[1] is a node which only contains \t, \n, \r -->
+        <xsl:if test="(following::node())[1][self::index or self::app or (self::hi and not(preceding-sibling::node()[self::hi]))] or
+            following-sibling::*[1][self::hi] and following::node()[1][not(matches(., '\w'))] and preceding-sibling::*[1][self::hi] and preceding::node()[1][not(matches(., '\w'))]">
             <xsl:text> </xsl:text>
         </xsl:if>
     </xsl:template>
@@ -1216,7 +1235,7 @@
 
     <xsl:template match="list[not(ancestor::div[@type = 'contents'])]">
         <xsl:text>
-           \setupindenting[yes,medium]
+           \setupindenting[no]
 	       \setupitemgroup[itemize][indenting={40pt,next}]
 	       \startitemize[packed, joinedup, nowhite, inmargin]
 	    </xsl:text>
@@ -1440,7 +1459,7 @@
     </xsl:template>
     
     <xsl:template match="supplied">
-        <!-- TO BE DONE -->c
+        <!-- TO BE DONE -->
         <!--<xsl:text>\[</xsl:text>-->
         <xsl:apply-templates/>
         <!--<xsl:text>\]</xsl:text>-->
