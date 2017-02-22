@@ -25,7 +25,7 @@
         <xsl:variable name="ppWit" select="replace($ppWitTmp, '[^a-z]', '')"/>
 
         <xsl:variable name="omWitTmp" select="string-join(rdg[@type = 'om']/@wit, '')"/>
-        <xsl:variable name="omWit" select="replace($omWitTmp, '[^a-z]', '')"/>
+        <xsl:variable name="omWit" select="replace($omWitTmp, '[^a-z]\s', '')"/>
 
         <!--<xsl:if test="rdg[@type = 'v']">
             <xsl:apply-templates select="lem"/>
@@ -529,11 +529,12 @@
                         \stopeffect
                         \hspace[p]"
                     </xsl:text>-->
-                        <xsl:text>\par </xsl:text>                       
+                        <xsl:text>
+                            \indentation </xsl:text>                       
                     </xsl:when>
                     
                     <xsl:when test="@unit = 'p' and (preceding-sibling::*[1][self::list] or preceding-sibling::*[1][self::seg][child::*[last()][self::list]])">
-                        <xsl:text>\setupindenting[yes, 20pt] </xsl:text>
+                        <xsl:text>\hspace[p] </xsl:text>
                     </xsl:when>
                 </xsl:choose>
                 <!--<xsl:if test="@unit = 'p' and not(preceding-sibling::*[1][self::list]) and not(preceding-sibling::*[1][self::seg][child::*[last()][self::list]])">-->
@@ -591,7 +592,8 @@
 
     <xsl:template match="div[@type = 'section']">
         <xsl:apply-templates/>
-        <xsl:text>\blank[2*big]</xsl:text>
+        <!--<xsl:text>\blank[2*big]</xsl:text>-->
+        <xsl:text>\blank[4pt]</xsl:text>
     </xsl:template>
 
     <xsl:template match="divGen[@type = 'Inhalt']">
@@ -916,7 +918,7 @@
             </xsl:otherwise>
         </xsl:choose>
         
-        <xsl:if test="following::node()[1][self::bibl[@type = 'biblical-reference']]">
+        <xsl:if test="following::node()[1][self::bibl[@type = 'biblical-reference'] or self::choice]">
             <xsl:text> </xsl:text>
         </xsl:if>
     </xsl:template>
@@ -954,10 +956,12 @@
             <!--<xsl:when test="preceding-sibling::*[1][self::note] or preceding-sibling::*[1][self::app/rdg[@type = 'ppl' or 'ptl']] or preceding-sibling::*[1][self::p]">-->
             <xsl:when test="preceding-sibling::*[1][self::note] or preceding-sibling::*[1][self::app/rdg[@type = 'ppl' or 'ptl']]">
                 <!--<xsl:text>\blank[-10pt]</xsl:text>-->
-                <xsl:text>\blank[-5pt]</xsl:text>
+                <!--<xsl:text>\blank[-5pt]</xsl:text>-->
+                <xsl:text>\blank[-8pt]</xsl:text>
             </xsl:when>
             <xsl:otherwise>
-                <xsl:text>\blank[5pt]</xsl:text>
+                <!--<xsl:text>\blank[5pt]</xsl:text>-->
+                <xsl:text>\blank[4pt]</xsl:text>
             </xsl:otherwise>
         </xsl:choose>
         <xsl:text>
@@ -967,9 +971,14 @@
         </xsl:text>
         <xsl:call-template name="pbBefore"/>
         <xsl:apply-templates/>
-        <xsl:text>
+        <!--<xsl:text>
             \stopnarrower}
             \blank[2pt]
+            \noindent
+        </xsl:text>-->
+        <xsl:text>
+            \stopnarrower}
+            \blank[4pt]
             \noindent
         </xsl:text>
     </xsl:template>
@@ -1034,6 +1043,9 @@
 
 
     <xsl:template match="p">
+        <xsl:if test="parent::div[@type = 'section']/child::*[1] = .">
+            <xsl:text>\noindenting </xsl:text>
+        </xsl:if>
         <xsl:call-template name="pbBefore"/>
         <xsl:apply-templates/>
         <xsl:if test="not(parent::rdg[@type = 'ppl' or @type = 'ptl']) and (following-sibling::* or preceding-sibling::*)">
@@ -1044,7 +1056,7 @@
 
     <xsl:template match="div[not(@type = 'editors')]/p[@rend = 'margin-vertical']">
         <xsl:text>\crlf \crlf</xsl:text>
-        <xsl:apply-templates/>c
+        <xsl:apply-templates/>
         <xsl:text>\par </xsl:text>
     </xsl:template>
     
@@ -1234,11 +1246,23 @@
     </xsl:template>
 
     <xsl:template match="list[not(ancestor::div[@type = 'contents'])]">
+        <xsl:choose>
+            <xsl:when test="following::*[1][self::milestone[@unit = 'p'] or self::p]">
+                <xsl:text>
+                    \setupindenting[yes,medium]
+                </xsl:text>
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:text>
+                    \setupindenting[no]
+                </xsl:text>        
+            </xsl:otherwise>            
+        </xsl:choose>
+           
         <xsl:text>
-           \setupindenting[no]
 	       \setupitemgroup[itemize][indenting={40pt,next}]
 	       \startitemize[packed, joinedup, nowhite, inmargin]
-	    </xsl:text>
+        </xsl:text>
         <xsl:apply-templates/>
         <xsl:text>\stopitemize </xsl:text>
     </xsl:template>
@@ -1319,10 +1343,11 @@
 
 
     <xsl:template match="div[@type = 'contents']">
-        <xsl:if test="ancestor::group"> 
-            <!--<xsl:text>\page[empty]</xsl:text>-->
+        <!--<xsl:if test="ancestor::group"> 
+            <xsl:text>\page[empty]</xsl:text>
             <xsl:apply-templates/>
-        </xsl:if>       
+        </xsl:if>-->
+        <xsl:apply-templates/>
     </xsl:template>
 
 
@@ -1441,6 +1466,10 @@
 
     <xsl:template match="div[@type = 'editors']">
         <xsl:text>\emptyEvenPage </xsl:text>
+        <xsl:apply-templates/>
+    </xsl:template>
+    
+    <xsl:template match="div[@type = 'pseudo-container']">
         <xsl:apply-templates/>
     </xsl:template>
 
