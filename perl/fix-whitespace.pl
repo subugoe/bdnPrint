@@ -41,7 +41,15 @@ $tail =~ s/} :/}:/g;
 $tail =~ s/} \\italic\{:/}\\italic\{:/g;
 
 # German quotation marks
-$tail =~ s/"(.+?)"/\\quotation\{$1}/g;
+$tail =~ s/„(.+?)“/\\quotation\{$1}/g;
+#$tail =~ s/ . /$1ASDF /g;
+
+
+# fixing §.... to §. ...
+$tail =~ s/\.\.\.\./\. \.\.\./g;
+
+# individual cases of whitespace problems
+$tail =~ s/c119}\\italic\{Pfaff,/c119} \\italic\{Pfaff,/g;
 
 
 # remove vertical whitespace before headings, might need further improvement
@@ -49,6 +57,7 @@ for (my $i=0; $i <= 9; $i++) {
   $tail =~ s/\\blank\[.{0,10}?\](.{0,50}?\\startsubject)/$1/g;
   $tail =~ s/\\noindent(.{0,50}?\\startsubject)/$1/g;
 }
+
 
 $tail =~ s/ +/ /g;
 
