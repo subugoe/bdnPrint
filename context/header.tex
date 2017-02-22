@@ -160,6 +160,7 @@
 % text
 
 \definehspace[threeem][3em]
+\definehspace[twoem][2em]
 
 \def\emptyEvenPage{%
   \ifodd\pagenumber\page[empty]\fi%
@@ -280,7 +281,8 @@
   [compress=yes,
    indicator=no,
    pagestyle=\tf,
-   n=1]
+   n=1,
+   before=\blank]
 
 \defineregister[persIndex]
 \setupregister[persIndex]
