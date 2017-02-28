@@ -291,7 +291,9 @@
                     <xsl:text>\startnarrower[left]</xsl:text>
                 </xsl:if>
 
-                <xsl:text>\noindent</xsl:text>
+                <xsl:if test="not(child::*[1][self::p or self::note[child::*[1][self::p]]]) ">
+                    <xsl:text>\noindent</xsl:text>    
+                </xsl:if>
 
                 <!-- SOME PROBLEM HERE WITH MODE PL -->
                 <xsl:text>\margin{}{plOpen}{</xsl:text>
@@ -329,8 +331,11 @@
                 <xsl:text>
                                 }
                                 \blank[4pt]
-                                \noindent
                 </xsl:text>
+                
+                <xsl:if test="not(parent::app/following-sibling::*[1][self::p])">
+                    \noindent
+                </xsl:if>
             </xsl:for-each>
         </xsl:if>
 
@@ -472,11 +477,11 @@
                 </xsl:if>
             </xsl:otherwise>
         </xsl:choose>-->
-        
+
         <xsl:if test="following::node()[1][self::app]">
             <xsl:text> </xsl:text>
         </xsl:if>
-        
+
     </xsl:template>
 
     <!-- app: structural variance. ignoring lems with missing structure -->
@@ -523,30 +528,29 @@
                     <xsl:when test="@unit = 'p' and (not(preceding-sibling::*[1][self::list]) and not(preceding-sibling::*[1][self::seg][child::*[last()][self::list]]))">
                         <!-- hidden element necessary, otherwise no display of hspace 
                     at the beginning of a paragraph -->
-                        <!--<xsl:text>
+                        <xsl:text>
                         \starteffect[hidden]
                             .
                         \stopeffect
-                        \hspace[p]"
-                    </xsl:text>-->
-                        <xsl:text>
-                            \indentation </xsl:text>                       
+                        \hspace[p]
+                    </xsl:text>
+                        <!--<xsl:text>\indentation </xsl:text>-->
                     </xsl:when>
-                    
+
                     <xsl:when test="@unit = 'p' and (preceding-sibling::*[1][self::list] or preceding-sibling::*[1][self::seg][child::*[last()][self::list]])">
                         <xsl:text>\hspace[p] </xsl:text>
                     </xsl:when>
                 </xsl:choose>
                 <!--<xsl:if test="@unit = 'p' and not(preceding-sibling::*[1][self::list]) and not(preceding-sibling::*[1][self::seg][child::*[last()][self::list]])">-->
-                    <!-- hidden element necessary, otherwise no display of hspace 
+                <!-- hidden element necessary, otherwise no display of hspace 
                     at the beginning of a paragraph -->
-                    <!--<xsl:text>
+                <!--<xsl:text>
                         \starteffect[hidden]
                             .
                         \stopeffect
                         \hspace[p]"
                     </xsl:text>-->
-                    <!--<xsl:text>\par </xsl:text>
+                <!--<xsl:text>\par </xsl:text>
                 </xsl:if>-->
             </xsl:when>
 
@@ -734,7 +738,7 @@
         <!--<xsl:text>{\ebFont </xsl:text>-->
         <xsl:apply-templates/>
         <!--<xsl:text>}</xsl:text>-->
-        
+
         <xsl:if test="following::node()[1][self::bibl or self::app]">
             <xsl:text> </xsl:text>
         </xsl:if>
@@ -751,13 +755,14 @@
         <xsl:if test="preceding::node()[1][self::pb] and starts-with(., '\W')">
             <xsl:text> </xsl:text>
         </xsl:if>
-        
+
         <xsl:text>\italic{</xsl:text>
         <xsl:apply-templates/>
         <xsl:text>}</xsl:text>
-        <xsl:if test="(following::node())[1][self::app or self::index or self::hi] or 
-            (child::persName and (following::node())[1][self::pb]) or 
-            (following::node()[1][self::pb] and following::node()[2][self::text()])">
+        <xsl:if test="
+                (following::node())[1][self::app or self::index or self::hi] or
+                (child::persName and (following::node())[1][self::pb]) or
+                (following::node()[1][self::pb] and following::node()[2][self::text()])">
             <xsl:text> </xsl:text>
         </xsl:if>
     </xsl:template>
@@ -871,16 +876,16 @@
                 <xsl:text>}</xsl:text>
                 <xsl:apply-templates select="citedRange"/>
             </xsl:when>
-            
+
             <xsl:when test="citedRange/@to">
                 <xsl:text>\bibelIndex{</xsl:text>
                 <xsl:value-of select="substring-before(citedRange/@from, ':')"/>
                 <xsl:text>+</xsl:text>
                 <xsl:value-of select="replace(substring-after(citedRange/@from, ':'), ':', ',')"/>
                 <xsl:text>\endash</xsl:text>
-                
+
                 <xsl:variable name="to-tmp" select="citedRange/@to"/>
-                
+
                 <xsl:choose>
                     <xsl:when test="contains(citedRange/@from, concat(substring-before($to-tmp, ':'), ':', substring-before(substring-after($to-tmp, ':'), ':')))">
                         <xsl:value-of select="replace(substring-after($to-tmp, ':'), ':', ',')"/>
@@ -892,11 +897,11 @@
                         <xsl:value-of select="replace(substring-after($to-tmp, ':'), ':', ',')"/>
                     </xsl:otherwise>
                 </xsl:choose>
-                
+
                 <xsl:text>}</xsl:text>
-                <xsl:apply-templates select="citedRange"/>                
+                <xsl:apply-templates select="citedRange"/>
             </xsl:when>
-            
+
             <xsl:when test="contains(citedRange/@n, ' ')">
                 <xsl:variable name="bib-refs" select="tokenize(citedRange/@n, ' ')"/>
                 <xsl:for-each select="$bib-refs">
@@ -917,7 +922,7 @@
                 <xsl:apply-templates select="citedRange"/>
             </xsl:otherwise>
         </xsl:choose>
-        
+
         <xsl:if test="following::node()[1][self::bibl[@type = 'biblical-reference'] or self::choice]">
             <xsl:text> </xsl:text>
         </xsl:if>
@@ -964,23 +969,32 @@
                 <xsl:text>\blank[4pt]</xsl:text>
             </xsl:otherwise>
         </xsl:choose>
-        <xsl:text>
-            {\switchtobodyfont[8.5pt]
-            \startnarrower[left]
-            \noindent
-        </xsl:text>
-        <xsl:call-template name="pbBefore"/>
-        <xsl:apply-templates/>
-        <!--<xsl:text>
+        
+        <xsl:choose>
+            <xsl:when test="ancestor::rdg[@type = 'ppl' or @type = 'ptl']">
+                <xsl:call-template name="pbBefore"/>
+                <xsl:apply-templates/>
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:text>
+                {\switchtobodyfont[8.5pt]
+                \startnarrower[left]
+                \noindentation
+                </xsl:text>
+                <xsl:call-template name="pbBefore"/>
+                <xsl:apply-templates/>
+                <!--<xsl:text>
             \stopnarrower}
             \blank[2pt]
             \noindent
         </xsl:text>-->
-        <xsl:text>
-            \stopnarrower}
-            \blank[4pt]
-            \noindent
-        </xsl:text>
+                <xsl:text>
+                \stopnarrower}
+                \blank[4pt]
+                \noindent
+                </xsl:text>
+            </xsl:otherwise>
+        </xsl:choose>
     </xsl:template>
 
     <xsl:template match="app[not(@type = 'structural-variance')]/lem/note[@type = 'authorial']">
@@ -1043,12 +1057,49 @@
 
 
     <xsl:template match="p">
-        <xsl:if test="parent::div[@type = 'section']/child::*[1] = .">
-            <xsl:text>\noindenting </xsl:text>
-        </xsl:if>
+        <xsl:choose>
+            <xsl:when test="parent::div[@type = 'section']/child::*[1] = .">
+                <xsl:text>\noindenting </xsl:text>
+                <!--<xsl:text>\indenting[next] </xsl:text>-->
+            </xsl:when>
+            <!--<xsl:when test="preceding-sibling::*[1][self::p] and not(preceding-sibling::*[1][self::p]/child::*[last()][self::list])">
+                <xsl:text>
+                        \starteffect[hidden]
+                            .
+                        \stopeffect
+                        \hspace[p]
+                    </xsl:text>
+            </xsl:when>-->
+            <xsl:when test="preceding-sibling::*[1][self::p] and (ancestor::note) and not(preceding-sibling::*[1][self::p]/child::*[last()][self::list])">
+                <xsl:text>
+                        \starteffect[hidden]
+                            .
+                        \stopeffect
+                        \hspace[p]
+                    </xsl:text>
+            </xsl:when>
+            
+            <xsl:when test="preceding-sibling::*[1][self::p] and ancestor::div[parent::rdg]">
+                <xsl:text>
+                        \starteffect[hidden]
+                            .
+                        \stopeffect
+                        \hspace[p]
+                    </xsl:text>
+            </xsl:when>
+            
+            <xsl:when test="parent::lem and ancestor::app[@type = 'structural-variance']/preceding-sibling::*[1][self::p]">
+                <xsl:text>
+                        \starteffect[hidden]
+                            .
+                        \stopeffect
+                        \hspace[p]
+                    </xsl:text>
+            </xsl:when>
+        </xsl:choose>
         <xsl:call-template name="pbBefore"/>
         <xsl:apply-templates/>
-        <xsl:if test="not(parent::rdg[@type = 'ppl' or @type = 'ptl']) and (following-sibling::* or preceding-sibling::*)">
+        <xsl:if test="not(parent::rdg[@type = 'ppl' or @type = 'ptl']) and ((following-sibling::* or preceding-sibling::*) or parent::lem/../following-sibling::*)">
             <xsl:text>\par </xsl:text>
         </xsl:if>
     </xsl:template>
@@ -1059,7 +1110,7 @@
         <xsl:apply-templates/>
         <xsl:text>\par </xsl:text>
     </xsl:template>
-    
+
     <xsl:template match="div[@type = 'editors']/p[@rend = 'margin-vertical']">
         <xsl:text>\crlf \crlf</xsl:text>
         <xsl:apply-templates/>
@@ -1070,7 +1121,7 @@
         <xsl:if test="preceding::*[1][self::app or self::hi] and preceding::node()[1][not(matches(., '\w'))]">
             <xsl:text> </xsl:text>
         </xsl:if>
-        
+
         <xsl:choose>
             <xsl:when test="preceding-sibling::node()[1][self::pb]">
                 <xsl:text>\margin{}{pb}{}{}{</xsl:text>
@@ -1079,7 +1130,7 @@
                 <xsl:text>\margin{}{pb}{}{\vl}{</xsl:text>
             </xsl:otherwise>
         </xsl:choose>
-      
+
         <xsl:value-of select="replace(@edRef, '[# ]+', '')"/>
 
         <xsl:if test="@type = 'sp'">
@@ -1096,20 +1147,20 @@
                 <xsl:text>;</xsl:text>
             </xsl:when>
             <xsl:otherwise>
-                <xsl:text></xsl:text>
+                <xsl:text/>
             </xsl:otherwise>
         </xsl:choose>
         <xsl:text>}</xsl:text>
-        
+
         <xsl:text>\margintext{</xsl:text>
         <xsl:value-of select="replace(@edRef, '[# ]+', '')"/>
-        
+
         <xsl:if test="@type = 'sp'">
             <xsl:text>[</xsl:text>
         </xsl:if>
-        
+
         <xsl:value-of select="@n"/>
-        
+
         <xsl:if test="@type = 'sp'">
             <xsl:text>]</xsl:text>
         </xsl:if>
@@ -1118,14 +1169,15 @@
                 <xsl:text>;</xsl:text>
             </xsl:when>
             <xsl:otherwise>
-                <xsl:text></xsl:text>
+                <xsl:text/>
             </xsl:otherwise>
         </xsl:choose>
         <xsl:text>}</xsl:text>
-        
+
         <!-- second part of conditional statement: for cases where preceding::node()[1] is a node which only contains \t, \n, \r -->
-        <xsl:if test="(following::node())[1][self::index or self::app or (self::hi and not(preceding-sibling::node()[self::hi]))] or
-            following-sibling::*[1][self::hi] and following::node()[1][not(matches(., '\w'))] and preceding-sibling::*[1][self::hi] and preceding::node()[1][not(matches(., '\w'))]">
+        <xsl:if test="
+                (following::node())[1][self::index or self::app or (self::hi and not(preceding-sibling::node()[self::hi]))] or
+                following-sibling::*[1][self::hi] and following::node()[1][not(matches(., '\w'))] and preceding-sibling::*[1][self::hi] and preceding::node()[1][not(matches(., '\w'))]">
             <xsl:text> </xsl:text>
         </xsl:if>
     </xsl:template>
@@ -1229,7 +1281,7 @@
             <xsl:apply-templates select="abbr"/>
             <xsl:if test="following::node()[1][self::index]">
                 <xsl:text> </xsl:text>
-            </xsl:if>   
+            </xsl:if>
         </xsl:if>
 
         <xsl:if test="descendant::corr">
@@ -1255,10 +1307,10 @@
             <xsl:otherwise>
                 <xsl:text>
                     \setupindenting[no]
-                </xsl:text>        
-            </xsl:otherwise>            
+                </xsl:text>
+            </xsl:otherwise>
         </xsl:choose>
-           
+
         <xsl:text>
 	       \setupitemgroup[itemize][indenting={40pt,next}]
 	       \startitemize[packed, joinedup, nowhite, inmargin]
@@ -1468,7 +1520,7 @@
         <xsl:text>\emptyEvenPage </xsl:text>
         <xsl:apply-templates/>
     </xsl:template>
-    
+
     <xsl:template match="div[@type = 'pseudo-container']">
         <xsl:apply-templates/>
     </xsl:template>
@@ -1486,22 +1538,27 @@
         <xsl:text>\emptyEvenPage </xsl:text>
         <xsl:apply-templates/>
     </xsl:template>
-    
+
     <xsl:template match="supplied">
         <!-- TO BE DONE -->
         <!--<xsl:text>\[</xsl:text>-->
         <xsl:apply-templates/>
         <!--<xsl:text>\]</xsl:text>-->
     </xsl:template>
-    
+
     <xsl:template match="back/p">
         <xsl:apply-templates/>
     </xsl:template>
-    
+
     <xsl:template match="div[type = 'editors']/head">
         <xsl:text>\midaligned{</xsl:text>
         <xsl:apply-templates/>
         <xsl:text>}</xsl:text>
     </xsl:template>
 
+    <xsl:template match="note[@type = 'authorial' and @place = 'bottom']">
+        <xsl:text>\footnote{</xsl:text>
+            <xsl:apply-templates/>
+        <xsl:text>}</xsl:text>
+    </xsl:template>
 </xsl:stylesheet>
