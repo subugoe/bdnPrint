@@ -39,6 +39,7 @@ $tail =~ s/ \?/\?/g;
 $tail =~ s/} \\italic\{,/}\\italic\{,/g;
 $tail =~ s/} :/}:/g;
 $tail =~ s/} \\italic\{:/}\\italic\{:/g;
+$tail =~ s/\\tfx\\high\{\/a}} \{\\tfx\\high\{\/c}/\\tfx\\high\{\/a}}\{\\tfx\\high\{\/c}/g;
 
 # German quotation marks
 $tail =~ s/„(.+?)“/\\quotation\{$1}/g;
