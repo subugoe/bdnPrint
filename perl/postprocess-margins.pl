@@ -31,6 +31,8 @@ for (my $i = 0; $i < @idFile; $i++) {
   	$tmp1 =~ s/E(,\sE)/E/g;
   
     $tmp1 =~ s/(\\margin\{$id\}\{.*?\}\{.*?\}\{.*?\}\{.*?\})/$1\\margindata\[inouter\]\{$note\}/g;
+    
+    $tmp1 =~ s/;,/;/g;
   }
 }
 
