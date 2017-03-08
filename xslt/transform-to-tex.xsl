@@ -221,7 +221,7 @@
 
         <!-- nur semantisch gleiche Siglen gehören zusammen. Sind diese semantisch gleich? -->
         <xsl:if test="rdg[@type = 'pp' or 'ppl']">
-            <xsl:text>{\tfx\high{/</xsl:text>
+            <xsl:text>{\tfx\high{/PP PPL</xsl:text>
             <xsl:for-each select="rdg[@type = 'pp' or @type = 'ppl']">
                 <xsl:value-of select="replace(@wit, '[#\s]', '')"/>
             </xsl:for-each>
@@ -601,8 +601,30 @@
     </xsl:template>
 
     <xsl:template match="divGen[@type = 'Inhalt']">
-        <xsl:text>\placecontent 
-        \page[empty] </xsl:text>
+        <xsl:text>
+            \page
+            \subject[Inhaltsverzeichnis]{Inhaltsverzeichnis}
+
+            \startsetups[a]
+            \switchtobodyfont[default]
+            \rlap{\pagenumber}
+            \hfill
+            {\tfx\it }
+            \hfill
+            \llap{}
+            \stopsetups
+
+            \startsetups[b]
+            \switchtobodyfont[default]
+            \rlap{\pagenumber}
+            \hfill
+            {\tfx\it }
+            \hfill
+            \llap{}
+            \stopsetups
+            
+            \placecontent 
+        </xsl:text>
     </xsl:template>
 
     <xsl:template match="div[@type = 'index']">
@@ -713,7 +735,8 @@
         <xsl:text>\stopsubject </xsl:text> -->
 
         <xsl:if test="parent::div[@subtype = 'print' and (@type= 'editors' or @type = 'editorial')] or parent::div[@type = 'preface' or @type = 'introduction'] and parent::div[ancestor::*[1][self::front]]">
-            <xsl:text>\writetolist[chapter]{}{</xsl:text>
+            <xsl:text>
+                \writetolist[part]{}{</xsl:text>
             <xsl:apply-templates/>
             <xsl:text>}</xsl:text>           
         </xsl:if>
@@ -1163,11 +1186,9 @@
         </xsl:if>
         <xsl:choose>
             <xsl:when test="following-sibling::node()[1][self::pb]">
-                <xsl:text>;</xsl:text>
+                <xsl:text>,</xsl:text>
             </xsl:when>
-            <xsl:otherwise>
-                <xsl:text/>
-            </xsl:otherwise>
+            <xsl:otherwise/>
         </xsl:choose>
 
 
@@ -1288,7 +1309,7 @@
     <xsl:template match="rdg" mode="footnote">
         <xsl:if test="@type != 'om' and @type != 'typo_corr'">
             <xsl:variable name="wit" select="replace(@wit, '[# ]+', '')"/>
-
+            
             <xsl:text>\</xsl:text>
             <xsl:value-of select="$wit"/>
             <xsl:text>Note{</xsl:text>
@@ -1364,7 +1385,9 @@
 
 
     <xsl:template match="titlePage">
-        <xsl:text>{\startalignment[center]</xsl:text>
+        <xsl:text>
+            {\startalignment[center]
+        </xsl:text>
         <xsl:apply-templates/>
         <xsl:text>\stopalignment}</xsl:text>
     </xsl:template>
@@ -1416,7 +1439,7 @@
 
 
     <xsl:template match="div[@type = 'preface']">
-        <!--<xsl:text>\page[empty]</xsl:text>-->
+        <xsl:text>\page</xsl:text>
         <xsl:apply-templates/>
         <xsl:if test="parent::front">
             <xsl:text>\page</xsl:text>
@@ -1426,7 +1449,7 @@
 
     <xsl:template match="div[@type = 'contents']">
         <!--<xsl:if test="ancestor::group"> 
-            <xsl:text>\page[empty]</xsl:text>
+            <xsl:text>\page</xsl:text>
             <xsl:apply-templates/>
         </xsl:if>-->
         <xsl:apply-templates/>
@@ -1447,14 +1470,15 @@
         <xsl:apply-templates/>
         <xsl:text>\page</xsl:text>
         <xsl:if test="ancestor::group">
-            <xsl:text>\setuppagenumber[1,state=start]</xsl:text>
+            <xsl:text>\setuppagenumber[1]
+            \setuppagenumbering[conversion=Romannumerals]</xsl:text>
         </xsl:if>
     </xsl:template>
 
     <xsl:template match="seg[@type = 'toc-item']">
         <xsl:choose>
-            <xsl:when test="ancestor::titlePart[@type = 'volume']">
-                <xsl:text>\writetolist[chapter]{}{</xsl:text>
+            <xsl:when test="ancestor::titlePart[@type= 'volume']">
+                <xsl:text>\writetolist[part]{}{</xsl:text>
                 <xsl:apply-templates/>
                 <xsl:text>}</xsl:text>
                 <xsl:text>\resetmarking[header]</xsl:text>
@@ -1464,9 +1488,6 @@
             </xsl:when>
 
             <xsl:when test="ancestor::titlePart[@type = 'main']">
-                <xsl:text>\writetolist[part]{}{</xsl:text>
-                <xsl:apply-templates/>
-                <xsl:text>}</xsl:text>
                 <xsl:text>\resetmarking[header]</xsl:text>
                 <xsl:text>\marking[header]{</xsl:text>
                 <xsl:apply-templates/>
@@ -1564,7 +1585,22 @@
     </xsl:template>
 
     <xsl:template match="div[@type = 'editors']">
-        <xsl:text>\page </xsl:text>
+        <xsl:text>
+            \page 
+            \startsetups[b]
+            \switchtobodyfont[default]
+            \rlap{\pagenumber}
+            \hfill
+            {\tfx\it Zu den Herausgebern}
+            \hfill
+            \llap{}
+            \stopsetups
+        </xsl:text>
+        <xsl:apply-templates/>
+    </xsl:template>
+    
+    <xsl:template match="div[@subtype='print' and @type='editorial']">
+        <xsl:text>\page</xsl:text>
         <xsl:apply-templates/>
     </xsl:template>
 
@@ -1587,10 +1623,9 @@
     </xsl:template>
 
     <xsl:template match="supplied">
-        <!-- TO BE DONE -->
-        <!--<xsl:text>\[</xsl:text>-->
-        <xsl:apply-templates/>
-        <!--<xsl:text>\]</xsl:text>-->
+        <xsl:text>{[</xsl:text>
+            <xsl:apply-templates/>
+        <xsl:text>]}</xsl:text>
     </xsl:template>
 
     <xsl:template match="back/p">
