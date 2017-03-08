@@ -220,7 +220,7 @@
         <!-- NEUER ANSATZ -->
 
         <!-- nur semantisch gleiche Siglen gehören zusammen. Sind diese semantisch gleich? -->
-        <xsl:if test="rdg[@type = 'pp' or 'ppl']">
+        <xsl:if test="rdg[@type = 'pp' or @type = 'ppl']">
             <xsl:text>{\tfx\high{/PP PPL</xsl:text>
             <xsl:for-each select="rdg[@type = 'pp' or @type = 'ppl']">
                 <xsl:value-of select="replace(@wit, '[#\s]', '')"/>
@@ -1476,44 +1476,32 @@
     </xsl:template>
 
     <xsl:template match="seg[@type = 'toc-item']">
+        <xsl:text>\writetolist[</xsl:text>
+        
         <xsl:choose>
+            <!-- doesn't function properly -->
             <xsl:when test="ancestor::titlePart[@type= 'volume']">
-                <xsl:text>\writetolist[part]{}{</xsl:text>
-                <xsl:apply-templates/>
-                <xsl:text>}</xsl:text>
-                <xsl:text>\resetmarking[header]</xsl:text>
-                <xsl:text>\marking[header]{</xsl:text>
-                <xsl:apply-templates/>
-                <xsl:text>}</xsl:text>                
-            </xsl:when>
-
+                <xsl:text>part</xsl:text>                
+            </xsl:when>             
+            <!-- adapt: should be a title within the TOC -->
             <xsl:when test="ancestor::titlePart[@type = 'main']">
-                <xsl:text>\resetmarking[header]</xsl:text>
-                <xsl:text>\marking[header]{</xsl:text>
-                <xsl:apply-templates/>
-                <xsl:text>}</xsl:text>                     
-            </xsl:when>
-
+                <xsl:text>part</xsl:text>                    
+            </xsl:when>           
             <xsl:when test="ancestor::div[@type = 'chapter']">
-                <xsl:text>\writetolist[subsection]{}{</xsl:text>
-                <xsl:apply-templates/>
-                <xsl:text>}</xsl:text>
-                <xsl:text>\resetmarking[header]</xsl:text>
-                <xsl:text>\marking[header]{</xsl:text>
-                <xsl:apply-templates/>
-                <xsl:text>}</xsl:text>                     
-            </xsl:when>
-
+                <xsl:text>subsection</xsl:text>                     
+            </xsl:when>            
             <xsl:when test="ancestor::div[@type = 'part' or @type = 'introduction']">
-                <xsl:text>\writetolist[section]{}{</xsl:text>
-                <xsl:apply-templates/>
-                <xsl:text>}</xsl:text>
-                <xsl:text>\resetmarking[header]</xsl:text>
-                <xsl:text>\marking[header]{</xsl:text>
-                <xsl:apply-templates/>
-                <xsl:text>}</xsl:text>                     
+                <xsl:text>section</xsl:text>                     
             </xsl:when>
-        </xsl:choose>
+        </xsl:choose>        
+        
+        <xsl:text>]{}{</xsl:text>
+        <xsl:apply-templates/>
+        <xsl:text>}</xsl:text>
+        <xsl:text>\resetmarking[header]</xsl:text>
+        <xsl:text>\marking[header]{</xsl:text>
+        <xsl:apply-templates/>
+        <xsl:text>}</xsl:text>
     </xsl:template>
 
     <xsl:template match="back">
