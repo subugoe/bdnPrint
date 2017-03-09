@@ -500,7 +500,7 @@
         <xsl:variable name="edt" select="replace(@edRef, '#', '')"/>
         <xsl:variable name="parent" select="(parent::rdg)[1]/@type"/>
         <xsl:choose>
-            <xsl:when test="ancestor::rdg[@type = 'ppl' or @type = 'ptl'] and not(preceding-sibling::node())">
+            <xsl:when test="ancestor::rdg[@type = 'ppl' or @type = 'ptl'] and (not(preceding-sibling::node()) and not(parent::seg/preceding-sibling::node()))">
                 <xsl:if test="@unit = 'p'">
                     <xsl:text> \p{}</xsl:text>
                 </xsl:if>
@@ -1469,11 +1469,7 @@
             <xsl:choose>
                 <xsl:when test="ancestor::titlePart[@type= 'volume']">
                     <xsl:text>part</xsl:text>                
-                </xsl:when>             
-                <!-- adapt: should be a title within the TOC -->
-                <!--<xsl:when test="ancestor::titlePart[@type = 'main']">
-                    <xsl:text>part</xsl:text>                    
-                </xsl:when>     -->      
+                </xsl:when>                  
                 <xsl:when test="ancestor::div[@type = 'chapter']">
                     <xsl:text>section</xsl:text>                     
                 </xsl:when>            
@@ -1488,7 +1484,6 @@
         <xsl:if test="ancestor::titlePart[@type = 'main']">
             <xsl:text>
                 \writebetweenlist[part]{
-                \blank[medium]
                 {\startalignment[center]
                 \subject[
             </xsl:text>
