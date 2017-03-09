@@ -221,7 +221,7 @@
 
         <!-- nur semantisch gleiche Siglen gehören zusammen. Sind diese semantisch gleich? -->
         <xsl:if test="rdg[@type = 'pp' or @type = 'ppl']">
-            <xsl:text>{\tfx\high{/PP PPL</xsl:text>
+            <xsl:text>{\tfx\high{/</xsl:text>
             <xsl:for-each select="rdg[@type = 'pp' or @type = 'ppl']">
                 <xsl:value-of select="replace(@wit, '[#\s]', '')"/>
             </xsl:for-each>
@@ -602,28 +602,11 @@
 
     <xsl:template match="divGen[@type = 'Inhalt']">
         <xsl:text>
+            \definehead[mysubsection][subsection]
             \page
             \subject[Inhaltsverzeichnis]{Inhaltsverzeichnis}
-
-            \startsetups[a]
-            \switchtobodyfont[default]
-            \rlap{\pagenumber}
-            \hfill
-            {\tfx\it }
-            \hfill
-            \llap{}
-            \stopsetups
-
-            \startsetups[b]
-            \switchtobodyfont[default]
-            \rlap{\pagenumber}
-            \hfill
-            {\tfx\it }
-            \hfill
-            \llap{}
-            \stopsetups
             
-            \placecontent 
+            \placecontent
         </xsl:text>
     </xsl:template>
 
@@ -1415,6 +1398,10 @@
 
     <xsl:template match="titlePart[@type = 'volume']">
         <xsl:apply-templates/>
+        
+        <xsl:if test="descendant::seg[@type = 'toc-item']">
+            <xsl:apply-templates select="descendant::seg[@type = 'toc-item']"/>
+        </xsl:if>
     </xsl:template>
 
 
@@ -1476,28 +1463,45 @@
     </xsl:template>
 
     <xsl:template match="seg[@type = 'toc-item']">
-        <xsl:text>\writetolist[</xsl:text>
+        <xsl:if test="not(ancestor::titlePart[@type = 'main'])">
+            <xsl:text>\writetolist[</xsl:text>
         
-        <xsl:choose>
-            <!-- doesn't function properly -->
-            <xsl:when test="ancestor::titlePart[@type= 'volume']">
-                <xsl:text>part</xsl:text>                
-            </xsl:when>             
-            <!-- adapt: should be a title within the TOC -->
-            <xsl:when test="ancestor::titlePart[@type = 'main']">
-                <xsl:text>part</xsl:text>                    
-            </xsl:when>           
-            <xsl:when test="ancestor::div[@type = 'chapter']">
-                <xsl:text>subsection</xsl:text>                     
-            </xsl:when>            
-            <xsl:when test="ancestor::div[@type = 'part' or @type = 'introduction']">
-                <xsl:text>section</xsl:text>                     
-            </xsl:when>
-        </xsl:choose>        
-        
-        <xsl:text>]{}{</xsl:text>
-        <xsl:apply-templates/>
-        <xsl:text>}</xsl:text>
+            <xsl:choose>
+                <xsl:when test="ancestor::titlePart[@type= 'volume']">
+                    <xsl:text>part</xsl:text>                
+                </xsl:when>             
+                <!-- adapt: should be a title within the TOC -->
+                <!--<xsl:when test="ancestor::titlePart[@type = 'main']">
+                    <xsl:text>part</xsl:text>                    
+                </xsl:when>     -->      
+                <xsl:when test="ancestor::div[@type = 'chapter']">
+                    <xsl:text>section</xsl:text>                     
+                </xsl:when>            
+                <xsl:when test="ancestor::div[@type = 'part' or @type = 'introduction']">
+                    <xsl:text>chapter</xsl:text>                     
+                </xsl:when>
+            </xsl:choose>        
+            <xsl:text>]{}{</xsl:text>
+            <xsl:apply-templates/>
+            <xsl:text>}</xsl:text>
+        </xsl:if>
+        <xsl:if test="ancestor::titlePart[@type = 'main']">
+            <xsl:text>
+                \writebetweenlist[part]{
+                \blank[medium]
+                {\startalignment[center]
+                \subject[
+            </xsl:text>
+            <xsl:apply-templates/>
+            <xsl:text>
+                ]{
+            </xsl:text>
+            <xsl:apply-templates/>
+            <xsl:text>
+            }
+                \stopalignment}}
+            </xsl:text>
+        </xsl:if>
         <xsl:text>\resetmarking[header]</xsl:text>
         <xsl:text>\marking[header]{</xsl:text>
         <xsl:apply-templates/>
@@ -1606,7 +1610,9 @@
 
 
     <xsl:template match="group">
-        <xsl:text>\emptyEvenPage </xsl:text>
+        <xsl:text>
+            \emptyEvenPage 
+            \resetnumber[page]</xsl:text>
         <xsl:apply-templates/>
     </xsl:template>
 
