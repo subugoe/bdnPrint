@@ -308,15 +308,17 @@
 
                 <xsl:apply-templates select="."/>
 
-                <!-- GENERATE-ID() MACHT PROBLEME. WARUM? -->
-                <xsl:text>\margin{}{plClose}{</xsl:text>
-                <!--<xsl:value-of select="generate-id()"/>-->
-                <xsl:text>}{\tfx\high{</xsl:text>
-                <xsl:value-of select="replace(@wit, '[#\s]', '')"/>
-                <xsl:text>}}{</xsl:text>
-                <xsl:value-of select="replace(@wit, '[#\s]', '')"/>
-                <xsl:text>}</xsl:text>
-
+                <!-- first conditional clause: no scribal abbreviation after block elements when they end with hi[@rend = 'right-aligned'] -->
+                <xsl:if test="not(descendant::hi[@rend = 'right-aligned']/following::node()[matches(., '\w')] = following::node()[matches(., '\w')])">
+                    <!-- GENERATE-ID() MACHT PROBLEME. WARUM? -->
+                    <xsl:text>\margin{}{plClose}{</xsl:text>
+                    <!--<xsl:value-of select="generate-id()"/>-->
+                    <xsl:text>}{\tfx\high{</xsl:text>
+                    <xsl:value-of select="replace(@wit, '[#\s]', '')"/>
+                    <xsl:text>}}{</xsl:text>
+                    <xsl:value-of select="replace(@wit, '[#\s]', '')"/>
+                    <xsl:text>}</xsl:text>
+                </xsl:if>
 
                 <xsl:if test="position() != last()">
                     <xsl:text>
@@ -855,9 +857,9 @@
                     <xsl:apply-templates/>
                     <xsl:text>}</xsl:text>
                     
-                    <xsl:if test="ancestor::rdg[@type = 'ppl' or @type = 'ptl'] and parent::*/child::*[last()] = . and not(parent::*/following-sibling::node() or parent::*/following-sibling::*)">
+                    <xsl:if test="ancestor::rdg[@type = 'ppl' or @type = 'ptl'] and parent::*/child::*[last()] = . and (following::node()[matches(., '\w')] = ancestor::rdg/following::node()[matches(., '\w')] or following::*[matches(., '\w')] = ancestor::rdg/following::*[matches(., '\w')]) and not(parent::*/following-sibling::*)">
                         <xsl:for-each select="ancestor::rdg[@type = 'ppl' or @type = 'ptl']">
-                            <xsl:text>\margin{}{plOpen}{</xsl:text>
+                            <xsl:text>\margin{}{plClose}{</xsl:text>
                             <xsl:value-of select="generate-id()"/>
                             <xsl:text>}{\tfx\high{</xsl:text>
                             <xsl:value-of select="replace(@wit, '[#\s]', '')"/>
