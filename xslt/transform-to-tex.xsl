@@ -310,6 +310,8 @@
 
                 <!-- first conditional clause: no scribal abbreviation after block elements when they end with hi[@rend = 'right-aligned'] -->
                 <xsl:if test="not(descendant::hi[@rend = 'right-aligned']/following::node()[matches(., '\w')] = following::node()[matches(., '\w')])">
+                    <!-- Achtung: trifft hier auch die items in verschachtelten listen -->
+                <!--<xsl:if test="not(descendant::*[last()]/ancestor::item)">-->
                     <!-- GENERATE-ID() MACHT PROBLEME. WARUM? -->
                     <xsl:text>\margin{}{plClose}{</xsl:text>
                     <!--<xsl:value-of select="generate-id()"/>-->
@@ -318,6 +320,7 @@
                     <xsl:text>}}{</xsl:text>
                     <xsl:value-of select="replace(@wit, '[#\s]', '')"/>
                     <xsl:text>}</xsl:text>
+                <!--</xsl:if>-->
                 </xsl:if>
 
                 <xsl:if test="position() != last()">
@@ -1445,6 +1448,20 @@
         <!-- usage of \sym instead of \item is necessary to get a list without bullets etc. -->
         <xsl:text>\sym{}</xsl:text>
         <xsl:apply-templates/>
+        
+        <!--<xsl:if test="ancestor::rdg[@type = 'ppl' or @type = 'ptl'] and parent::*/child::*[last()] = . and (following::node()[matches(., '\w')] = ancestor::rdg/following::node()[matches(., '\w')] or following::*[matches(., '\w')] = ancestor::rdg/following::*[matches(., '\w')]) and not(parent::list/following-sibling::*) and not(parent::list/parent::*/following-sibling::*) and not(ancestor::seg/following-sibling::*) and not(parent::list/ancestor::list)">-->
+        <!--<xsl:if test="ancestor::rdg[@type = 'ppl' or @type = 'ptl'] and parent::*/child::*[last()] = . and (following::node()[matches(., '\w')] = ancestor::rdg/following::node()[matches(., '\w')] or following::*[matches(., '\w')] = ancestor::rdg/following::*[matches(., '\w')]) and not(ancestor::list[last()]/parent::*/following-sibling::*) and not(ancestor::seg/following-sibling::*) and not(parent::list/following-sibling::node())">-->
+        <xsl:if test="ancestor::rdg[@type = 'ppl' or @type = 'ptl'] and parent::*/child::*[last()] = . and (following::node()[matches(., '\w')] = ancestor::rdg/following::node()[matches(., '\w')] or following::*[matches(., '\w')] = ancestor::rdg/following::*[matches(., '\w')]) and (ancestor::rdg[@type = 'ppl' or @type = 'ptl']/descendant::*[last()] = . or ancestor::rdg[@type = 'ppl' or @type = 'ptl']/descendant::*[last()]/ancestor::item = .)">
+            <xsl:for-each select="ancestor::rdg[@type = 'ppl' or @type = 'ptl']">
+                <xsl:text>\margin{}{plClose}{</xsl:text>
+                <xsl:value-of select="generate-id()"/>
+                <xsl:text>}{\tfx\high{</xsl:text>
+                <xsl:value-of select="replace(@wit, '[#\s]', '')"/>
+                <xsl:text>}}{</xsl:text>
+                <xsl:value-of select="replace(@wit, '[#\s]', '')"/>
+                <xsl:text>} </xsl:text>
+            </xsl:for-each>
+        </xsl:if>
     </xsl:template>
 
 
