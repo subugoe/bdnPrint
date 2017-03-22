@@ -1451,7 +1451,12 @@
         
         <!--<xsl:if test="ancestor::rdg[@type = 'ppl' or @type = 'ptl'] and parent::*/child::*[last()] = . and (following::node()[matches(., '\w')] = ancestor::rdg/following::node()[matches(., '\w')] or following::*[matches(., '\w')] = ancestor::rdg/following::*[matches(., '\w')]) and not(parent::list/following-sibling::*) and not(parent::list/parent::*/following-sibling::*) and not(ancestor::seg/following-sibling::*) and not(parent::list/ancestor::list)">-->
         <!--<xsl:if test="ancestor::rdg[@type = 'ppl' or @type = 'ptl'] and parent::*/child::*[last()] = . and (following::node()[matches(., '\w')] = ancestor::rdg/following::node()[matches(., '\w')] or following::*[matches(., '\w')] = ancestor::rdg/following::*[matches(., '\w')]) and not(ancestor::list[last()]/parent::*/following-sibling::*) and not(ancestor::seg/following-sibling::*) and not(parent::list/following-sibling::node())">-->
-        <xsl:if test="ancestor::rdg[@type = 'ppl' or @type = 'ptl'] and parent::*/child::*[last()] = . and (following::node()[matches(., '\w')] = ancestor::rdg/following::node()[matches(., '\w')] or following::*[matches(., '\w')] = ancestor::rdg/following::*[matches(., '\w')]) and (ancestor::rdg[@type = 'ppl' or @type = 'ptl']/descendant::*[last()] = . or ancestor::rdg[@type = 'ppl' or @type = 'ptl']/descendant::*[last()]/ancestor::item = .)">
+        <xsl:if test="ancestor::rdg[@type = 'ppl' or @type = 'ptl'] 
+            and parent::*/child::*[last()] = . 
+            and (following::node()[matches(., '\w')] = ancestor::rdg/following::node()[matches(., '\w')] or following::*[matches(., '\w')] = ancestor::rdg/following::*[matches(., '\w')]) 
+            and (ancestor::rdg[@type = 'ppl' or @type = 'ptl']/descendant::*[last()] = . or ancestor::rdg[@type = 'ppl' or @type = 'ptl']/descendant::*[last()]/ancestor::item = .) 
+            and not(ancestor::rdg[@type = 'ppl' or @type = 'ptl']/descendant::*[last()]/ancestor::item/../following-sibling::*)
+            and not(ancestor::rdg[@type = 'ppl' or @type = 'ptl']/descendant::*[last()]/ancestor::item/../following-sibling::node()[matches(., '\w')])">
             <xsl:for-each select="ancestor::rdg[@type = 'ppl' or @type = 'ptl']">
                 <xsl:text>\margin{}{plClose}{</xsl:text>
                 <xsl:value-of select="generate-id()"/>
@@ -1491,6 +1496,10 @@
         <xsl:if test="descendant::seg[@type = 'toc-item']">
             <xsl:apply-templates select="descendant::seg[@type = 'toc-item']"/>
         </xsl:if>
+    </xsl:template>
+    
+    <xsl:template match="titlepart[@type = 'sub']">
+        <xsl:apply-templates/>
     </xsl:template>
 
 
@@ -1723,5 +1732,9 @@
         <xsl:text>\footnote{</xsl:text>
         <xsl:apply-templates/>
         <xsl:text>}</xsl:text>
+    </xsl:template>
+    
+    <xsl:template match="docTitle">
+        <xsl:apply-templates/>
     </xsl:template>
 </xsl:stylesheet>
