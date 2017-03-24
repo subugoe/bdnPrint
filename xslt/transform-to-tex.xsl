@@ -248,7 +248,9 @@
             </xsl:for-each>
         </xsl:if>
 
-        <xsl:if test="rdg[@type = 'om'] and not(lem/note[@type = 'authorial'])">
+        <xsl:if test="rdg[@type = 'om']
+                and not(lem/note[@type = 'authorial'])
+                and not(lem/child::*[last()][self::p] and following-sibling::*[1][self::p])">
             <xsl:for-each select="rdg[@type = 'om']">
                 <xsl:text>\margin{}{omClose}{</xsl:text>
                 <xsl:value-of select="generate-id()"/>
@@ -308,10 +310,11 @@
 
                 <xsl:apply-templates select="."/>
 
-                <!-- first conditional clause: no scribal abbreviation after block elements when they end with hi[@rend = 'right-aligned'] -->
-                <xsl:if test="not(descendant::hi[@rend = 'right-aligned']/following::node()[matches(., '\w')] = following::node()[matches(., '\w')])">
-                    <!-- Achtung: trifft hier auch die items in verschachtelten listen -->
-                <!--<xsl:if test="not(descendant::*[last()]/ancestor::item)">-->
+                <!-- 1. no scribal abbreviation when rdg[@type = 'ppl'/'ptl'] ends with list -->
+                <!-- 2. no scribal abbreviation after block elements when they end with hi[@rend = 'right-aligned'] -->
+                <xsl:if test="
+                        not(descendant::*[last()]/ancestor::item) and not(descendant::*[last()]/ancestor::item/../following::node()[matches(., '\w')])
+                        and not(descendant::hi[@rend = 'right-aligned']/following::node()[matches(., '\w')] = following::node()[matches(., '\w')])">
                     <!-- GENERATE-ID() MACHT PROBLEME. WARUM? -->
                     <xsl:text>\margin{}{plClose}{</xsl:text>
                     <!--<xsl:value-of select="generate-id()"/>-->
@@ -320,8 +323,8 @@
                     <xsl:text>}}{</xsl:text>
                     <xsl:value-of select="replace(@wit, '[#\s]', '')"/>
                     <xsl:text>}</xsl:text>
-                <!--</xsl:if>-->
                 </xsl:if>
+
 
                 <xsl:if test="position() != last()">
                     <xsl:text>
@@ -722,11 +725,11 @@
         <xsl:apply-templates/>
         <xsl:text>\stopsubject </xsl:text> -->
 
-        <xsl:if test="parent::div[@subtype = 'print' and (@type= 'editors' or @type = 'editorial')] or parent::div[@type = 'preface' or @type = 'introduction'] and parent::div[ancestor::*[1][self::front]]">
+        <xsl:if test="parent::div[@subtype = 'print' and (@type = 'editors' or @type = 'editorial')] or parent::div[@type = 'preface' or @type = 'introduction'] and parent::div[ancestor::*[1][self::front]]">
             <xsl:text>
                 \writetolist[part]{}{</xsl:text>
             <xsl:apply-templates/>
-            <xsl:text>}</xsl:text>           
+            <xsl:text>}</xsl:text>
         </xsl:if>
 
         <xsl:text>\subject[</xsl:text>
@@ -741,7 +744,7 @@
                     <xsl:value-of select="replace(@wit, '[#\s]', '')"/>
                     <xsl:text>}} </xsl:text>
                 </xsl:for-each>-->
-                
+
                 <xsl:for-each select="ancestor::rdg[@type = 'ptl' or @type = 'ppl']">
                     <xsl:text>\margin{}{plOpen}{</xsl:text>
                     <xsl:value-of select="generate-id()"/>
@@ -751,7 +754,7 @@
                     <xsl:value-of select="replace(@wit, '[#\s]', '')"/>
                     <xsl:text>} </xsl:text>
                 </xsl:for-each>
-                
+
                 <xsl:for-each select="ancestor::rdg[@type = 'om']">
                     <xsl:text>\margin{}{omOpen}{</xsl:text>
                     <xsl:value-of select="generate-id()"/>
@@ -764,7 +767,7 @@
                 <xsl:text>}</xsl:text>
                 <xsl:text>{\switchtobodyfont[8pt]</xsl:text>
             </xsl:when>
-            
+
             <xsl:when test="ancestor::lem and ancestor::lem/following-sibling::rdg[@type = 'om' or @type = 'ppl'] and ancestor::lem/descendant::head[1] = .">
                 <xsl:text>{\switchtobodyfont[9pt]</xsl:text>
                 <xsl:if test="ancestor::lem/following-sibling::rdg[@type = 'ppl']">
@@ -774,7 +777,7 @@
                     </xsl:for-each>
                     <xsl:text>}}</xsl:text>
                 </xsl:if>
-                
+
                 <xsl:if test="ancestor::lem/following-sibling::rdg[@type = 'om']">
                     <xsl:for-each select="ancestor::lem/following-sibling::rdg[@type = 'om']">
                         <xsl:text>\margin{}{omOpen}{</xsl:text>
@@ -788,8 +791,8 @@
                 </xsl:if>
                 <xsl:text>}{\switchtobodyfont[9pt]</xsl:text>
             </xsl:when>
-            
-            
+
+
             <xsl:when test="ancestor::rdg">
                 <xsl:text>{\switchtobodyfont[8pt]</xsl:text>
             </xsl:when>
@@ -806,7 +809,7 @@
     </xsl:template>
 
     <xsl:template match="head[following-sibling::*[1][self::divGen]]"/>
-    
+
     <!--<xsl:template match="head[parent::div[(@subtype = 'print' and (@type= 'editors' or @type = 'contents' or @type = 'editorial')) or parent::div[@type = 'preface' or  @qtype = ']]]">
         <xsl:text>\subject[</xsl:text>
         <xsl:value-of select="."/>
@@ -859,7 +862,7 @@
                     <xsl:text>\rightaligned{</xsl:text>
                     <xsl:apply-templates/>
                     <xsl:text>}</xsl:text>
-                    
+
                     <xsl:if test="ancestor::rdg[@type = 'ppl' or @type = 'ptl'] and parent::*/child::*[last()] = . and (following::node()[matches(., '\w')] = ancestor::rdg/following::node()[matches(., '\w')] or following::*[matches(., '\w')] = ancestor::rdg/following::*[matches(., '\w')]) and not(parent::*/following-sibling::*)">
                         <xsl:for-each select="ancestor::rdg[@type = 'ppl' or @type = 'ptl']">
                             <xsl:text>\margin{}{plClose}{</xsl:text>
@@ -1052,7 +1055,7 @@
 
     <!-- note -->
 
-    <xsl:template match="note[@type = 'authorial']" priority="-1">
+    <xsl:template match="note[@type = 'authorial' and not(@place = 'bottom')]" priority="-1">
         <xsl:choose>
             <!--<xsl:when test="preceding-sibling::*[1][self::note] or preceding-sibling::*[1][self::app/rdg[@type = 'ppl' or 'ptl']] or preceding-sibling::*[1][self::p]">-->
             <xsl:when test="preceding-sibling::*[1][self::note] or preceding-sibling::*[1][self::app/rdg[@type = 'ppl' or 'ptl']]">
@@ -1201,7 +1204,7 @@
                         \hspace[p]
                     </xsl:text>
             </xsl:when>
-            
+
             <xsl:when test="parent::lem and parent::lem/child::*[last()] = . and ancestor::rdg[@type = 'om']">
                 <xsl:variable name="omWit" select="preceding-sibling::*[1][self::app]/child::rdg[@type = 'om']/@wit"/>
                 <xsl:text>\margin{}{omClose}{</xsl:text>
@@ -1214,7 +1217,45 @@
             </xsl:when>
         </xsl:choose>
         <xsl:call-template name="pbBefore"/>
+
         <xsl:apply-templates/>
+
+        <!-- more general XPath: 
+            ancestor::lem[1]/following-sibling::rdg[@type = 'om'] 
+            and ancestor::lem/descendant::node()[last()][matches(., '\w')]/parent::* = . -->
+        <!-- might cover more cases in other works than in Nösselt -->
+        <xsl:if test="parent::lem[1]/following-sibling::rdg[@type = 'om'] and parent::lem/child::*[last()] = .">
+            <xsl:variable name="omWit" select="parent::lem[1]/following-sibling::rdg[@type = 'om']/@wit"/>
+            <xsl:text>\margin{}{omClose}{</xsl:text>
+            <xsl:value-of select="generate-id()"/>
+            <xsl:text>}{\tfx\high{</xsl:text>
+            <xsl:value-of select="replace($omWit, '#', '')"/>
+            <xsl:text>\textbackslash}}{</xsl:text>
+            <xsl:value-of select="replace($omWit, '#', '')"/>
+            <xsl:text>\textbackslash}</xsl:text>
+        </xsl:if>
+
+        <xsl:if test="parent::div/parent::lem[following-sibling::rdg[@type = 'om']] and parent::div/child::*[last()] = . and not(parent::div/following-sibling::*)">
+            <xsl:for-each select="parent::div/parent::lem/following-sibling::rdg[@type = 'om']">
+                <xsl:text>\margin{}{omClose}{</xsl:text>
+                <xsl:value-of select="generate-id()"/>
+                <xsl:text>}{\tfx\high{</xsl:text>
+                <xsl:value-of select="replace(@wit, '#', '')"/>
+                <xsl:text>\textbackslash}}{</xsl:text>
+                <xsl:value-of select="replace(@wit, '#', '')"/>
+                <xsl:text>\textbackslash}</xsl:text>
+            </xsl:for-each>
+        </xsl:if>
+
+        <xsl:if test="parent::div/parent::lem[following-sibling::rdg[@type = 'ppl']] and parent::div/child::*[last()] = . and not(parent::div/following-sibling::*)">
+            <xsl:text>{\tfx\high{</xsl:text>
+            <xsl:for-each select="parent::div/parent::lem/following-sibling::rdg[@type = 'ppl']">
+                <xsl:value-of select="replace(@wit, '[#\s]', '')"/>
+            </xsl:for-each>
+            <xsl:text>\textbackslash}}</xsl:text>
+        </xsl:if>
+
+
         <xsl:if test="not(parent::rdg[@type = 'ppl' or @type = 'ptl']) and ((following-sibling::* or preceding-sibling::*) or parent::lem/../following-sibling::*) and not(following-sibling::*[1][self::p[@rend = 'margin-vertical']])">
             <xsl:text>\par </xsl:text>
         </xsl:if>
@@ -1331,7 +1372,7 @@
             <xsl:value-of select="generate-id()"/>
             <xsl:text>]</xsl:text>
         </xsl:if>
-        
+
         <xsl:if test="following-sibling::node()[1][self::choice]">
             <xsl:text> </xsl:text>
         </xsl:if>
@@ -1376,7 +1417,7 @@
     <xsl:template match="rdg" mode="footnote">
         <xsl:if test="@type != 'om' and @type != 'typo_corr'">
             <xsl:variable name="wit" select="replace(@wit, '[# ]+', '')"/>
-            
+
             <xsl:text>\</xsl:text>
             <xsl:value-of select="$wit"/>
             <xsl:text>Note{</xsl:text>
@@ -1448,16 +1489,43 @@
         <!-- usage of \sym instead of \item is necessary to get a list without bullets etc. -->
         <xsl:text>\sym{}</xsl:text>
         <xsl:apply-templates/>
-        
+
         <!--<xsl:if test="ancestor::rdg[@type = 'ppl' or @type = 'ptl'] and parent::*/child::*[last()] = . and (following::node()[matches(., '\w')] = ancestor::rdg/following::node()[matches(., '\w')] or following::*[matches(., '\w')] = ancestor::rdg/following::*[matches(., '\w')]) and not(parent::list/following-sibling::*) and not(parent::list/parent::*/following-sibling::*) and not(ancestor::seg/following-sibling::*) and not(parent::list/ancestor::list)">-->
         <!--<xsl:if test="ancestor::rdg[@type = 'ppl' or @type = 'ptl'] and parent::*/child::*[last()] = . and (following::node()[matches(., '\w')] = ancestor::rdg/following::node()[matches(., '\w')] or following::*[matches(., '\w')] = ancestor::rdg/following::*[matches(., '\w')]) and not(ancestor::list[last()]/parent::*/following-sibling::*) and not(ancestor::seg/following-sibling::*) and not(parent::list/following-sibling::node())">-->
-        <xsl:if test="ancestor::rdg[@type = 'ppl' or @type = 'ptl'] 
-            and parent::*/child::*[last()] = . 
-            and (following::node()[matches(., '\w')] = ancestor::rdg/following::node()[matches(., '\w')] or following::*[matches(., '\w')] = ancestor::rdg/following::*[matches(., '\w')]) 
-            and (ancestor::rdg[@type = 'ppl' or @type = 'ptl']/descendant::*[last()] = . or ancestor::rdg[@type = 'ppl' or @type = 'ptl']/descendant::*[last()]/ancestor::item = .) 
-            and not(ancestor::rdg[@type = 'ppl' or @type = 'ptl']/descendant::*[last()]/ancestor::item/../following-sibling::*)
-            and not(ancestor::rdg[@type = 'ppl' or @type = 'ptl']/descendant::*[last()]/ancestor::item/../following-sibling::node()[matches(., '\w')])">
+        <xsl:if test="
+                ancestor::rdg[@type = 'ppl' or @type = 'ptl']
+                and parent::*/child::*[last()] = .
+                and (following::node()[matches(., '\w')] = ancestor::rdg/following::node()[matches(., '\w')] or following::*[matches(., '\w')] = ancestor::rdg/following::*[matches(., '\w')])
+                and (ancestor::rdg[@type = 'ppl' or @type = 'ptl']/descendant::*[last()] = . or ancestor::rdg[@type = 'ppl' or @type = 'ptl']/descendant::*[last()]/ancestor::item = .)
+                and not(ancestor::rdg[@type = 'ppl' or @type = 'ptl']/descendant::*[last()]/ancestor::item/../following-sibling::*)
+                and not(ancestor::rdg[@type = 'ppl' or @type = 'ptl']/descendant::*[last()]/ancestor::item/../following-sibling::node()[matches(., '\w')])">
             <xsl:for-each select="ancestor::rdg[@type = 'ppl' or @type = 'ptl']">
+                <xsl:text>\margin{}{plClose}{</xsl:text>
+                <xsl:value-of select="generate-id()"/>
+                <xsl:text>}{\tfx\high{</xsl:text>
+                <xsl:value-of select="replace(@wit, '[#\s]', '')"/>
+                <xsl:text>}}{</xsl:text>
+                <xsl:value-of select="replace(@wit, '[#\s]', '')"/>
+                <xsl:text>} </xsl:text>
+            </xsl:for-each>
+        </xsl:if>
+
+        <xsl:if test="
+                ancestor::div[@type = 'contents']/ancestor::lem/following-sibling::rdg[@type = 'om' or @type = 'ppl']
+                and (ancestor::div[@type = 'contents'][ancestor::lem]/descendant::*[last()] = . or ancestor::div[@type = 'contents'][ancestor::lem]/descendant::*[last()]/ancestor::item = .)
+                and not(ancestor::div[@type = 'contents'][ancestor::lem]/descendant::*[last()]/ancestor::item/../following-sibling::*)
+                and not(ancestor::div[@type = 'contents'][ancestor::lem]/descendant::*[last()]/ancestor::item/../following-sibling::node()[matches(., '\w')])">
+            <xsl:for-each select="ancestor::div[@type = 'contents']/ancestor::lem/following-sibling::rdg[@type = 'om']">
+                <xsl:text>\margin{}{omClose}{</xsl:text>
+                <xsl:value-of select="generate-id()"/>
+                <xsl:text>}{\tfx\high{</xsl:text>
+                <xsl:value-of select="replace(@wit, '[#\s]', '')"/>
+                <xsl:text>\textbackslash}}{</xsl:text>
+                <xsl:value-of select="replace(@wit, '[#\s]', '')"/>
+                <xsl:text>\textbackslash}</xsl:text>
+            </xsl:for-each>
+
+            <xsl:for-each select="ancestor::div[@type = 'contents']/ancestor::lem/following-sibling::rdg[@type = 'ppl']">
                 <xsl:text>\margin{}{plClose}{</xsl:text>
                 <xsl:value-of select="generate-id()"/>
                 <xsl:text>}{\tfx\high{</xsl:text>
@@ -1497,7 +1565,7 @@
             <xsl:apply-templates select="descendant::seg[@type = 'toc-item']"/>
         </xsl:if>
     </xsl:template>
-    
+
     <xsl:template match="titlepart[@type = 'sub']">
         <xsl:apply-templates/>
     </xsl:template>
@@ -1505,7 +1573,7 @@
 
     <xsl:template match="titlePart[@type = 'volume']">
         <xsl:apply-templates/>
-        
+
         <xsl:if test="descendant::seg[@type = 'toc-item']">
             <xsl:apply-templates select="descendant::seg[@type = 'toc-item']"/>
         </xsl:if>
@@ -1549,6 +1617,9 @@
         <xsl:apply-templates/>
     </xsl:template>
 
+    <xsl:template match="div[@type = 'corrigenda']">
+        <xsl:apply-templates/>
+    </xsl:template>
 
     <xsl:template match="p[@rend = 'center-aligned']">
         <xsl:apply-templates/>
@@ -1572,18 +1643,18 @@
     <xsl:template match="seg[@type = 'toc-item']">
         <xsl:if test="not(ancestor::titlePart[@type = 'main'])">
             <xsl:text>\writetolist[</xsl:text>
-        
+
             <xsl:choose>
-                <xsl:when test="ancestor::titlePart[@type= 'volume']">
-                    <xsl:text>part</xsl:text>                
-                </xsl:when>                  
-                <xsl:when test="ancestor::div[@type = 'chapter']">
-                    <xsl:text>section</xsl:text>                     
-                </xsl:when>            
-                <xsl:when test="ancestor::div[@type = 'part' or @type = 'introduction']">
-                    <xsl:text>chapter</xsl:text>                     
+                <xsl:when test="ancestor::titlePart[@type = 'volume']">
+                    <xsl:text>part</xsl:text>
                 </xsl:when>
-            </xsl:choose>        
+                <xsl:when test="ancestor::div[@type = 'chapter']">
+                    <xsl:text>section</xsl:text>
+                </xsl:when>
+                <xsl:when test="ancestor::div[@type = 'part' or @type = 'introduction']">
+                    <xsl:text>chapter</xsl:text>
+                </xsl:when>
+            </xsl:choose>
             <xsl:text>]{}{</xsl:text>
             <xsl:apply-templates/>
             <xsl:text>}</xsl:text>
@@ -1692,8 +1763,8 @@
         </xsl:text>
         <xsl:apply-templates/>
     </xsl:template>
-    
-    <xsl:template match="div[@subtype='print' and @type='editorial']">
+
+    <xsl:template match="div[@subtype = 'print' and @type = 'editorial']">
         <xsl:text>\page</xsl:text>
         <xsl:apply-templates/>
     </xsl:template>
@@ -1720,7 +1791,7 @@
 
     <xsl:template match="supplied">
         <xsl:text>{[</xsl:text>
-            <xsl:apply-templates/>
+        <xsl:apply-templates/>
         <xsl:text>]}</xsl:text>
     </xsl:template>
 
@@ -1733,7 +1804,7 @@
         <xsl:apply-templates/>
         <xsl:text>}</xsl:text>
     </xsl:template>
-    
+
     <xsl:template match="docTitle">
         <xsl:apply-templates/>
     </xsl:template>
