@@ -1487,7 +1487,7 @@
     </xsl:template>
 
     <xsl:template match="list[ancestor::div[@subtype='print' and @type='editorial'] and descendant::label]">
-        <xsl:text>\starttabulate </xsl:text>
+        <xsl:text>\starttabulate[|l|p|] </xsl:text>
             <xsl:apply-templates/>
         <xsl:text>\stoptabulate </xsl:text>
     </xsl:template>
@@ -1497,9 +1497,8 @@
         <xsl:choose>
             <xsl:when test="preceding-sibling::*[1][self::label]">
                 <xsl:text>\NC </xsl:text>
-                <xsl:apply-templates select="preceding-sibling::*[1][self::label]"/>
-                <xsl:text>\NC </xsl:text>
                 <xsl:apply-templates/>
+                <xsl:text>\NR </xsl:text>
             </xsl:when>
             <xsl:otherwise>
                 <xsl:text>\sym{}</xsl:text>
@@ -1827,7 +1826,11 @@
     </xsl:template>
 
     <xsl:template match="table">
-        <xsl:text>\starttabulate[|l|l|l|] </xsl:text>
+        <xsl:text>\starttabulate[|</xsl:text>
+        <xsl:for-each select="row[1]/cell">
+            <xsl:text>p|</xsl:text>
+        </xsl:for-each>
+        <xsl:text>] </xsl:text>
         <xsl:apply-templates/>
         <xsl:text>\stoptabulate </xsl:text>
     </xsl:template>
@@ -1846,7 +1849,10 @@
         <xsl:apply-templates/>
     </xsl:template>
 
-    <xsl:template match="label"/>
+    <xsl:template match="label">
+        <xsl:text>\NC </xsl:text>
+        <xsl:apply-templates/>
+    </xsl:template>
     
     <xsl:template match="signed">
         <xsl:text>\rightaligned{</xsl:text>
