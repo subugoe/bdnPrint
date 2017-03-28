@@ -1855,7 +1855,7 @@
     </xsl:template>
     
     <xsl:template match="signed">
-        <xsl:text>\rightaligned{</xsl:text>
+        <xsl:text>\wordright{</xsl:text>
         <xsl:apply-templates/>
         <xsl:text>}</xsl:text>
     </xsl:template>
