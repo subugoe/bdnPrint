@@ -31,7 +31,7 @@
    margin=20mm]
 
 \definehspace[p]
-  [1.5em]   
+  [0.4cm]   
   
 \definehspace[item]
   [-1.5 em]
@@ -100,7 +100,9 @@
 \def\nop{{\linlibFont \overstrike{\char"222C}}}		% 222C: double integral(struck through)
 
 \definebodyfontenvironment[10pt]
-  [interlinespace=12.25pt, % xx for footnote markers
+  %[interlinespace=12.25pt, % xx for footnote markers
+  % publisher guidelines: ``exactly'' 12pt
+  [interlinespace=12pt,
    a=11.5pt, x=8.5pt, xx=7.75pt]
 
 \definebodyfontenvironment[8.5pt]
@@ -239,7 +241,13 @@
 \setupindenting
   [yes, 4mm, next]
   
-\setupfootnotes[conversion=none, way=bypage]
+\setupfootnotes
+  [conversion=none, 
+  way=bypage]
+
+  % doesn't work properly yet
+\setupnote[footnote]
+  [distance=4mm]
 
 
 \setuplanguage[de]
@@ -259,6 +267,8 @@
   [verytolerant]
 
 
+  
+  
 % editor
 
 \definenote[editor]
@@ -268,6 +278,17 @@
 \setupnotation[editor]
   [style={\switchtobodyfont[8.5pt]}]
 
+% tables
+
+\setuptabulate
+   [bodyfont=8.5pt,
+   interlinespace=20pt,
+   rulethickness=0.5pt,
+   split=yes, 
+   interlinespace=10.5pt,
+   header=repeat,
+   before={\blank[12pt,force]}, 
+   after={\blank[12pt,force]}]
 
 % registers
 

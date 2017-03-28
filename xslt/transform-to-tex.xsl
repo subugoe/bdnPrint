@@ -726,7 +726,7 @@
         <xsl:apply-templates/>
         <xsl:text>\stopsubject </xsl:text> -->
 
-        <xsl:if test="parent::div[@subtype = 'print' and (@type = 'editors' or @type = 'editorial')] or parent::div[@type = 'preface' or @type = 'introduction'] and parent::div[ancestor::*[1][self::front]]">
+        <xsl:if test="parent::div[@subtype = 'print' and (@type = 'editors' or @type = 'editorial')] or parent::div[@type = 'preface' or @type = 'introduction'] and parent::div[ancestor::*[1][self::front]] and not(@type = 'sub')">
             <xsl:text>
                 \writetolist[part]{}{</xsl:text>
             <xsl:apply-templates/>
@@ -1486,9 +1486,9 @@
         <xsl:text>\stopitemize </xsl:text>
     </xsl:template>
 
-    <xsl:template match="list[ancestor::div[@subtype='print' and @type='editorial'] and descendant::label]">
-        <xsl:text>\starttabulate[|p(0.5cm)|p|] </xsl:text>
-            <xsl:apply-templates/>
+    <xsl:template match="list[ancestor::div[@subtype = 'print' and @type = 'editorial'] and descendant::label]">
+        <xsl:text>\starttabulate[|l|p|] </xsl:text>
+        <xsl:apply-templates/>
         <xsl:text>\stoptabulate </xsl:text>
     </xsl:template>
 
@@ -1617,6 +1617,10 @@
 
 
     <xsl:template match="div[@type = 'preface']">
+        <xsl:if test="parent::front">
+            <xsl:text>\setuppagenumber[number=5]</xsl:text>
+        </xsl:if>
+
         <xsl:text>\page</xsl:text>
         <xsl:apply-templates/>
         <xsl:if test="parent::front">
@@ -1651,8 +1655,9 @@
         <xsl:apply-templates/>
         <xsl:text>\page</xsl:text>
         <xsl:if test="ancestor::group">
-            <xsl:text>\setuppagenumber[1]
-            \setuppagenumbering[conversion=Romannumerals]</xsl:text>
+            <xsl:text>
+                \resetnumber[page]
+                \setuppagenumber[number=1]</xsl:text>
         </xsl:if>
     </xsl:template>
 
@@ -1801,7 +1806,7 @@
     <xsl:template match="group">
         <xsl:text>
             \emptyEvenPage 
-            \resetnumber[page]</xsl:text>
+            \setuppagenumber[number=1]</xsl:text>
         <xsl:apply-templates/>
     </xsl:template>
 
@@ -1830,19 +1835,58 @@
         <xsl:for-each select="row[1]/cell">
             <xsl:text>p|</xsl:text>
         </xsl:for-each>
-        <xsl:text>] </xsl:text>
+        <xsl:text>] \HL </xsl:text>
         <xsl:apply-templates/>
-        <xsl:text>\stoptabulate </xsl:text>
+        <xsl:text>\HL
+            \stoptabulate </xsl:text>
     </xsl:template>
 
     <xsl:template match="row">
-        <xsl:apply-templates/>
-        <xsl:text>\NC \NR </xsl:text>
+        <xsl:choose>
+            <!-- wird demnächst @role = "label" -->
+            <xsl:when test="@role = 'label'">
+                <xsl:apply-templates/>
+                <xsl:text>\NC \NR \LL</xsl:text>
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:apply-templates/>
+                <xsl:text>\NC \NR </xsl:text>
+            </xsl:otherwise>
+        </xsl:choose>
     </xsl:template>
 
     <xsl:template match="cell">
-        <xsl:text>\NC </xsl:text>
-        <xsl:apply-templates/>
+        <xsl:choose>
+            <xsl:when test="@rend = 'center-aligned'">
+                <xsl:text>\NC \midaligned{</xsl:text>
+                <xsl:choose>
+                    <xsl:when test="parent::row[@role = 'label']">
+                        <xsl:text>{\switchtobodyfont[10pt]</xsl:text>
+                            <xsl:apply-templates/>
+                        <xsl:text>}</xsl:text>
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <!--<xsl:text>{\setupinterlinespace[reset,line=10.5pt] </xsl:text>-->
+                            <xsl:apply-templates/>
+                        <!--<xsl:text>}</xsl:text>-->
+                    </xsl:otherwise>
+                </xsl:choose>
+                <xsl:text>}</xsl:text>
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:text>\NC </xsl:text>
+                <xsl:choose>
+                    <xsl:when test="parent::row[@role = 'label']">
+                        <xsl:text>{\switchtobodyfont[10pt]</xsl:text>
+                        <xsl:apply-templates/>
+                        <xsl:text>}</xsl:text>
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <xsl:apply-templates/>
+                    </xsl:otherwise>
+                </xsl:choose>
+            </xsl:otherwise>
+        </xsl:choose>
     </xsl:template>
 
     <xsl:template match="divGen[@type = 'editorische_Corrigenda']">
@@ -1853,15 +1897,16 @@
         <xsl:text>\NC </xsl:text>
         <xsl:apply-templates/>
     </xsl:template>
-    
+
     <xsl:template match="signed">
         <xsl:text>\wordright{</xsl:text>
         <xsl:apply-templates/>
         <xsl:text>}</xsl:text>
     </xsl:template>
-    
+
     <xsl:template match="closer">
         <xsl:text>\blank \noindentation </xsl:text>
         <xsl:apply-templates/>
+        <xsl:text/>
     </xsl:template>
 </xsl:stylesheet>
