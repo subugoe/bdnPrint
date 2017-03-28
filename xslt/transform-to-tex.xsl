@@ -1487,7 +1487,7 @@
     </xsl:template>
 
     <xsl:template match="list[ancestor::div[@subtype='print' and @type='editorial'] and descendant::label]">
-        <xsl:text>\starttabulate[|l|p|] </xsl:text>
+        <xsl:text>\starttabulate[|p(0.5cm)|p|] </xsl:text>
             <xsl:apply-templates/>
         <xsl:text>\stoptabulate </xsl:text>
     </xsl:template>
@@ -1498,7 +1498,7 @@
             <xsl:when test="preceding-sibling::*[1][self::label]">
                 <xsl:text>\NC </xsl:text>
                 <xsl:apply-templates/>
-                <xsl:text>\NR </xsl:text>
+                <xsl:text>\NC \NR </xsl:text>
             </xsl:when>
             <xsl:otherwise>
                 <xsl:text>\sym{}</xsl:text>
@@ -1837,7 +1837,7 @@
 
     <xsl:template match="row">
         <xsl:apply-templates/>
-        <xsl:text>\NR </xsl:text>
+        <xsl:text>\NC \NR </xsl:text>
     </xsl:template>
 
     <xsl:template match="cell">
