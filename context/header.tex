@@ -127,6 +127,44 @@
 % \setupheader[text]
 %   [after=\hrule]
 
+\definehead[notTOCsection][section]
+
+\definehead[mytitle][title]
+
+\setuphead[title]
+  [number=no,
+  before={\blank[60pt]},
+  after={\blank[24pt]},
+  style={\switchtobodyfont[14pt]},
+  interlinespace=16pt]
+  
+\setuphead[mytitle]
+  [number=no,
+  after={\blank[0pt]},
+  style={\switchtobodyfont[14pt]},
+  interlinespace=16pt]
+  
+\setuphead[section]
+  [number=no,
+  % before is handled by paragraphs
+  %before={\blank[24pt]},
+  after={\blank[12pt]},
+  style={\switchtobodyfont[12pt]},
+  interlinespace=14pt,
+  align=middle]
+  
+\setuphead[notTOCsection]
+  [number=no,
+  % before is handled by paragraphs
+  %before={\blank[24pt]},
+  after={\blank[12pt]},
+  style={\switchtobodyfont[12pt]},
+  interlinespace=14pt,
+  align=middle]
+  
+\setuphead[subject]
+  [after={\blank[12pt]}]
+
 \definemarking[header][]
 
 \setupheadertexts
@@ -207,11 +245,11 @@
    placehead=yes,
    style=\tfa]
 
-\setuphead[section]
-  [before={\blank[12pt]},
-   after={\blank[6pt]},
-   align=middle,
-   style=\tfa]
+%\setuphead[section]
+%  [before={\blank[12pt]},
+%   after={\blank[6pt]},
+%   align=middle,
+%   style=\tfa]
    
 \setuphead[subject]
   [before={\blank[8pt]},
@@ -247,7 +285,7 @@
 
   % doesn't work properly yet
 \setupnote[footnote]
-  [distance=4mm]
+  [conversion=none]
 
 
 \setuplanguage[de]
