@@ -1521,9 +1521,12 @@
     </xsl:template>
 
     <xsl:template match="list[ancestor::div[@subtype = 'print' and @type = 'editorial'] and descendant::label]">
-        <xsl:text>\starttabulate[|l|p|] </xsl:text>
+        <!--<xsl:text>\starttabulate[|l|p|] </xsl:text>
         <xsl:apply-templates/>
-        <xsl:text>\stoptabulate </xsl:text>
+        <xsl:text>\stoptabulate </xsl:text>-->
+        <xsl:text>\starttwocolumns </xsl:text>
+        <xsl:apply-templates/>
+        <xsl:text>\stoptwocolumns </xsl:text>
     </xsl:template>
 
     <xsl:template match="item">
@@ -1686,12 +1689,19 @@
 
 
     <xsl:template match="front">
+        <xsl:if test="not(ancestor::group)">
+            <xsl:text>\startfrontmatter </xsl:text>  
+        </xsl:if>
+        
         <xsl:apply-templates/>
         <xsl:text>\page</xsl:text>
         <xsl:if test="ancestor::group">
             <xsl:text>
                 \resetnumber[page]
                 \setuppagenumber[number=1]</xsl:text>
+        </xsl:if>
+        <xsl:if test="not(ancestor::group)">
+            <xsl:text>\stopfrontmatter </xsl:text>  
         </xsl:if>
     </xsl:template>
 
@@ -1840,8 +1850,10 @@
     <xsl:template match="group">
         <xsl:text>
             \emptyEvenPage 
+            \startbodymatter
             \setuppagenumber[number=1]</xsl:text>
         <xsl:apply-templates/>
+        <xsl:text>\stopbodymatter </xsl:text>
     </xsl:template>
 
     <xsl:template match="supplied">
@@ -1942,4 +1954,5 @@
         <xsl:apply-templates/>
         <xsl:text/>
     </xsl:template>
+
 </xsl:stylesheet>

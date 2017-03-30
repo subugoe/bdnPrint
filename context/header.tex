@@ -29,6 +29,9 @@
    footer=0mm,
    margindistance=4mm,
    margin=20mm]
+   
+\definestructureconversionset [frontpart:pagenumber] [] [Romannumerals]
+\definestructureconversionset [bodypart:pagenumber] [] [numbers]
 
 \definehspace[p]
   [0.4cm]   
@@ -174,8 +177,8 @@
   \switchtobodyfont[default]
   \rlap{}
   \hfill
-  % adapt for publication: information has to be retrieved from TEI body
-  %{\tfx\it Philologie}
+    % adapt for publication: information has to be retrieved from TEI body
+    %{\tfx\it Philologie}
   {\tfx\it \getmarking[header][first]}
   \hfill
   \llap{\pagenumber}
@@ -318,6 +321,8 @@
 
 % tables
 
+\definetabulate[twocolumns][][|l|p|]
+
 \setuptabulate
    [bodyfont=8.5pt,
    interlinespace=20pt,
@@ -327,6 +332,17 @@
    header=repeat,
    before={\blank[12pt,force]}, 
    after={\blank[12pt,force]}]
+   
+\setuptabulate[twocolumns]
+   [bodyfont=10pt,
+   interlinespace=20pt,
+   rulethickness=0.5pt,
+   split=yes, 
+   interlinespace=10.5pt,
+   header=repeat,
+   before={\blank[12pt,force]}, 
+   after={\blank[12pt,force]},
+   textcolor=blue]
 
 % registers
 
