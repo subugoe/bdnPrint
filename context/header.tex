@@ -188,6 +188,8 @@
 
 \startsetups[b]
   \switchtobodyfont[default]
+  % \userpagenumber instead of pagenumber in order to get roman numbering in forewords
+  % see http://tex.stackexchange.com/questions/200660/book-style-page-numbering-with-context
   \rlap{\userpagenumber}
   \hfill
    % adapt for publication: information has to be retrieved from TEI header
