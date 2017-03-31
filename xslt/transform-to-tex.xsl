@@ -289,8 +289,9 @@
                     </xsl:otherwise>
                 </xsl:choose>
 
-                <xsl:text>{\switchtobodyfont[8.5pt]
-                \setupinterlinespace[reset,small] </xsl:text>
+                <xsl:text>
+                    \start
+                    \switchtobodyfont[8.5pt]</xsl:text>
 
                 <xsl:if test="child::*[1][self::note[@type = 'authorial']]">
                     <xsl:text>\startnarrower[left]</xsl:text>
@@ -340,7 +341,8 @@
                 </xsl:if>
 
                 <xsl:text>
-                                }
+                                \stop
+                                
                                 \blank[4pt]
                 </xsl:text>
 
@@ -717,6 +719,7 @@
     </xsl:template>
 
     <!--     <xsl:template match="head[ancestor::group]">-->
+    <!-- @@ tidy up font size mess -->
     <xsl:template match="head">
         <!--<xsl:text>\startsubject[title={</xsl:text>
         <xsl:call-template name="pbHead"/>
@@ -768,7 +771,7 @@
 
                 <xsl:choose>
                     <xsl:when test="ancestor::rdg[@type = 'ptl' or @type = 'ppl' or @type = 'pp' or @type = 'om'] and not(preceding-sibling::*) and not(parent::*/preceding-sibling::*) and ancestor::div/child::*[1] = .">
-                        <xsl:text>{\switchtobodyfont[9pt]</xsl:text>
+                        <xsl:text>{\switchtobodyfont[9.5pt]</xsl:text>
                         <!--<xsl:for-each select="ancestor::rdg[@type = 'pp']">
                     <xsl:text>{\tfx\high{</xsl:text>
                     <xsl:value-of select="replace(@wit, '[#\s]', '')"/>
@@ -785,6 +788,7 @@
                             <xsl:text>} </xsl:text>
                         </xsl:for-each>
 
+                        <!-- check -->
                         <xsl:for-each select="ancestor::rdg[@type = 'om']">
                             <xsl:text>\margin{}{omOpen}{</xsl:text>
                             <xsl:value-of select="generate-id()"/>
@@ -799,7 +803,7 @@
                     </xsl:when>
 
                     <xsl:when test="ancestor::lem and ancestor::lem/following-sibling::rdg[@type = 'om' or @type = 'ppl'] and ancestor::lem/descendant::head[1] = .">
-                        <xsl:text>{\switchtobodyfont[9pt]</xsl:text>
+                        <xsl:text>{\switchtobodyfont[9.5pt]</xsl:text>
                         <xsl:if test="ancestor::lem/following-sibling::rdg[@type = 'ppl']">
                             <xsl:text>{\tfx\high{/</xsl:text>
                             <xsl:for-each select="ancestor::lem/following-sibling::rdg[@type = 'ppl']">
@@ -819,15 +823,15 @@
                                 <xsl:text>}</xsl:text>
                             </xsl:for-each>
                         </xsl:if>
-                        <xsl:text>}{\switchtobodyfont[9pt]</xsl:text>
+                        <xsl:text>}{\switchtobodyfont[9.5pt]</xsl:text>
                     </xsl:when>
 
 
-                    <xsl:when test="ancestor::rdg">
+                    <!--<xsl:when test="ancestor::rdg">
                         <xsl:text>{\switchtobodyfont[8pt]</xsl:text>
-                    </xsl:when>
+                    </xsl:when>-->
                     <xsl:otherwise>
-                        <xsl:text>{\switchtobodyfont[9pt]</xsl:text>
+                        <xsl:text>{\switchtobodyfont[9.5pt]</xsl:text>
                     </xsl:otherwise>
                 </xsl:choose>
                 <xsl:apply-templates/>

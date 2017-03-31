@@ -104,15 +104,22 @@
 \def\noline{{\linlibFont \overstrike{\char"222B}}}	% 222B: integral (struck through)
 \def\nop{{\linlibFont \overstrike{\char"222C}}}		% 222C: double integral(struck through)
 
+% main 
 \definebodyfontenvironment[10pt]
   %[interlinespace=12.25pt, % xx for footnote markers
   % publisher guidelines: ``exactly'' 12pt
   [interlinespace=12pt,
    a=11.5pt, x=8.5pt, xx=7.75pt]
 
+% footnotes, notes, rdg[@type = 'ppl'/'ptl']
 \definebodyfontenvironment[8.5pt]
   [interlinespace=10.5pt, % xx for footnote markers
    a=9.78pt, x=7.23pt, xx=6.59pt]  
+  
+% for headers. check publisher guidelines!
+\definebodyfontenvironment[9.5pt]
+  [interlinespace=12pt,
+   a=9pt, x=8.5pt, xx=7.75pt]
    
 \definefont[petit]
   [Serif at 8.5pt]
