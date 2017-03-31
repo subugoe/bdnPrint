@@ -43,9 +43,11 @@
    
 \startsetups[*lessstrict]
   \setup[reset]
-  \clubpenalty=1000
+  %orphan lines
+  \clubpenalty=10000
   \brokenpenalty=1000
-  \widowpenalty=1000
+  %widow lines
+  \widowpenalty=10000
 \stopsetups
 
 \setuplayout[setups=*lessstrict]
@@ -110,8 +112,8 @@
 
 \definebodyfontenvironment[8.5pt]
   [interlinespace=10.5pt, % xx for footnote markers
-   a=9.78pt, x=7.23pt, xx=6.59pt]
-
+   a=9.78pt, x=7.23pt, xx=6.59pt]  
+   
 \definefont[petit]
   [Serif at 8.5pt]
 
@@ -181,12 +183,12 @@
     %{\tfx\it Philologie}
   {\tfx\it \getmarking[header][first]}
   \hfill
-  \llap{\pagenumber}
+  \llap{\userpagenumber}
 \stopsetups
 
 \startsetups[b]
   \switchtobodyfont[default]
-  \rlap{\pagenumber}
+  \rlap{\userpagenumber}
   \hfill
    % adapt for publication: information has to be retrieved from TEI header
   {\tfx\it J. A. Nösselt, Anweisung zur Bildung angehender Theologen\ \high{1}1786/89–\high{3}1818/19}
@@ -306,8 +308,6 @@
 % TODO: optimize inter word spacing
 \setuptolerance
   [verytolerant]
-
-
   
   
 % editor
