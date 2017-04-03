@@ -228,7 +228,10 @@
             <xsl:text>}}</xsl:text>
         </xsl:if>
 
-        <xsl:if test="rdg[@type = 'om'] and not(lem/note[@type = 'authorial'])">
+        <xsl:if test="rdg[@type = 'om'] 
+            and not(lem/note[@type = 'authorial'])
+            and not(lem/(descendant::node()[matches(., '\w')])[1][self::seg[@type = 'item']])
+            and not(lem/child::node()[1][self::app]/lem/child::node()[1][self::seg[@type = 'item']])">
             <xsl:for-each select="rdg[@type = 'om']">
                 <xsl:text>\margin{}{omOpen}{</xsl:text>
                 <xsl:value-of select="generate-id()"/>
@@ -264,11 +267,14 @@
         </xsl:if>
 
         <xsl:if test="rdg[@type = 'pp' or @type = 'ppl']">
-            <xsl:text>{\tfx\high{</xsl:text>
-            <xsl:for-each select="rdg[@type = 'pp' or @type = 'ppl']">
-                <xsl:value-of select="replace(@wit, '[#\s]', '')"/>
-            </xsl:for-each>
-            <xsl:text>\textbackslash}}</xsl:text>
+            <!-- no scribal abbreviation when last visible element is an item -->
+            <xsl:if test="not(lem/child::*[last()][self::list])">
+                <xsl:text>{\tfx\high{</xsl:text>
+                <xsl:for-each select="rdg[@type = 'pp' or @type = 'ppl']">
+                    <xsl:value-of select="replace(@wit, '[#\s]', '')"/>
+                </xsl:for-each>
+                <xsl:text>\textbackslash}}</xsl:text>
+            </xsl:if>
         </xsl:if>
 
         <xsl:if test="rdg[@type = 'pp' or @type = 'pt']">
@@ -727,12 +733,12 @@
         <xsl:text>}]</xsl:text>
         <xsl:apply-templates/>
         <xsl:text>\stopsubject </xsl:text> -->
+        
+        <xsl:if test="descendant::seg[@type = 'toc-item']">
+            <xsl:apply-templates select="descendant::seg[@type = 'toc-item']"/>
+        </xsl:if>
 
         <xsl:choose>
-            <xsl:when test="descendant::seg[@type = 'toc-item']">
-                <xsl:apply-templates select="descendant::seg[@type = 'toc-item']"/>
-            </xsl:when>
-
             <xsl:when test="parent::div[@subtype = 'print' and (@type = 'editors' or @type = 'editorial')] or parent::div[@type = 'preface' or @type = 'introduction'] and parent::div[ancestor::*[1][self::front]] and not(@type = 'sub')">
                 <xsl:choose>
                     <xsl:when test="following-sibling::*[1][self::div]/child::*[1][self::head] or following-sibling::*[1][self::head[@type = 'sub']]">
@@ -743,7 +749,7 @@
                     <xsl:otherwise>
                         <xsl:text>
                         \title[]{
-                        </xsl:text>                        
+                        </xsl:text>
                     </xsl:otherwise>
                 </xsl:choose>
 
@@ -817,21 +823,21 @@
                                 <xsl:text>\margin{}{omOpen}{</xsl:text>
                                 <xsl:value-of select="generate-id()"/>
                                 <xsl:text>}{\tfx\high{/</xsl:text>
+                                <xsl:text/>
                                 <xsl:value-of select="replace(@wit, '[#\s]', '')"/>
                                 <xsl:text>}}{/</xsl:text>
                                 <xsl:value-of select="replace(@wit, '[#\s]', '')"/>
                                 <xsl:text>}</xsl:text>
                             </xsl:for-each>
                         </xsl:if>
-                        <xsl:text>}{\switchtobodyfont[9.5pt]</xsl:text>
+                        <xsl:text>}{\switchtobodyfont[10.5pt]</xsl:text>
                     </xsl:when>
-
 
                     <!--<xsl:when test="ancestor::rdg">
                         <xsl:text>{\switchtobodyfont[8pt]</xsl:text>
                     </xsl:when>-->
                     <xsl:otherwise>
-                        <xsl:text>{\switchtobodyfont[9.5pt]</xsl:text>
+                        <xsl:text>{\switchtobodyfont[10.5pt]</xsl:text>
                     </xsl:otherwise>
                 </xsl:choose>
                 <xsl:apply-templates/>
@@ -879,7 +885,7 @@
         <xsl:apply-templates/>
         <xsl:text>}</xsl:text>
         <xsl:if test="
-                (following::node())[1][self::app or self::index or self::hi] or
+                (following::node())[1][self::app or self::index or self::hi or self::choice] or
                 (child::persName and (following::node())[1][self::pb]) or
                 (following::node()[1][self::pb] and following::node()[2][self::text()])">
             <xsl:text> </xsl:text>
@@ -1107,6 +1113,7 @@
                 <xsl:call-template name="pbBefore"/>
                 <xsl:apply-templates/>
             </xsl:when>
+            
             <xsl:otherwise>
                 <xsl:text>
                 {\switchtobodyfont[8.5pt]
@@ -1114,7 +1121,26 @@
                 \noindentation
                 </xsl:text>
                 <xsl:call-template name="pbBefore"/>
+                
+                <xsl:if test="parent::lem/following-sibling::rdg[@type = 'ppl']
+                    and parent::lem/child::note[1] = .">
+                    <xsl:text>{\tfx\high{/</xsl:text>
+                    <xsl:for-each select="parent::lem/following-sibling::rdg[@type = 'ppl']">
+                        <xsl:value-of select="replace(@wit, '[#\s]', '')"/>
+                    </xsl:for-each>
+                    <xsl:text>}}</xsl:text>
+                </xsl:if>
+                
                 <xsl:apply-templates/>
+                
+                <xsl:if test="parent::lem/following-sibling::rdg[@type = 'ppl']
+                    and parent::lem/child::note[last()] = .">
+                    <xsl:text>{\tfx\high{</xsl:text>
+                    <xsl:for-each select="parent::lem/following-sibling::rdg[ @type = 'ppl']">
+                        <xsl:value-of select="replace(@wit, '[#\s]', '')"/>
+                    </xsl:for-each>
+                    <xsl:text>\textbackslash}}</xsl:text>
+                </xsl:if>
                 <!--<xsl:text>
             \stopnarrower}
             \blank[2pt]
@@ -1140,6 +1166,15 @@
             \noindent
         </xsl:text>
 
+        <xsl:if test="parent::lem/following-sibling::rdg[@type = 'ppl']
+            and parent::lem/child::note[1] = .">
+            <xsl:text>{\tfx\high{/</xsl:text>
+            <xsl:for-each select="parent::lem/following-sibling::rdg[@type = 'ppl']">
+                <xsl:value-of select="replace(@wit, '[#\s]', '')"/>
+            </xsl:for-each>
+            <xsl:text>}}</xsl:text>
+        </xsl:if>
+
         <xsl:if test="ancestor::app/rdg[@type = 'om'] and parent::lem/child::*[1] = .">
             <xsl:text>\margin{}{omOpen}{</xsl:text>
             <xsl:value-of select="generate-id()"/>
@@ -1162,6 +1197,16 @@
             <xsl:value-of select="$omWit"/>
             <xsl:text>\textbackslash}</xsl:text>
         </xsl:if>
+        
+        <xsl:if test="parent::lem/following-sibling::rdg[@type = 'ppl']
+            and parent::lem/child::note[last()] = .">
+            <xsl:text>{\tfx\high{</xsl:text>
+            <xsl:for-each select="parent::lem/following-sibling::rdg[ @type = 'ppl']">
+                <xsl:value-of select="replace(@wit, '[#\s]', '')"/>
+            </xsl:for-each>
+            <xsl:text>\textbackslash}}</xsl:text>
+        </xsl:if>
+        
         <xsl:text>            
             \stopnarrower}
             \blank[4pt]
@@ -1192,6 +1237,38 @@
         <xsl:if test="not(parent::rdg[@type = 'ppl' or @type = 'ptl']/child::*[1] = .)">
             <xsl:text>\sym{}</xsl:text>
         </xsl:if>
+
+        <xsl:if test="
+            ancestor::lem[2][following-sibling::rdg[@type = 'om']]/(descendant::node()[matches(., '\w')])[1] = ./ancestor::*">
+            <xsl:text>\margin{}{omOpen}{</xsl:text>
+            <xsl:value-of select="generate-id()"/>
+            <xsl:text>}{\tfx\high{/</xsl:text>
+            <xsl:for-each select="ancestor::lem[2]/following-sibling::rdg[@type = 'om']">
+                <xsl:value-of select="replace(@wit, '[#\s]', '')"/>
+            </xsl:for-each>
+            <xsl:text>}}{/</xsl:text>
+            <xsl:for-each select="ancestor::lem[2]/following-sibling::rdg[@type = 'om']">
+                <xsl:value-of select="replace(@wit, '[#\s]', '')"/>
+            </xsl:for-each>
+            <xsl:text>}</xsl:text>            
+        </xsl:if>
+
+        <xsl:if test="
+                (parent::lem/following-sibling::rdg[@type = 'om']
+                and parent::lem/child::*[1] = .)">
+            <xsl:text>\margin{}{omOpen}{</xsl:text>
+            <xsl:value-of select="generate-id()"/>
+            <xsl:text>}{\tfx\high{/</xsl:text>
+            <xsl:for-each select="parent::lem/following-sibling::rdg[@type = 'om']">
+                <xsl:value-of select="replace(@wit, '[#\s]', '')"/>
+            </xsl:for-each>
+            <xsl:text>}}{/</xsl:text>
+            <xsl:for-each select="parent::lem/following-sibling::rdg[@type = 'om']">
+                <xsl:value-of select="replace(@wit, '[#\s]', '')"/>
+            </xsl:for-each>
+            <xsl:text>}</xsl:text>
+        </xsl:if>
+     
         <xsl:apply-templates/>
     </xsl:template>
 
@@ -1285,6 +1362,22 @@
                 <xsl:value-of select="replace(@wit, '[#\s]', '')"/>
             </xsl:for-each>
             <xsl:text>\textbackslash}}</xsl:text>
+        </xsl:if>
+
+        <!-- last one is for Griesbach. check! -->
+        <xsl:if test="
+                ancestor::rdg[@type = 'ppl'][1]/child::div/child::*[last()] = .
+                and ancestor::rdg[@type = 'ppl'][1]/child::div[last()] = ./ancestor::div
+                and not(child::*[last()][self::hi[@rend = 'right-aligned']])">
+            <xsl:for-each select="ancestor::rdg[@type = 'ppl'][1]">
+                <xsl:text>\margin{}{plClose}{</xsl:text>
+                <!--<xsl:value-of select="generate-id()"/>-->
+                <xsl:text>}{\tfx\high{</xsl:text>
+                <xsl:value-of select="replace(@wit, '[#\s]', '')"/>
+                <xsl:text>}}{</xsl:text>
+                <xsl:value-of select="replace(@wit, '[#\s]', '')"/>
+                <xsl:text>}</xsl:text>
+            </xsl:for-each>
         </xsl:if>
 
 
@@ -1543,6 +1636,7 @@
             </xsl:when>
             <xsl:otherwise>
                 <xsl:text>\sym{}</xsl:text>
+
                 <xsl:apply-templates/>
 
                 <!--<xsl:if test="ancestor::rdg[@type = 'ppl' or @type = 'ptl'] and parent::*/child::*[last()] = . and (following::node()[matches(., '\w')] = ancestor::rdg/following::node()[matches(., '\w')] or following::*[matches(., '\w')] = ancestor::rdg/following::*[matches(., '\w')]) and not(parent::list/following-sibling::*) and not(parent::list/parent::*/following-sibling::*) and not(ancestor::seg/following-sibling::*) and not(parent::list/ancestor::list)">-->
@@ -1563,6 +1657,16 @@
                         <xsl:value-of select="replace(@wit, '[#\s]', '')"/>
                         <xsl:text>} </xsl:text>
                     </xsl:for-each>
+                </xsl:if>
+
+                <xsl:if test="
+                        ancestor::lem[1]/following-sibling::rdg[@type = 'ppl']
+                        and ancestor::lem[1]/child::*[last()] = ./parent::list">
+                    <xsl:text>{\tfx\high{</xsl:text>
+                    <xsl:for-each select="ancestor::lem[1]/following-sibling::rdg[@type = 'ppl']">
+                        <xsl:value-of select="replace(@wit, '[#\s]', '')"/>
+                    </xsl:for-each>
+                    <xsl:text>\textbackslash}}</xsl:text>
                 </xsl:if>
 
                 <xsl:if test="
@@ -1694,9 +1798,9 @@
 
     <xsl:template match="front">
         <xsl:if test="not(ancestor::group)">
-            <xsl:text>\startfrontmatter </xsl:text>  
+            <xsl:text>\startfrontmatter </xsl:text>
         </xsl:if>
-        
+
         <xsl:apply-templates/>
         <xsl:text>\page</xsl:text>
         <xsl:if test="ancestor::group">
@@ -1705,7 +1809,7 @@
                 \setuppagenumber[number=1]</xsl:text>
         </xsl:if>
         <xsl:if test="not(ancestor::group)">
-            <xsl:text>\stopfrontmatter </xsl:text>  
+            <xsl:text>\stopfrontmatter </xsl:text>
         </xsl:if>
     </xsl:template>
 
