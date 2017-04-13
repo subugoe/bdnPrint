@@ -941,7 +941,8 @@
                     <xsl:text>\crlf </xsl:text>
                     <xsl:text>\rightaligned{</xsl:text>
                     <xsl:apply-templates/>
-
+                    <xsl:text>}</xsl:text>
+                    
                     <xsl:if test="
                             ancestor::rdg[@type = 'ppl' or @type = 'ptl']
                             and parent::*/child::*[last()] = .
@@ -950,12 +951,11 @@
                             and not(parent::*/following-sibling::*)">
                         <xsl:for-each select="ancestor::rdg[@type = 'ppl' or @type = 'ptl']">
                             <xsl:text>\margin{}{plClose}{</xsl:text>
-                            <xsl:value-of select="generate-id()"/>
                             <xsl:text>}{\tfx\high{</xsl:text>
                             <xsl:value-of select="replace(@wit, '[#\s]', '')"/>
                             <xsl:text>}}{</xsl:text>
                             <xsl:value-of select="replace(@wit, '[#\s]', '')"/>
-                            <xsl:text>} </xsl:text>
+                            <xsl:text>}</xsl:text>
                         </xsl:for-each>
                     </xsl:if>
 
@@ -983,8 +983,6 @@
                         </xsl:for-each>
                         <xsl:text>\textbackslash}}</xsl:text>
                     </xsl:if>                       
-
-                    <xsl:text>}</xsl:text>
                 </xsl:if>
                 <xsl:if test="ancestor::rdg[@type = 'pp' or @type = 'pt']">
                     <xsl:apply-templates/>
@@ -1578,7 +1576,7 @@
         <xsl:text>}</xsl:text>
 
         <xsl:if test="parent::rdg[@type = 'v' or @type = 'pp' or @type = 'pt']">
-            <xsl:text>\margintext{</xsl:text>
+            <xsl:text>\margindata[inouter]{</xsl:text>
             <xsl:value-of select="replace(@edRef, '[# ]+', '')"/>
 
             <xsl:if test="@type = 'sp'">
