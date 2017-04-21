@@ -271,7 +271,8 @@
                 and not(lem/child::*[1][self::app[@type = 'structural-variance']]/lem/child::*[1][self::note]/descendant::*[last()][ancestor::item])
                 and not(lem/child::*[last()][self::note]/child::*[last()][self::list])
                 and not(lem/child::*[last()][self::list][not(following-sibling::node()[matches(., '\w')])])
-                and not(lem/child::*[last()][self::div]/child::*[last()][self::app][child::rdg[@type = 'var-structure']]/lem/descendant::*[last()]/ancestor::list[not(following-sibling::node()[matches(., '\w')])])">
+                and not(lem/child::*[last()][self::div]/child::*[last()][self::app][child::rdg[@type = 'var-structure']]/lem/descendant::*[last()]/ancestor::list[not(following-sibling::node()[matches(., '\w')])])
+                and not(lem/child::*[last()][self::app][rdg[@type = 'var-structure'] and lem/child::*[last()][self::note]])">
             <xsl:for-each select="rdg[@type = 'om']">
                 <xsl:text>\margin{}{omClose}{</xsl:text>
                 <xsl:value-of select="generate-id()"/>
@@ -368,7 +369,8 @@
                         and not(child::*[last()][self::note or self::seg[child::*[last()][self::list[not(following-sibling::node()[matches(., '\w')])]
                             or self::hi[@rend = 'right-aligned']]]])
                         and not(child::*[last()][self::note]/child::*[last()][self::p])
-                        and not(child::*[last()][self::hi[@rend = 'right-aligned']])">
+                        and not(child::*[last()][self::hi[@rend = 'right-aligned']])
+                        and not(descendant::*[last()][self::ref]/parent::item[parent::list/child::*[last()] = . and not(../following-sibling::node()[matches(., '\w')])])">
                     <!-- GENERATE-ID() MACHT PROBLEME. WARUM? -->
                     <xsl:text>\margin{}{plClose}{</xsl:text>
                     <!--<xsl:value-of select="generate-id()"/>-->
@@ -381,7 +383,8 @@
 
                 <xsl:if test="ancestor::lem[1]/following-sibling::rdg[@type = 'om']
                     and not(descendant::hi[@rend = 'right-aligned'][not(following-sibling::* 
-                        or following-sibling::node()[matches(., '\w')])])">
+                        or following-sibling::node()[matches(., '\w')])])
+                    and not(child::*[last()][self::seg]/child::*[last()][self::list[not(following-sibling::node()[matches(., '\w')])]])">
                     <xsl:text> </xsl:text>
                     <xsl:for-each select="ancestor::lem[1]/following-sibling::rdg[@type = 'om']">
                         <xsl:text>\margin{}{omClose}{</xsl:text>
@@ -392,6 +395,21 @@
                         <xsl:value-of select="replace(@wit, '[#\s]', '')"/>
                         <xsl:text>\textbackslash}</xsl:text>
                     </xsl:for-each>
+                </xsl:if>
+                
+                <xsl:if test="ancestor::lem[2]/following-sibling::rdg[@type = 'om']
+                    and ancestor::lem[1]/following-sibling::rdg[@type = 'var-structure']
+                    and not(child::*[last()][self::seg[not(following-sibling::node()[matches(., '\w')])]]/child::*[last()][self::list])">
+                    <xsl:text> </xsl:text>
+                    <xsl:for-each select="ancestor::lem[2]/following-sibling::rdg[@type = 'om']">
+                        <xsl:text>\margin{}{omClose}{</xsl:text>
+                        <xsl:value-of select="generate-id()"/>
+                        <xsl:text>}{ \tfx\high{*om*</xsl:text>
+                        <xsl:value-of select="replace(@wit, '[#\s]', '')"/>
+                        <xsl:text>\textbackslash}}{</xsl:text>
+                        <xsl:value-of select="replace(@wit, '[#\s]', '')"/>
+                        <xsl:text>\textbackslash}</xsl:text>
+                    </xsl:for-each>                    
                 </xsl:if>
 
                 <xsl:if test="position() != last()">
@@ -576,7 +594,10 @@
         <xsl:variable name="edt" select="replace(@edRef, '#', '')"/>
         <xsl:variable name="parent" select="(parent::rdg)[1]/@type"/>
         <xsl:choose>
-            <xsl:when test="ancestor::rdg[@type = 'ppl' or @type = 'ptl'] and (not(preceding-sibling::node()) and not(parent::seg/preceding-sibling::node()))">
+            <xsl:when test="ancestor::rdg[@type = 'ppl' or @type = 'ptl'] 
+                and not(preceding-sibling::node() 
+                or parent::seg/preceding-sibling::node())
+                or preceding-sibling::pb">
                 <xsl:if test="@unit = 'p'">
                     <xsl:text> \p{}</xsl:text>
                 </xsl:if>
@@ -1206,10 +1227,11 @@
                 <xsl:if test="
                         (ancestor::rdg[@type = 'ppl' or @type = 'ptl'][1]/child::div[last()]/child::*[last()] = .
                             or parent::rdg[@type = 'ppl' or @type = 'ptl']/child::*[last()] = .)
-                        and not(child::*[last()][self::list])
+                        and not(child::*[last()][self::list or self::p])
                         and not(descendant::*[last()]/ancestor::list)
                         and not(following-sibling::node()[matches(., '\w')])
-                        and not(child::*[last()][self::hi[@rend = 'right-aligned'][not(following-sibling::node()[matches(., '\w')])]])">
+                        and not(child::*[last()][self::hi[@rend = 'right-aligned'][not(following-sibling::node()[matches(., '\w')])]]
+                        or descendant::*[last()][self::hi[@rend = 'right-aligned'] or ancestor::hi[@rend = 'right-aligned']])">
                     <xsl:text>\margin{}{plClose}{</xsl:text>
                     <xsl:text>}{\tfx\high{@@@</xsl:text>
                     <xsl:value-of select="replace(ancestor::rdg[@type = 'ppl' or @type = 'ptl'][1]/@wit, '[#\s]', '')"/>
@@ -1910,7 +1932,9 @@
                 <xsl:if test="
                         ancestor::lem[1]/following-sibling::rdg[@type = 'om']
                         and (ancestor::lem[1]/child::*[last()] = ./parent::list 
-                            or ancestor::lem[1]/child::*[last()][self::div or self::note]/child::*[last()] = ./parent::list)
+                            or ancestor::lem[1]/child::*[last()][self::div or self::note]/child::*[last()] = ./parent::list
+                            or (ancestor::lem[1]/child::*[last()][self::app]/rdg[@type = 'ppl']/child::*[last()][self::seg]/child::*[last()] = ./parent::list
+                            and not(parent::list[following-sibling::node()[matches(., '\w')]])))
                         and not(following-sibling::*)
                         and not(descendant::list)">
                     <xsl:for-each select="ancestor::lem[1]/following-sibling::rdg[@type = 'om']">
