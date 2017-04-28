@@ -1,6 +1,3 @@
-% there seems to be a conflict between hyphenation and the language packages
-\hyphenation{Er-zie-hungs-we-sens Schul-schrif-ten Ab-sicht The-o-phrast's, Wis-sen-schaf-ten, Er-läu-ter-ungs-schrif-ten, Kir-chen-ge-schich-te, ge-nomm-ne}
-
 % layout
 
 \definelayout[odd]
@@ -118,6 +115,10 @@
   
 % for headers. check publisher guidelines!
 \definebodyfontenvironment[9.5pt]
+  [interlinespace=12pt,
+   a=9pt, x=8.5pt, xx=7.75pt]
+   
+\definebodyfontenvironment[10.5pt]
   [interlinespace=12pt,
    a=9pt, x=8.5pt, xx=7.75pt]
    
@@ -360,6 +361,7 @@
 \defineregister[antIndex]
 \setupregister[antIndex]
   [compress=yes,
+  style=bold,
    indicator=no,
    pagestyle=\tf,
    n=1]
@@ -367,6 +369,8 @@
 \defineregister[bibelIndex]
 \setupregister[bibelIndex]
   [compress=yes,
+  textstyle=slanted,
+  style=bold,
    indicator=no,
    pagestyle=\tf,
    n=1,
@@ -403,6 +407,9 @@
    \fi
    \typo_injectors_mark_register}
 \protect
+
+% there seems to be a conflict between hyphenation and the language packages
+\hyphenation{Er-zie-hungs-we-sens Schul-schrif-ten Ab-sicht The-o-phrast's Wis-sen-schaf-ten Er-läu-ter-ungs-schrif-ten Kir-chen-ge-schich-te ge-nomm-ne}
 
 
 % lua

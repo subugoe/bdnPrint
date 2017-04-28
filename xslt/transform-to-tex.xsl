@@ -493,7 +493,7 @@
         </xsl:if>
 
         <xsl:choose>
-            <xsl:when test="parent::div[@subtype = 'print' and (@type = 'editors' or @type = 'editorial')] or parent::div[@type = 'preface' or @type = 'introduction'] and parent::div[ancestor::*[1][self::front]] and not(@type = 'sub')">
+            <xsl:when test="parent::div[@subtype = 'print' and (@type = 'editors' or @type = 'editorial' or @type = 'index')] or parent::div[@type = 'preface' or @type = 'introduction'] and parent::div[ancestor::*[1][self::front]] and not(@type = 'sub')">
                 <xsl:choose>
                     <xsl:when test="following-sibling::*[1][self::div]/child::*[1][self::head] or following-sibling::*[1][self::head[@type = 'sub']]">
                         <xsl:text>
