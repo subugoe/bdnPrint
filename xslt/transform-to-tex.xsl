@@ -2011,11 +2011,26 @@
     </xsl:template>
 
     <xsl:template match="table">
+        <xsl:text>\starttabulatehead</xsl:text>
+        <xsl:text>\FL </xsl:text>
+        
+        <xsl:for-each select="row[1]/cell[@role = 'label']">
+                <xsl:apply-templates select="."/>
+            <xsl:if test="not(following-sibling::cell)">
+                <xsl:text>\NC \AR </xsl:text>
+                
+            </xsl:if>
+        </xsl:for-each>
+        
+        <xsl:text>\LL </xsl:text>
+        <xsl:text>\stoptabulatehead</xsl:text>
+        
         <xsl:text>\starttabulate[|</xsl:text>
         <xsl:for-each select="row[1]/cell">
             <xsl:text>p|</xsl:text>
         </xsl:for-each>
-        <xsl:text>] \HL </xsl:text>
+        <!--<xsl:text>] \HL </xsl:text>-->
+        <xsl:text>] </xsl:text>
         <xsl:apply-templates/>
         <xsl:text>\HL
             \stoptabulate </xsl:text>
@@ -2023,10 +2038,10 @@
 
     <xsl:template match="row">
         <xsl:choose>
-            <xsl:when test="child::cell/@role = 'label'">
-                <xsl:apply-templates/>
+            <xsl:when test="child::cell/@role = 'label'"/>
+                <!--<xsl:apply-templates/>
                 <xsl:text>\NC \NR \LL</xsl:text>
-            </xsl:when>
+            </xsl:when>-->
             <xsl:otherwise>
                 <xsl:apply-templates/>
                 <xsl:text>\NC \NR </xsl:text>
