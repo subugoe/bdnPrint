@@ -2352,7 +2352,7 @@
 
     <xsl:template match="row">
         <xsl:choose>
-            <xsl:when test="@role = 'label'">
+            <xsl:when test="child::cell/@role = 'label'">
                 <xsl:apply-templates/>
                 <xsl:text>\NC \NR \LL</xsl:text>
             </xsl:when>
@@ -2368,7 +2368,7 @@
             <xsl:when test="@rend = 'center-aligned'">
                 <xsl:text>\NC \midaligned{</xsl:text>
                 <xsl:choose>
-                    <xsl:when test="parent::row[@role = 'label']">
+                    <xsl:when test="@role = 'label'">
                         <xsl:text>{\switchtobodyfont[10pt]</xsl:text>
                         <xsl:apply-templates/>
                         <xsl:text>}</xsl:text>
@@ -2382,7 +2382,7 @@
             <xsl:otherwise>
                 <xsl:text>\NC </xsl:text>
                 <xsl:choose>
-                    <xsl:when test="parent::row[@role = 'label']">
+                    <xsl:when test="@role = 'label'">
                         <xsl:text>{\switchtobodyfont[10pt]</xsl:text>
                         <xsl:apply-templates/>
                         <xsl:text>}</xsl:text>
