@@ -21,6 +21,10 @@ $tail =~ s/uterungsschriften kan/u- terungsschriften kan/g;
 $tail =~ s/\{\\tfx\\high\{\/c}}\\sachIndex\[KIRCHENGESCHICHTE\]\{Kirchengeschichte}Kirchengeschichte,/\{\\tfx\\high\{\/c}}\\sachIndex\[KIRCHENGESCHICHTE\]\{Kirchengeschichte}Kirchen- geschichte,/g;
 $tail =~ s/\{d1e108956}\{\\tfx\\high\{\/c}}\{\/c}derselben/\{d1e108956}\{\\tfx\\high\{\/c}}\{\/c}dersel- ben/g;
 $tail =~ s/genommne\\cNote\{genommene}/genomm- ne\\cNote\{genommene}/g;
+$tail =~ s/im praktischen Verstan/im praktischen Ver-stan/g;
+$tail =~ s/genthümlichen Beschäftigungen/gen-thümlichen Beschäftigungen/g;
+$tail =~ s/\{\\tfx\\high\{\/c\}\}gemeinschaftlicher/\{\\tfx\\high\{\/c\}\}gemeinschaftli-cher/g;
+$tail =~ s/\{\/c\\textbackslash\}derselben\\margin/\{\/c\\textbackslash\}dersel-ben\\margin/g;
 
 
 $head = $head . $tail;
