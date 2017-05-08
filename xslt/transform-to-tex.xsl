@@ -788,6 +788,16 @@
     </xsl:template>
 
     <xsl:template match="bibl[@type = 'biblical-reference']">
+        <xsl:text>\bibelIndex{</xsl:text>
+        <xsl:choose>
+            <xsl:when test="citedRange/@from">
+                <xsl:value-of select="substring-before(citedRange/@from, ':')"/>
+            </xsl:when>
+            <xsl:when test="citedRange/@n">
+                <xsl:value-of select="substring-before(citedRange/@n, ':')"/>
+            </xsl:when>
+        </xsl:choose>    
+        <xsl:text>+}</xsl:text>
         <xsl:choose>
             <xsl:when test="contains(citedRange/@to, 'f')">
                 <xsl:text>\bibelIndex{</xsl:text>
@@ -1283,7 +1293,19 @@
             <xsl:text> </xsl:text>
         </xsl:if>
 
-        <xsl:text>\margin{}{pb}{}{\vl}{</xsl:text>
+        <xsl:text>\margin{}{pb}{}{</xsl:text>
+        
+        <!-- or preceding-sibling::node()[1][not(contains(., '\w'))] and preceding-sibling::node()[2][self::pb] -->
+        <xsl:choose>
+            <xsl:when test="preceding-sibling::node()[1][self::pb] or not(preceding-sibling::node()[1][matches(., '\w')]) and preceding-sibling::node()[2][self::pb]">
+                <xsl:text>\hbox{}</xsl:text>
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:text>\vl</xsl:text>
+            </xsl:otherwise>
+        </xsl:choose>
+        
+        <xsl:text>}{</xsl:text>
 
         <xsl:value-of select="replace(@edRef, '[# ]+', '')"/>
 
@@ -1296,13 +1318,6 @@
         <xsl:if test="@type = 'sp'">
             <xsl:text>]</xsl:text>
         </xsl:if>
-        <xsl:choose>
-            <xsl:when test="following-sibling::node()[1][self::pb]">
-                <xsl:text>,</xsl:text>
-            </xsl:when>
-            <xsl:otherwise/>
-        </xsl:choose>
-
 
         <xsl:text>}</xsl:text>
 
