@@ -894,7 +894,7 @@
             <xsl:when test="preceding-sibling::*[1][self::note] or preceding-sibling::*[1][self::app/rdg[@type = 'ppl' or 'ptl']]">
                 <!--<xsl:text>\blank[-10pt]</xsl:text>-->
                 <!--<xsl:text>\blank[-5pt]</xsl:text>-->
-                <xsl:text>\blank[-8pt]</xsl:text>
+                <xsl:text>\blank[2pt]</xsl:text>
             </xsl:when>
             <xsl:when test="parent::rdg[@type = 'ppl' or @type = 'ptl']/child::*[1] = ."/>
             <xsl:otherwise>
@@ -1094,6 +1094,10 @@
             <xsl:value-of select="replace(parent::rdg[@type = 'ppl' or @type = 'ptl'][1]/@wit, '[#\s]', '')"/>
             <xsl:text>}</xsl:text>            
         </xsl:if>
+        
+        <xsl:if test="ends-with(child::node()[last()], ',')">
+            <xsl:text> </xsl:text>
+        </xsl:if>
     </xsl:template>
 
     <xsl:template match="seg[@type = 'item']">
@@ -1289,7 +1293,7 @@
 
 
     <xsl:template match="pb">
-        <xsl:if test="preceding::*[1][self::app or self::hi] and preceding::node()[1][not(matches(., '\w'))]">
+        <xsl:if test="preceding-sibling::*[1][self::app or self::hi] and preceding-sibling::node()[1][matches(., '\s') and not(matches(., '\w'))]">
             <xsl:text> </xsl:text>
         </xsl:if>
 
@@ -1381,6 +1385,10 @@
     <!-- ptr -->
 
     <xsl:template match="ptr">
+        <xsl:if test="following-sibling::*[1][self::app]">
+            <xsl:text> </xsl:text>
+        </xsl:if>
+        
         <xsl:if test="matches(@target, '^#erl_') and (not(ancestor::rdg) or ancestor::rdg[@type = 'ptl' or @type = 'ppl'])">
             <xsl:text>\margin{}{e}{}{\hbox{}}{E}\pagereference[</xsl:text>
             <xsl:value-of select="generate-id()"/>
@@ -2117,6 +2125,13 @@
         <xsl:text>\blank \noindentation </xsl:text>
         <xsl:apply-templates/>
         <xsl:text/>
+    </xsl:template>
+    
+    <xsl:template match="ref">
+        <xsl:apply-templates/>
+        <xsl:if test="following::node()[1][self::choice]">
+            <xsl:text> </xsl:text>
+        </xsl:if>
     </xsl:template>
 
 </xsl:stylesheet>
