@@ -1995,15 +1995,6 @@
         <xsl:apply-templates/>
     </xsl:template>
 
-    <xsl:template match="space">
-        <xsl:choose>
-            <xsl:when test="@quantity = '3'">
-                <xsl:text>\hspace[twoem] </xsl:text>
-            </xsl:when>
-        </xsl:choose>
-    </xsl:template>
-
-
     <xsl:template match="group">
         <xsl:text>
             \emptyEvenPage 
