@@ -40,10 +40,13 @@ $tail =~ s/} \\italic\{,/}\\italic\{,/g;
 $tail =~ s/} :/}:/g;
 $tail =~ s/} \\italic\{:/}\\italic\{:/g;
 $tail =~ s/\\tfx\\high\{\/a}} \{\\tfx\\high\{\/c}/\\tfx\\high\{\/a}}\{\\tfx\\high\{\/c}/g;
+$tail =~ s/\\margindata\[inouter\]\{\/a} \{\\tfx\\high\{\/c}}/\\margindata\[inouter\]\{\/a}\{\\tfx\\high\{\/c}}/g;
+$tail =~ s/ “/“/g;
+$tail =~ s/ "/"/g;
+$tail =~ s/ ˮ/ˮ/g;
 
 # German quotation marks
 $tail =~ s/„(.+?)“/\\quotation\{$1}/g;
-#$tail =~ s/ . /$1ASDF /g;
 
 
 # fixing §.... to §. ...
@@ -51,6 +54,9 @@ $tail =~ s/\.\.\.\./\. \.\.\./g;
 
 # individual cases of whitespace problems
 $tail =~ s/c119}\\italic\{Pfaff,/c119} \\italic\{Pfaff,/g;
+$tail =~ s/\\italic\{Weisman,}\\/\\italic\{Weisman,} \\/g;
+$tail =~ s/c16} 12/c16}12/g;
+$tail =~ s/b51} 38/b51}38/g;
 
 
 # remove vertical whitespace before headings, might need further improvement
