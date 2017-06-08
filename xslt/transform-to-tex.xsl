@@ -106,8 +106,9 @@
                     and not(lem/child::*[last()][self::div]/child::*[last()][self::note]/child::*[last()][self::app][rdg[@type = 'var-structure'] 
                         and lem[descendant::*[last()][ancestor::item] 
                             and not(descendant::list[following-sibling::node()[matches(., '\w')]])]])
-                    and not(lem[child::*[last()][self::app[rdg[@type = 'om'] 
-                        or lem[child::*[last()][self::list][not(following-sibling::node()[matches(., '\w')])]]]]])">
+                    and not(lem[child::node()[last()][self::app[rdg[@type = 'om']
+                        or lem[child::*[last()][self::list][not(following-sibling::node()[matches(., '\w')])]]]]])
+                    and not(lem[child::*[last()][self::app[rdg[@type = 'om']] and not(following-sibling::node())]])">
                 <xsl:text>{\tfx\high{</xsl:text>
                 <xsl:for-each select="rdg[@type = 'pp' or @type = 'ppl']">
                     <xsl:value-of select="replace(@wit, '[#\s]', '')"/>
@@ -118,7 +119,7 @@
 
         <xsl:if test="rdg[@type = 'pp' or @type = 'pt']
             and not(rdg[@type = 'pp' or @type = 'pt']/preceding-sibling::lem[child::*[last()][self::app[rdg[@type = 'om']]]/lem/child::*[last()][self::list[not(following-sibling::node()[matches(., '\w')])]]])">
-            <xsl:text>{\dvl} </xsl:text>
+            <xsl:text>{\dvl}</xsl:text>
             <xsl:for-each select="rdg[@type = 'pp' or @type = 'pt']">
                 <xsl:apply-templates select="." mode="footnote"/>
             </xsl:for-each>
@@ -246,7 +247,8 @@
             </xsl:for-each>
         </xsl:if>
 
-        <xsl:if test="following::node()[1][self::app or self::hi]">
+        <xsl:if test="following::node()[1][self::app or self::hi[not(@type = 'center-aligned')] or self::index or self::pb or self::choice] 
+            or (following::*[1][self::app or self::hi[not(@type = 'center-aligned')] or self::index or self::pb or self::choice] and not(following::node()[1][matches(., '\w')]))">
             <xsl:text> </xsl:text>
         </xsl:if>
 
@@ -265,7 +267,8 @@
     <!-- structural variance: scribal abbreviations. declared in header.tex. -->
 
     <xsl:template match="milestone[@type = 'structure']">
-        <xsl:variable name="edt" select="replace(@edRef, '#', '')"/>
+        <xsl:variable name="edt-tmp" select="replace(@edRef, '#', '')"/>
+        <xsl:variable name="edt" select="replace($edt-tmp, ' ', '')"/>
         <xsl:variable name="parent" select="(parent::rdg)[1]/@type"/>
         <xsl:choose>
             <xsl:when test="ancestor::rdg[@type = 'ppl' or @type = 'ptl'] 
@@ -375,12 +378,18 @@
         <xsl:text>
             \definehead[mysubsection][subsection]
             \page         
-            \title[Inhaltsverzeichnis]{Inhaltsverzeichnis}
+            \title[
+        </xsl:text>
+        <xsl:value-of select="preceding-sibling::head"/>
+        <xsl:text>]{
+        </xsl:text>
+        <xsl:value-of select="preceding-sibling::head"/>
+        <xsl:text>}
             \placecontent
         </xsl:text>
     </xsl:template>
 
-    <xsl:template match="div[@type = 'index']">
+    <!--<xsl:template match="div[@type = 'index']">
         <xsl:text>
             \emptyEvenPage
             \startpart[title={Register}]
@@ -396,7 +405,7 @@
         </xsl:text>
 
         <xsl:apply-templates/>
-    </xsl:template>
+    </xsl:template>-->
 
     <xsl:template match="divGen[@type = 'bibel']">
         <xsl:text>
@@ -516,7 +525,7 @@
                 <xsl:text>}</xsl:text>
             </xsl:when>
 
-            <xsl:when test="ancestor::div[@subtype = 'print' and (@type = 'editors' or @type = 'editorial')] or parent::div[@type = 'introduction'] and @type = 'sub'">
+            <xsl:when test="ancestor::div[@subtype = 'print' and (@type = 'editors' or @type = 'editorial' or @type = 'editorialNotes')] or parent::div[@type = 'introduction'] and @type = 'sub'">
                 <xsl:text>
                 \notTOCsection[]{
             </xsl:text>
@@ -600,7 +609,13 @@
         </xsl:choose>
     </xsl:template>
 
-    <xsl:template match="head[following-sibling::*[1][self::divGen]]"/>
+    <xsl:template match="head[following-sibling::*[1][self::divGen[not(@type = 'Inhalt')]]]">
+        <xsl:text>
+                \notTOCsection[]{
+            </xsl:text>
+        <xsl:apply-templates/>
+        <xsl:text>}</xsl:text>
+    </xsl:template>
 
     <!--<xsl:template match="head[parent::div[(@subtype = 'print' and (@type= 'editors' or @type = 'contents' or @type = 'editorial')) or parent::div[@type = 'preface' or  @qtype = ']]]">
         <xsl:text>\subject[</xsl:text>
@@ -645,6 +660,10 @@
                 (following::node()[1][self::pb] and following::node()[2][self::text()])">
             <xsl:text> </xsl:text>
         </xsl:if>
+        
+        <xsl:if test="parent::lem/child::node()[last()] = . and ends-with(., 'ß')">
+            <xsl:text>\smw</xsl:text>
+        </xsl:if>
     </xsl:template>
 
     <xsl:template match="hi[@rend]">
@@ -654,7 +673,7 @@
                     <xsl:text>\crlf </xsl:text>
                     <xsl:text>\rightaligned{</xsl:text>
                     <xsl:apply-templates/>
-                    <xsl:text>}</xsl:text>
+                    <!--<xsl:text>}</xsl:text>-->
                     
                     <xsl:if test="
                             ancestor::rdg[@type = 'ppl' or @type = 'ptl']
@@ -679,7 +698,7 @@
                             or following::*[matches(., '\w')] = ancestor::rdg/following::*[matches(., '\w')])
                             and not(parent::*/following-sibling::*)
                             and ancestor::lem[1]/following-sibling::rdg[@type = 'om']">
-                        <xsl:text></xsl:text>
+                        <xsl:text> </xsl:text>
                         <xsl:text>\margin{}{omClose}{</xsl:text>
                         <xsl:value-of select="generate-id()"/>
                         <xsl:text>}{\tfx\high{</xsl:text>
@@ -696,7 +715,8 @@
                             <xsl:value-of select="replace(@wit, '[#\s]', '')"/>
                         </xsl:for-each>
                         <xsl:text>\textbackslash}}</xsl:text>
-                    </xsl:if>                       
+                    </xsl:if>
+                    <xsl:text>}</xsl:text>
                 </xsl:if>
                 <xsl:if test="ancestor::rdg[@type = 'pp' or @type = 'pt']">
                     <xsl:apply-templates/>
@@ -1095,7 +1115,7 @@
             <xsl:text>}</xsl:text>            
         </xsl:if>
         
-        <xsl:if test="ends-with(child::node()[last()], ',')">
+        <xsl:if test="(ends-with(child::node()[last()], ',') and not(parent::lem/child::*[last()] = .)) or following-sibling::node()[1][self::app]">
             <xsl:text> </xsl:text>
         </xsl:if>
     </xsl:template>
@@ -1293,7 +1313,7 @@
 
 
     <xsl:template match="pb">
-        <xsl:if test="preceding-sibling::*[1][self::app or self::hi] and preceding-sibling::node()[1][matches(., '\s') and not(matches(., '\w'))]">
+        <xsl:if test="preceding-sibling::*[1][self::app or self::hi[not(@type = 'center-aligned')]] and preceding-sibling::node()[1][matches(., '\s') and not(matches(., '\w'))] and not(preceding::node()[1][self::pb])">
             <xsl:text> </xsl:text>
         </xsl:if>
 
@@ -1351,7 +1371,7 @@
 
         <!-- second part of conditional statement: for cases where preceding::node()[1] is a node which only contains \t, \n, \r -->
         <xsl:if test="
-                (following::node())[1][self::index or self::app or (self::hi and not(preceding-sibling::node()[self::hi]))] or
+                (following::node())[1][self::index or self::app[not(ancestor::head)] or (self::hi and not(preceding-sibling::node()[self::hi]))] or
                 following-sibling::*[1][self::hi] and following::node()[1][not(matches(., '\w'))] and preceding-sibling::*[1][self::hi] and preceding::node()[1][not(matches(., '\w'))]">
             <xsl:text> </xsl:text>
         </xsl:if>
@@ -1467,7 +1487,8 @@
             <xsl:if test="following::node()[1][self::index] 
                 or preceding-sibling::node()[1][self::ptr]
                 or (preceding-sibling::*[1][self::app[rdg[@type = 'om']]] 
-                    and not(preceding-sibling::node()[1][matches(., '\w')]))">
+                    and not(preceding-sibling::node()[1][matches(., '\w')]))
+                or following::node()[1][self::pb]">
                 <xsl:text> </xsl:text>
             </xsl:if>
         </xsl:if>
@@ -1488,14 +1509,10 @@
     <xsl:template match="list[not(ancestor::div[@type = 'contents']) and not(descendant::list or ancestor::list) and not(descendant::label)]">
         <xsl:choose>
             <xsl:when test="following::*[1][self::milestone[@unit = 'p'] or self::p]">
-                <xsl:text>
-                    \setupindenting[yes,medium]
-                </xsl:text>
+                <xsl:text>\setupindenting[yes,medium]</xsl:text>
             </xsl:when>
             <xsl:otherwise>
-                <xsl:text>
-                    \setupindenting[no]
-                </xsl:text>
+                <xsl:text>\setupindenting[no]</xsl:text>
             </xsl:otherwise>
         </xsl:choose>
 
@@ -1749,9 +1766,7 @@
 
 
     <xsl:template match="titlePage">
-        <xsl:text>
-            {\startalignment[center]
-        </xsl:text>
+        <xsl:text>{\startalignment[center]</xsl:text>
         <xsl:apply-templates/>
         <xsl:text>\stopalignment}</xsl:text>
     </xsl:template>
@@ -1815,7 +1830,8 @@
             <xsl:text>\setuppagenumber[number=5]</xsl:text>
         </xsl:if>
 
-        <xsl:text>\page</xsl:text>
+        <xsl:text>\page[yes,right]</xsl:text>
+        <xsl:text>\setupheader[empty]</xsl:text>
         <xsl:apply-templates/>
         <xsl:if test="parent::front">
             <xsl:text>\page</xsl:text>
@@ -1828,6 +1844,10 @@
             <xsl:text>\page</xsl:text>
             <xsl:apply-templates/>
         </xsl:if>-->
+        <xsl:text>\page[yes,right]</xsl:text>
+        <xsl:text>\resetmarking[oddHeader]</xsl:text>
+        <xsl:text>\marking[oddHeader]{Inhalt}</xsl:text>
+       
         <xsl:apply-templates/>
     </xsl:template>
 
@@ -1842,6 +1862,7 @@
 
     <xsl:template match="text">
         <xsl:apply-templates/>
+        <xsl:text>\page[yes,right]</xsl:text>
     </xsl:template>
 
 
@@ -1897,8 +1918,8 @@
                 \stopalignment}}
             </xsl:text>
         </xsl:if>
-        <xsl:text>\resetmarking[header]</xsl:text>
-        <xsl:text>\marking[header]{</xsl:text>
+        <xsl:text>\resetmarking[oddHeader]</xsl:text>
+        <xsl:text>\marking[oddHeader]{</xsl:text>
         <xsl:apply-templates/>
         <xsl:text>}</xsl:text>
     </xsl:template>
@@ -1986,17 +2007,14 @@
         <xsl:apply-templates/>
     </xsl:template>
 
-    <xsl:template match="div[@subtype = 'print' and @type = 'editorial']">
-        <xsl:text>\page </xsl:text>
-        <xsl:apply-templates/>
-    </xsl:template>
-
     <xsl:template match="div[@type = 'pseudo-container']">
         <xsl:apply-templates/>
     </xsl:template>
 
     <xsl:template match="group">
         <xsl:text>
+            \resetmarking[evenHeader]
+            \marking[evenHeader]{J. A. Nösselt, Anweisung zur Bildung angehender Theologen\ \high{1}1786/89–\high{3}1818/19}
             \emptyEvenPage 
             \startbodymatter
             \setuppagenumber[number=1]</xsl:text>
@@ -2008,6 +2026,10 @@
         <xsl:text>{[</xsl:text>
         <xsl:apply-templates/>
         <xsl:text>]}</xsl:text>
+        
+        <xsl:if test="parent::hi[parent::lem/child::*[last()] = .]/child::*[last()]=.">
+            <xsl:text>\smw</xsl:text>
+        </xsl:if>
     </xsl:template>
 
     <xsl:template match="back/p">
@@ -2095,10 +2117,6 @@
         </xsl:choose>
     </xsl:template>
 
-    <xsl:template match="divGen[@type = 'editorische_Corrigenda']">
-        <xsl:apply-templates/>
-    </xsl:template>
-
     <xsl:template match="label">
         <xsl:if test="not(ancestor::note[@type = 'editorial'])">
             <xsl:text>\NC </xsl:text>
@@ -2125,4 +2143,102 @@
         </xsl:if>
     </xsl:template>
 
+    <xsl:template match="divGen[@type = 'editorial_corrigenda']">
+        <xsl:text>\starttabulatehead</xsl:text>
+        <xsl:text>\FL </xsl:text>
+        <xsl:text>\NC Seite \NC fehlerhaftes Original \NC stillschweigende Korrektur \NC \AR </xsl:text>
+        <xsl:text>\LL </xsl:text>
+        <xsl:text>\stoptabulatehead</xsl:text>
+        
+        <xsl:text>\starttabulate[|p(1cm)|p|p|] </xsl:text>
+        <xsl:for-each select="//choice[child::sic and child::corr[@type = 'editorial']]">
+            <xsl:text> \NC </xsl:text>
+            <xsl:choose>
+                <xsl:when test="./ancestor::app[1]/lem = ./ancestor::lem">
+                    <xsl:text>b</xsl:text>
+                    <xsl:value-of select="./preceding::pb[@edRef='#b'][1]/@n"/>                   
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:variable name="wit" select="replace(./ancestor::rdg[1]/@wit, '#', '')"/>
+                    <xsl:variable name="wit-array" select="tokenize($wit, '\s')"/>
+                    <xsl:choose>
+                        <xsl:when test="matches($wit, '\s')">
+                            <xsl:variable name="sgl-wits" select="count(./ancestor::rdg[1]/tokenize($wit, '\s'))"/>
+                            <xsl:for-each select="ancestor::rdg[1]/tokenize($wit, '\s')">
+                                <xsl:value-of select="."/>
+                                <!-- Kontext/pb in einem  array sichern? -->
+                                <!--<xsl:value-of select="preceding::pb[contains(@edRef, .)][1]/@n"/>-->
+                                
+                            </xsl:for-each>
+                            <!--<xsl:for-each select="1 to $sgl-wits">
+                                <xsl:value-of select="$wit-array/position() = ."/>
+                            </xsl:for-each>-->
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:value-of select="$wit"/>
+                            <xsl:value-of select="./preceding::pb[contains(@edRef, $wit)][1]/@n"/>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                </xsl:otherwise>
+            </xsl:choose>
+            <xsl:text> \NC </xsl:text>
+            <xsl:apply-templates select="sic" mode="editorial-corrigenda"/>
+            <xsl:text>\NC </xsl:text>
+            <xsl:apply-templates select="corr"/>
+            <xsl:text>\NC \NR </xsl:text>
+            
+        </xsl:for-each>        
+        <xsl:apply-templates/>
+        <xsl:text>\HL
+            \stoptabulate </xsl:text>       
+    </xsl:template>
+    
+    <xsl:template match="sic" mode="editorial-corrigenda">
+        <xsl:apply-templates/>
+    </xsl:template>
+    
+    <xsl:template match="body">
+        <xsl:if test="//body[1] = .">
+            <xsl:text>\setuppagenumber[number=25]</xsl:text>    
+        </xsl:if>
+        
+        <xsl:apply-templates/>
+    </xsl:template>
+    
+    <xsl:template match="div[@type='part']">
+        <xsl:text>\page[yes,right]</xsl:text>
+        <xsl:apply-templates/>
+    </xsl:template>
+    
+    <xsl:template match="div[@type='chapter']">
+        <xsl:text>\page[yes,right]</xsl:text>
+        <xsl:apply-templates/>
+    </xsl:template>
+    
+    <xsl:template match="div[@type = 'introduction']">
+        <xsl:text>\resetmarking[evenHeader]</xsl:text>
+        <xsl:text>\marking[evenHeader]{</xsl:text>
+        <xsl:apply-templates select="head[@type='main']"/>
+        <xsl:text>}</xsl:text>
+        <xsl:text>\resetmarking[oddHeader]</xsl:text>
+        <xsl:text>\marking[oddHeader]{</xsl:text>
+        <xsl:apply-templates select="head[@type='main']"/>
+        <xsl:text>}</xsl:text>
+        
+        <xsl:apply-templates/>
+    </xsl:template>
+    
+    <xsl:template match="div[@type = 'editorial']">
+        <xsl:text>\resetmarking[evenHeader]</xsl:text>
+        <xsl:text>\marking[evenHeader]{</xsl:text>
+        <xsl:apply-templates select="head"/>
+        <xsl:text>}</xsl:text>
+        <xsl:text>\resetmarking[oddHeader]</xsl:text>
+        <xsl:text>\marking[oddHeader]{</xsl:text>
+        <xsl:apply-templates select="head"/>
+        <xsl:text>}</xsl:text>
+        <xsl:text>\page </xsl:text>
+        
+        <xsl:apply-templates/>
+    </xsl:template>
 </xsl:stylesheet>
