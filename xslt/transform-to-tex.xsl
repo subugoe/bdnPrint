@@ -107,8 +107,8 @@
                         and lem[descendant::*[last()][ancestor::item] 
                             and not(descendant::list[following-sibling::node()[matches(., '\w')]])]])
                     and not(lem[child::node()[last()][self::app[rdg[@type = 'om']
-                        or lem[child::*[last()][self::list][not(following-sibling::node()[matches(., '\w')])]]]]])
-                    and not(lem[child::*[last()][self::app[rdg[@type = 'om']] and not(following-sibling::node())]])">
+                        or lem[child::*[last()][self::list][not(following-sibling::node()[matches(., '\w')])]]]]])">
+                <!--  and not(lem[child::*[last()][self::app[rdg[@type = 'om']] and not(following-sibling::node())]])-->
                 <xsl:text>{\tfx\high{</xsl:text>
                 <xsl:for-each select="rdg[@type = 'pp' or @type = 'ppl']">
                     <xsl:value-of select="replace(@wit, '[#\s]', '')"/>
@@ -248,7 +248,7 @@
         </xsl:if>
 
         <xsl:if test="following::node()[1][self::app or self::hi[not(@type = 'center-aligned')] or self::index or self::pb or self::choice] 
-            or (following::*[1][self::app or self::hi[not(@type = 'center-aligned')] or self::index or self::pb or self::choice] and not(following::node()[1][matches(., '\w')]))">
+            or (following::*[1][self::app or self::hi[not(@type = 'center-aligned')] or self::index or self::pb or self::choice] and not(following::node()[1][matches(., '[\w–,?\)\(§]')]))">
             <xsl:text> </xsl:text>
         </xsl:if>
 
@@ -710,6 +710,7 @@
                     
                     <xsl:if test="ancestor::div[1]/parent::lem/following-sibling::rdg[@type = 'ppl'] 
                         and not(ancestor::div[1]/following-sibling::*)">
+                        <xsl:text> </xsl:text>
                         <xsl:text>{\tfx\high{</xsl:text>
                         <xsl:for-each select="ancestor::div[1]/parent::lem/following-sibling::rdg[@type = 'ppl']">
                             <xsl:value-of select="replace(@wit, '[#\s]', '')"/>
@@ -1766,6 +1767,14 @@
 
 
     <xsl:template match="titlePage">
+        <xsl:text>\resetmarking[oddHeader]</xsl:text>
+        <xsl:text>\marking[oddHeader]{Vorreden}</xsl:text>
+        <xsl:text>\resetmarking[evenHeader]</xsl:text>
+        <xsl:text>\marking[evenHeader]{Vorreden}</xsl:text>
+        <xsl:if test="ancestor::lem">
+            <xsl:text>\writetolist[part]{}{Vorreden}</xsl:text> 
+        </xsl:if>
+        
         <xsl:text>{\startalignment[center]</xsl:text>
         <xsl:apply-templates/>
         <xsl:text>\stopalignment}</xsl:text>
@@ -1791,7 +1800,7 @@
         </xsl:if>
     </xsl:template>
 
-    <xsl:template match="titlepart[@type = 'sub']">
+    <xsl:template match="titlePart[@type = 'sub']">
         <xsl:apply-templates/>
     </xsl:template>
 
@@ -1828,9 +1837,13 @@
     <xsl:template match="div[@type = 'preface']">
         <xsl:if test="parent::front">
             <xsl:text>\setuppagenumber[number=5]</xsl:text>
+            <xsl:text>\resetmarking[oddHeader]</xsl:text>
+            <xsl:text>\marking[oddHeader]{Vorwort}</xsl:text>
+            <xsl:text>\resetmarking[evenHeader]</xsl:text>
+            <xsl:text>\marking[evenHeader]{Vorwort}</xsl:text>
         </xsl:if>
 
-        <xsl:text>\page[yes,right]</xsl:text>
+        <!--<xsl:text>\page[yes,right]</xsl:text>-->
         <xsl:text>\setupheader[empty]</xsl:text>
         <xsl:apply-templates/>
         <xsl:if test="parent::front">
@@ -1844,11 +1857,18 @@
             <xsl:text>\page</xsl:text>
             <xsl:apply-templates/>
         </xsl:if>-->
-        <xsl:text>\page[yes,right]</xsl:text>
-        <xsl:text>\resetmarking[oddHeader]</xsl:text>
-        <xsl:text>\marking[oddHeader]{Inhalt}</xsl:text>
-       
-        <xsl:apply-templates/>
+        <xsl:choose>
+            <xsl:when test="parent::front">
+                <xsl:apply-templates select="divGen[@type = 'Inhalt']"/>
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:text>\page[yes,right]</xsl:text>
+                <xsl:text>\resetmarking[oddHeader]</xsl:text>
+                <xsl:text>\marking[oddHeader]{Inhalt}</xsl:text>
+                
+                <xsl:apply-templates/>
+            </xsl:otherwise>
+        </xsl:choose>
     </xsl:template>
 
     <xsl:template match="div[@type = 'corrigenda']">
@@ -1861,6 +1881,7 @@
 
 
     <xsl:template match="text">
+        <xsl:text>\marking[evenHeader]{ab hier im Text}</xsl:text>
         <xsl:apply-templates/>
         <xsl:text>\page[yes,right]</xsl:text>
     </xsl:template>
@@ -2198,7 +2219,7 @@
     </xsl:template>
     
     <xsl:template match="body">
-        <xsl:if test="//body[1] = .">
+        <xsl:if test="ancestor::group/descendant::body[1] = .">
             <xsl:text>\setuppagenumber[number=25]</xsl:text>    
         </xsl:if>
         
@@ -2207,22 +2228,24 @@
     
     <xsl:template match="div[@type='part']">
         <xsl:text>\page[yes,right]</xsl:text>
+        <xsl:text>\setupheader[empty]</xsl:text>
         <xsl:apply-templates/>
     </xsl:template>
     
     <xsl:template match="div[@type='chapter']">
         <xsl:text>\page[yes,right]</xsl:text>
+        <xsl:text>\setupheader[empty]</xsl:text>
         <xsl:apply-templates/>
     </xsl:template>
     
     <xsl:template match="div[@type = 'introduction']">
         <xsl:text>\resetmarking[evenHeader]</xsl:text>
         <xsl:text>\marking[evenHeader]{</xsl:text>
-        <xsl:apply-templates select="head[@type='main']"/>
+        <xsl:value-of select="head[@type='main']"/>
         <xsl:text>}</xsl:text>
         <xsl:text>\resetmarking[oddHeader]</xsl:text>
         <xsl:text>\marking[oddHeader]{</xsl:text>
-        <xsl:apply-templates select="head[@type='main']"/>
+        <xsl:value-of select="head[@type='main']"/>
         <xsl:text>}</xsl:text>
         
         <xsl:apply-templates/>
@@ -2231,11 +2254,11 @@
     <xsl:template match="div[@type = 'editorial']">
         <xsl:text>\resetmarking[evenHeader]</xsl:text>
         <xsl:text>\marking[evenHeader]{</xsl:text>
-        <xsl:apply-templates select="head"/>
+        <xsl:value-of select="head"/>
         <xsl:text>}</xsl:text>
         <xsl:text>\resetmarking[oddHeader]</xsl:text>
         <xsl:text>\marking[oddHeader]{</xsl:text>
-        <xsl:apply-templates select="head"/>
+        <xsl:value-of select="head"/>
         <xsl:text>}</xsl:text>
         <xsl:text>\page </xsl:text>
         
