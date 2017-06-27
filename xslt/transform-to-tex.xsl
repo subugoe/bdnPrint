@@ -1558,6 +1558,17 @@
                     and ancestor::rdg[@type = 'ppl' or @type = 'ptl']/child::node()[1][self::note])">
                 <xsl:apply-templates/>
             </xsl:when>
+            
+            <xsl:when test="(ancestor::div[@type = 'contents'] or descendant::list) and not(ancestor::list)">
+                <xsl:text>
+                    \setupindenting[yes,medium]
+	                \setupitemgroup[itemize][leftmargin=-1.5em]
+	                   \startitemize[packed, paragraph, joinedup]
+	            </xsl:text>
+                <xsl:apply-templates/>
+                <xsl:text>\stopitemize </xsl:text>                
+            </xsl:when>
+            
             <xsl:otherwise>
                 <xsl:text>
                     \setupindenting[yes,medium]
