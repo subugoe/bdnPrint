@@ -506,7 +506,7 @@
         </xsl:if>
 
         <xsl:choose>
-            <xsl:when test="parent::div[@subtype = 'print' and (@type = 'editors' or @type = 'editorial' or @type = 'index')] or parent::div[@type = 'preface' or @type = 'introduction'] and parent::div[ancestor::*[1][self::front]] and not(@type = 'sub')">
+            <xsl:when test="parent::div[@subtype = 'print' and (@type = 'editors' or @type = 'editorial' or @type = 'index' or @type = 'editorialNotes')] or parent::div[@type = 'preface' or @type = 'introduction'] and parent::div[ancestor::*[1][self::front]] and not(@type = 'sub')">
                 <xsl:choose>
                     <xsl:when test="following-sibling::*[1][self::div]/child::*[1][self::head] or following-sibling::*[1][self::head[@type = 'sub']]">
                         <xsl:text>
@@ -529,7 +529,7 @@
                 <xsl:text>}</xsl:text>
             </xsl:when>
 
-            <xsl:when test="ancestor::div[@subtype = 'print' and (@type = 'editors' or @type = 'editorial' or @type = 'editorialNotes')] or parent::div[@type = 'introduction'] and @type = 'sub'">
+            <xsl:when test="ancestor::div[@subtype = 'print' and (@type = 'editors' or @type = 'editorial')] or parent::div[@type = 'introduction' or @type = 'editorialNotes'] and @type = 'sub'">
                 <xsl:text>
                 \notTOCsection[]{
             </xsl:text>
@@ -1983,27 +1983,42 @@
             </xsl:text>
         </xsl:if>
 
+        <!--<xsl:text>\marking[oddHeader]{</xsl:text>
+        <xsl:apply-templates/>
+        <xsl:text>}</xsl:text>-->
+    </xsl:template>
+
+
+    <xsl:template match="seg[@type = 'condensed']">
         <xsl:text>\marking[oddHeader]{</xsl:text>
         <xsl:apply-templates/>
         <xsl:text>}</xsl:text>
     </xsl:template>
-
+    
+    
     <xsl:template match="back">
         <xsl:apply-templates/>
     </xsl:template>
 
-    <xsl:template match="div[@type = 'editorialNotes']">
+    <xsl:template match="div[@type = 'editorialNotes' and @subtype = 'print']">
+        <xsl:text>\emptyEvenPage</xsl:text>
+        <xsl:text>\marking[oddHeader]{</xsl:text>
+        <xsl:value-of select="head[@type = 'main']"/>
+        <xsl:text>}</xsl:text>
+        <xsl:text>\marking[evHeader]{</xsl:text>
+        <xsl:value-of select="head[@type = 'main']"/>
+        <xsl:text>}</xsl:text>
         <xsl:apply-templates/>
     </xsl:template>
 
-    <xsl:template match="divGen[@type = 'editorialNotes']">
-        <xsl:text>
+    <xsl:template match="divGen[@type = 'editorialNotes' and not(@subtype = 'print')]">
+        <!--<xsl:text>
             \emptyEvenPage
             \writebetweenlist[part]{\blank[20pt]}
             \writetolist[part]{}{Erläuterungen}
-            \subject[Erläuterungen]{Erläuterungen}
+            \subject[Erläuterungen]{Erläuterungen}-->
     
-            \definelayout[odd]
+            <xsl:text>\definelayout[odd]
             [backspace=48.5mm,
             width=113mm,
             height=191mm]
@@ -2013,9 +2028,9 @@
             width=113mm,
             height=191mm]
 
-            \setuplayout
+            \setuplayout</xsl:text>
 
-            \startsetups[a]
+            <!--\startsetups[a]
             \switchtobodyfont[default]
             \rlap{}
             \hfill
@@ -2032,7 +2047,7 @@
             \hfill
             \llap{}
             \stopsetups
-        </xsl:text>
+        </xsl:text>-->
 
         <xsl:text>
             \blank[9mm]
