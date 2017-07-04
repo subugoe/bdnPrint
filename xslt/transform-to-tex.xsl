@@ -504,6 +504,9 @@
         <xsl:if test="descendant::seg[@type = 'toc-item']">
             <xsl:apply-templates select="descendant::seg[@type = 'toc-item']"/>
         </xsl:if>
+        <xsl:if test="descendant::seg[@type = 'condensed']">
+            <xsl:apply-templates select="descendant::seg[@type = 'condensed']"/>
+        </xsl:if>
 
         <xsl:choose>
             <xsl:when test="parent::div[@subtype = 'print' and (@type = 'editors' or @type = 'editorial' or @type = 'index' or @type = 'editorialNotes')] or parent::div[@type = 'preface' or @type = 'introduction'] and parent::div[ancestor::*[1][self::front]] and not(@type = 'sub')">
@@ -1839,6 +1842,10 @@
         <xsl:if test="descendant::seg[@type = 'toc-item']">
             <xsl:apply-templates select="descendant::seg[@type = 'toc-item']"/>
         </xsl:if>
+        
+        <xsl:if test="descendant::seg[@type = 'condensed']">
+            <xsl:apply-templates select="descendant::seg[@type = 'condensed']"/>
+        </xsl:if>
     </xsl:template>
 
     <xsl:template match="titlePart[@type = 'sub']">
@@ -1851,6 +1858,10 @@
 
         <xsl:if test="descendant::seg[@type = 'toc-item']">
             <xsl:apply-templates select="descendant::seg[@type = 'toc-item']"/>
+        </xsl:if>
+        
+        <xsl:if test="descendant::seg[@type = 'condensed']">
+            <xsl:apply-templates select="descendant::seg[@type = 'condensed']"/>
         </xsl:if>
     </xsl:template>
 
