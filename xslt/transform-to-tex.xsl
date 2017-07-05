@@ -385,7 +385,8 @@
     <xsl:template match="divGen[@type = 'Inhalt']">
         <xsl:text>
             \definehead[mysubsection][subsection]
-            \page         
+            \page
+            \noheaderandfooterlines
             \title[
         </xsl:text>
         <xsl:value-of select="preceding-sibling::head"/>
@@ -1895,11 +1896,13 @@
             <xsl:text>\marking[evHeader]{Vorwort}</xsl:text>
         </xsl:if>
 
-        <!--<xsl:text>\page[yes,right]</xsl:text>-->
+        <xsl:text>\page[yes,right]</xsl:text>
+        <xsl:text>\noheaderandfooterlines</xsl:text>
         <!--<xsl:text>\setupheader[empty]</xsl:text>-->
         <xsl:apply-templates/>
         <xsl:if test="parent::front">
-            <xsl:text>\page</xsl:text>
+            <xsl:text>\page[yes,right]</xsl:text>
+            <xsl:text>\noheaderandfooterlines</xsl:text>
         </xsl:if>
     </xsl:template>
 
@@ -1921,6 +1924,7 @@
 
                 <xsl:text>\marking[oddHeader]{Inhalt}</xsl:text>
                 <xsl:text>\page[yes,right]</xsl:text>
+                <xsl:text>\noheaderandfooterlines</xsl:text>
                 <xsl:apply-templates/>
             </xsl:otherwise>
         </xsl:choose>
@@ -1938,6 +1942,7 @@
     <xsl:template match="text">
         <xsl:apply-templates/>
         <xsl:text>\page[yes,right]</xsl:text>
+        <xsl:text>\noheaderandfooterlines</xsl:text>
     </xsl:template>
 
 
@@ -1947,7 +1952,7 @@
         </xsl:if>
 
         <xsl:apply-templates/>
-        <xsl:text>\page</xsl:text>
+        <!--<xsl:text>\page[empty,right]</xsl:text>-->
         <xsl:if test="ancestor::group/descendant::front[1] = .">
             <xsl:text>
                 \resetnumber[page]
@@ -2082,7 +2087,7 @@
             </xsl:text>
     </xsl:template>
 
-    <xsl:template match="div[@type = 'editors']">
+    <!--<xsl:template match="div[@type = 'editors']">
         <xsl:text>
             \page 
             \startsetups[b]
@@ -2095,7 +2100,7 @@
             \stopsetups
         </xsl:text>
         <xsl:apply-templates/>
-    </xsl:template>
+    </xsl:template>-->
 
     <xsl:template match="div[@type = 'pseudo-container']">
         <xsl:apply-templates/>
@@ -2301,12 +2306,14 @@
 
     <xsl:template match="div[@type = 'part']">
         <xsl:text>\page[yes,right]</xsl:text>
+        <xsl:text>\noheaderandfooterlines</xsl:text>
         <!--<xsl:text>\setupheader[empty]</xsl:text>-->
         <xsl:apply-templates/>
     </xsl:template>
 
     <xsl:template match="div[@type = 'chapter']">
         <xsl:text>\page[yes,right]</xsl:text>
+        <xsl:text>\noheaderandfooterlines</xsl:text>
         <!--<xsl:text>\setupheader[empty]</xsl:text>-->
         <xsl:apply-templates/>
     </xsl:template>
@@ -2336,6 +2343,7 @@
         <xsl:value-of select="head"/>
         <xsl:text>}</xsl:text>
         <xsl:text>\page </xsl:text>
+        <xsl:text>\noheaderandfooterlines</xsl:text>
 
         <xsl:apply-templates/>
     </xsl:template>
