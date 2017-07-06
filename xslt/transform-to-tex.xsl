@@ -385,8 +385,10 @@
     <xsl:template match="divGen[@type = 'Inhalt']">
         <xsl:text>
             \definehead[mysubsection][subsection]
-            \page
-            \noheaderandfooterlines
+        </xsl:text>
+            <!--\page
+            \noheaderandfooterlines-->
+       <xsl:text>
             \title[
         </xsl:text>
         <xsl:value-of select="preceding-sibling::head"/>
@@ -1898,11 +1900,10 @@
 
         <xsl:text>\page[yes,right]</xsl:text>
         <xsl:text>\noheaderandfooterlines</xsl:text>
-        <!--<xsl:text>\setupheader[empty]</xsl:text>-->
         <xsl:apply-templates/>
         <xsl:if test="parent::front">
-            <xsl:text>\page[yes,right]</xsl:text>
-            <xsl:text>\noheaderandfooterlines</xsl:text>
+            <!--<xsl:text>\page[yes,right]</xsl:text>
+            <xsl:text>\noheaderandfooterlines</xsl:text>-->
         </xsl:if>
     </xsl:template>
 
@@ -1912,18 +1913,15 @@
             <xsl:text>\page</xsl:text>
             <xsl:apply-templates/>
         </xsl:if>-->
+        <xsl:text>\marking[oddHeader]{Inhalt}</xsl:text>
+        <xsl:text>\marking[evHeader]{Inhalt}</xsl:text>
+        
         <xsl:choose>
             <xsl:when test="parent::front">
-
-                <xsl:text>\marking[oddHeader]{Inhalt}</xsl:text>
-
-                <xsl:text>\marking[evHeader]{Inhalt}</xsl:text>
                 <xsl:apply-templates select="divGen[@type = 'Inhalt']"/>
             </xsl:when>
             <xsl:otherwise>
-
-                <xsl:text>\marking[oddHeader]{Inhalt}</xsl:text>
-                <xsl:text>\page[yes,right]</xsl:text>
+                <xsl:text>\page[yes,right,empty]</xsl:text>
                 <xsl:text>\noheaderandfooterlines</xsl:text>
                 <xsl:apply-templates/>
             </xsl:otherwise>
@@ -1941,8 +1939,8 @@
 
     <xsl:template match="text">
         <xsl:apply-templates/>
-        <xsl:text>\page[yes,right]</xsl:text>
-        <xsl:text>\noheaderandfooterlines</xsl:text>
+        <!--<xsl:text>\page[yes,right]</xsl:text>
+        <xsl:text>\noheaderandfooterlines</xsl:text>-->
     </xsl:template>
 
 
@@ -2017,7 +2015,7 @@
     </xsl:template>
 
     <xsl:template match="div[@type = 'editorialNotes' and @subtype = 'print']">
-        <xsl:text>\emptyEvenPage</xsl:text>
+        <!--<xsl:text>\emptyEvenPage</xsl:text>-->
         <xsl:text>\marking[oddHeader]{</xsl:text>
         <xsl:value-of select="head[@type = 'main']"/>
         <xsl:text>}</xsl:text>
@@ -2108,8 +2106,11 @@
 
     <xsl:template match="group">
         <xsl:text>
-            \marking[evHeader]{J. A. Nösselt, Anweisung zur Bildung angehender Theologen\ \high{1}1786/89–\high{3}1818/19}
-            \emptyEvenPage 
+            \marking[evHeader]{
+            {\tfx\it J. A. Nösselt, Anweisung zur Bildung angehender Theologen\ \high{1}1786/89–\high{3}1818/19}
+            }</xsl:text>
+            <!--\emptyEvenPage -->
+        <xsl:text>            
             \startbodymatter
             \setuppagenumber[number=1]</xsl:text>
         <xsl:apply-templates/>
@@ -2299,20 +2300,20 @@
         </xsl:if>
 
         <xsl:if test="ancestor::group">
-            <xsl:text>\marking[evHeader]{J. A. Nösselt, Anweisung zur Bildung angehender Theologen\ \high{1}1786/89–\high{3}1818/19}</xsl:text>
+            <xsl:text>\marking[evHeader]{{\tfx\it J. A. Nösselt, Anweisung zur Bildung angehender Theologen\ \high{1}1786/89–\high{3}1818/19}}</xsl:text>
         </xsl:if>
         <xsl:apply-templates/>
     </xsl:template>
 
     <xsl:template match="div[@type = 'part']">
-        <xsl:text>\page[yes,right]</xsl:text>
+        <xsl:text>\page[yes,right,empty]</xsl:text>
         <xsl:text>\noheaderandfooterlines</xsl:text>
         <!--<xsl:text>\setupheader[empty]</xsl:text>-->
         <xsl:apply-templates/>
     </xsl:template>
 
     <xsl:template match="div[@type = 'chapter']">
-        <xsl:text>\page[yes,right]</xsl:text>
+        <xsl:text>\page[yes,right,empty]</xsl:text>
         <xsl:text>\noheaderandfooterlines</xsl:text>
         <!--<xsl:text>\setupheader[empty]</xsl:text>-->
         <xsl:apply-templates/>
@@ -2342,8 +2343,8 @@
         <xsl:text>\marking[oddHeader]{</xsl:text>
         <xsl:value-of select="head"/>
         <xsl:text>}</xsl:text>
-        <xsl:text>\page </xsl:text>
-        <xsl:text>\noheaderandfooterlines</xsl:text>
+        <!--<xsl:text>\page[yes,right,empty]</xsl:text>
+        <xsl:text>\noheaderandfooterlines</xsl:text>-->
 
         <xsl:apply-templates/>
     </xsl:template>
