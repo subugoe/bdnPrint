@@ -1817,7 +1817,6 @@
 
     <xsl:template match="titlePage">
         <xsl:text>\marking[oddHeader]{Vorreden}</xsl:text>
-        <xsl:text>\marking[evHeader]{Vorreden}</xsl:text>
         <xsl:if test="ancestor::lem">
             <xsl:text>\writetolist[part]{}{Vorreden}</xsl:text>
         </xsl:if>
@@ -1893,9 +1892,13 @@
         <xsl:if test="parent::front">
             <xsl:text>\setuppagenumber[number=5]</xsl:text>
 
-            <xsl:text>\marking[oddHeader]{Vorwort}</xsl:text>
+            <xsl:text>\marking[oddHeader]{</xsl:text>
+            <xsl:value-of select="head"/>
+            <xsl:text>}</xsl:text>
 
-            <xsl:text>\marking[evHeader]{Vorwort}</xsl:text>
+            <xsl:text>\marking[evHeader]{</xsl:text>
+            <xsl:value-of select="head"/>
+            <xsl:text>}</xsl:text>
         </xsl:if>
 
         <xsl:text>\page[yes,right]</xsl:text>
