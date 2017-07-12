@@ -50,7 +50,6 @@
 \setuplayout[setups=*lessstrict]
 
 
-
 % font
 
 \usemodule[simplefonts]
@@ -147,44 +146,40 @@
 
 \setuphead[title]
   [number=no,
-  before={\blank[60pt]},
+  header=high,
   after={\blank[24pt]},
   style={\switchtobodyfont[14pt]},
-  interlinespace=16pt, 
-  header=empty]
+  interlinespace=16pt]
   
 \setuphead[mytitle]
   [number=no,
   after={\blank[0pt]},
   style={\switchtobodyfont[14pt]},
-  interlinespace=16pt,
-  header=empty]
+  interlinespace=16pt]
   
 \setuphead[section]
   [number=no,
-  % before is handled by paragraphs
-  %before={\blank[24pt]},
+  header=high,
   after={\blank[12pt]},
   style={\switchtobodyfont[12pt]},
   interlinespace=14pt,
-  align=middle,
-  header=empty]
+  align=middle]
   
 \setuphead[notTOCsection]
   [number=no,
-  % before is handled by paragraphs
-  %before={\blank[24pt]},
+  header=high,
   after={\blank[12pt]},
   style={\switchtobodyfont[12pt]},
   interlinespace=14pt,
-  align=middle,
-  header=empty]
+  align=middle]
   
 \setuphead[subject]
-  [after={\blank[12pt]}]
+  [header=high,
+  after={\blank[12pt]}]
 
+\definemarking[evHeader][]
 \definemarking[oddHeader][]
-\definemarking[evenHeader][]
+
 
 \setupheadertexts
   []
@@ -198,8 +193,9 @@
   {\tfx\it \getmarking[oddHeader][first]}
   \hfill
   \llap{\userpagenumber}
-\stopsetups
-
+\stopsetups  
+  
+  
 \startsetups[b]
   \switchtobodyfont[default]
   % \userpagenumber instead of pagenumber in order to get roman numbering in forewords
@@ -208,13 +204,13 @@
   \hfill
    % adapt for publication: information has to be retrieved from TEI header
   %{\tfx\it J. A. Nösselt, Anweisung zur Bildung angehender Theologen\ \high{1}1786/89–\high{3}1818/19}
-  {\tfx\it \getmarking[evenHeader][first]}
+  {\tfx\it \getmarking[evHeader][first]}
   \hfill
   \llap{}
-\stopsetups
+\stopsetups  
 
 \setupheadertexts
-  [\setups{a}][][][\setups{b}]
+ [\setups{a}][][][\setups{b}]
   
 
 \setuppagenumbering
@@ -250,8 +246,8 @@
 %    style=\tfa]
 
 \setuphead[part]
-  [before={\blank[10mm, force]},
-   after={\blank[6pt]},
+  %[before={\blank[10mm, force]},
+   [after={\blank[6pt]},
    align=middle,
    header=empty,
    number=no,
@@ -259,8 +255,8 @@
    style=\tfa]
    
 \setuphead[chapter]
-  [before={\blank[10mm, force]},
-   after={\blank[6pt]},
+  %[before={\blank[10mm, force]},
+   [after={\blank[6pt]},
    align=middle,
    header=empty,
    number=no,
@@ -274,8 +270,8 @@
 %   style=\tfa]
    
 \setuphead[subject]
-  [before={\blank[8pt]},
-   after={\blank[4pt]},
+  %[before={\blank[8pt]},
+   [after={\blank[4pt]},
    align=middle,
    style=\tfa]
    
@@ -301,10 +297,17 @@
 \setupindenting
   [yes, 4mm, next]
   
+\setupnotation
+  [footnote]
+  [alternative=left,
+   hang=1,
+   numbercommand=\hskip0.4cm]  
+  
 \setupfootnotes
   [conversion=none, 
   %way=bypage]
-  way=bysection]
+  way=bysection,
+  split=tolerant]
 
   % doesn't work properly yet
 \setupnote[footnote]
@@ -322,10 +325,13 @@
 
 \setupnarrower
   [left=4mm]
-
+  
 % TODO: optimize inter word spacing
 \setuptolerance
   [verytolerant]
+  
+%\setuptolerance
+%  [horizontal,strict]
   
   
 % editor
@@ -393,7 +399,8 @@
   [compress=yes,
    indicator=no,
    pagestyle=\tf,
-   n=1]
+   n=1,
+   method={zc,mm,uc}]
    
 \defineconversion[s][,,,]
 
@@ -413,7 +420,7 @@
    \typo_injectors_mark_register}
 \protect
 
-\hyphenation{Er-zie-hungs-we-sens Schul-schrif-ten Ab-sicht The-o-phrast's Wis-sen-schaf-ten Er-läu-ter-ungs-schrif-ten Kir-chen-ge-schich-te ge-nomm-ne An-drer wo-rü-ber Mit-thei-lung noth-wen-dig noth-wen-di-ge noth-wen-di-ges noth-wen-di-gen Noth-wen-dig-keit Noth-wen-dig-kei-ten Ein-thei-lung be-ur-theilt Be-ur-thei-lung nach-thei-lig Vor-ur-theil se-ue-ra Ur-thei-le wo-raus groß-en-theils Irr-thum Irr-thü-mer Ra-ti-o-nal-er-kennt-niß Wolf-schen ein-thei-len Haupt\-, mit-thei-len Wa-cker-barth be-ur-thei-len ei-gen-thüm-li-chen Chris-ten-thums un-grie-chisch-e vor-tref-li-ches Pro-fan-scri-ben-ten mit-theilt Ue-ber-ei-lun-gen Ver-mu-thun-gen Prü-fe-stein ver-thei-di-gen un-par-they-isch-e Vor-theil Un-thä-ti-gkeit größ-ten-theils Ver-stan-de Vor-ur-thei-le Lieg-nitz vie-ler-ley Ver-muth-ung der-sel-ben ge-mein-schaft-li-cher letzt-er-wähn-ten Er-kennt-niß-quel-le Re-li-gions-par-they-en}
+\hyphenation{Er-zie-hungs-we-sens Schul-schrif-ten Ab-sicht The-o-phrast's Wis-sen-schaf-ten Er-läu-ter-ungs-schrif-ten Kir-chen-ge-schich-te ge-nomm-ne An-drer wo-rü-ber Mit-thei-lung noth-wen-dig noth-wen-di-ge noth-wen-di-ges noth-wen-di-gen Noth-wen-dig-keit Noth-wen-dig-kei-ten Ein-thei-lung be-ur-theilt Be-ur-thei-lung nach-thei-lig Vor-ur-theil se-ue-ra Ur-thei-le wo-raus groß-en-theils Irr-thum Irr-thü-mer Ra-ti-o-nal-er-kennt-niß Wolf-schen ein-thei-len Haupt\-, mit-thei-len Wa-cker-barth be-ur-thei-len ei-gen-thüm-li-chen Chris-ten-thums un-grie-chisch-e vor-tref-li-ches Pro-fan-scri-ben-ten mit-theilt Ue-ber-ei-lun-gen Ver-mu-thun-gen Prü-fe-stein ver-thei-di-gen un-par-they-isch-e Vor-theil Un-thä-ti-gkeit größ-ten-theils Ver-stan-de Vor-ur-thei-le Lieg-nitz vie-ler-ley Ver-muth-ung der-sel-ben ge-mein-schaft-li-cher letzt-er-wähn-ten Er-kennt-niß-quel-le Re-li-gions-par-they-en un-par-they-isch-en}
 
 
 % lua
@@ -540,26 +547,26 @@ nodes.tasks.appendaction("finalizers", "after", "processMargins")
 \stopluacode
 
 
-\unprotect
+ \unprotect
 
-\unexpanded\def\registerpagerange#1#2#3#4#5#6#7%
-  {\registerpageseparator
-   \global\setconstant\c_strc_registers_page_state\plusone
-   \dostarttagged\t!registerpagerange\empty
-   \dostarttagged\t!registerfrompage\empty
-   \withregisterpagecommand{#1}{#2}{#3}{#4}%
-   \dostoptagged
-   \ifnum\the\numexpr#6-#3\relax=1
-     f.%
-   \else
-     \registeronepagerangeseparator
-     \dostarttagged\t!registertopage\empty
-     \withregisterpagecommand{#1}{#5}{#6}{#7}%
-     \dostoptagged
-   \fi
-   \dostoptagged}
-
-\protect
+ \unexpanded\def\registerpagerange#1#2#3#4#5#6#7%
+   {\registerpageseparator
+    \global\setconstant\c_strc_registers_page_state\plusone
+    \dostarttagged\t!registerpagerange\empty
+    \dostarttagged\t!registerfrompage\empty
+    \withregisterpagecommand{#1}{#2}{#3}{#4}%
+    \dostoptagged
+    \ifnum\the\numexpr#6-#3\relax=1
+      f.%
+    \else
+      \registeronepagerangeseparator
+      \dostarttagged\t!registertopage\empty
+      \withregisterpagecommand{#1}{#5}{#6}{#7}%
+      \dostoptagged
+    \fi
+    \dostoptagged}
+ 
+ \protect
 
 \starttext
 
