@@ -130,14 +130,14 @@
 
         <xsl:if test="rdg[@type = 'ppl' or @type = 'ptl']">
             <xsl:for-each select="rdg[@type = 'ppl' or @type = 'ptl']">
-                <xsl:choose>
+                <!--<xsl:choose>
                     <xsl:when test="parent::note/*[1] = .">
                         <xsl:text>\blank[-4pt]</xsl:text>
                     </xsl:when>
                     <xsl:otherwise>
                         <xsl:text>\blank[4pt]</xsl:text>
                     </xsl:otherwise>
-                </xsl:choose>
+                </xsl:choose>-->
 
                 <xsl:text>
                     \start
@@ -235,7 +235,9 @@
                 <xsl:if test="position() != last()">
                     <xsl:text>
                     \par
-                    \blank[4pt]
+                    </xsl:text>
+                    <!--\blank[4pt]-->
+                    <xsl:text>
                     \noindent
                     </xsl:text>
                 </xsl:if>
@@ -246,8 +248,8 @@
 
                 <xsl:text>
                     \stop                               
-                    \blank[4pt]
                 </xsl:text>
+                <!-- \blank[4pt] -->
 
                 <xsl:if test="not(parent::app/following-sibling::*[1][self::p])"> \noindent </xsl:if>
             </xsl:for-each>
@@ -379,7 +381,7 @@
     <xsl:template match="div[@type = 'section']">
         <xsl:apply-templates/>
         <!--<xsl:text>\blank[2*big]</xsl:text>-->
-        <xsl:text>\blank[4pt]</xsl:text>
+        <!--<xsl:text>\blank[4pt]</xsl:text>-->
     </xsl:template>
 
     <xsl:template match="divGen[@type = 'Inhalt']">
@@ -941,12 +943,12 @@
             <xsl:when test="preceding-sibling::*[1][self::note] or preceding-sibling::*[1][self::app/rdg[@type = 'ppl' or 'ptl']]">
                 <!--<xsl:text>\blank[-10pt]</xsl:text>-->
                 <!--<xsl:text>\blank[-5pt]</xsl:text>-->
-                <xsl:text>\blank[2pt]</xsl:text>
+                <!--<xsl:text>\blank[2pt]</xsl:text>-->
             </xsl:when>
             <xsl:when test="parent::rdg[@type = 'ppl' or @type = 'ptl']/child::*[1] = ."/>
             <xsl:otherwise>
                 <!--<xsl:text>\blank[5pt]</xsl:text>-->
-                <xsl:text>\blank[4pt]</xsl:text>
+                <!--<xsl:text>\blank[4pt]</xsl:text>-->
             </xsl:otherwise>
         </xsl:choose>
 
@@ -1047,7 +1049,9 @@
         </xsl:text>-->
                 <xsl:text>
                 \stopnarrower}
-                \blank[4pt]
+                </xsl:text>
+                <!--\blank[4pt]-->
+                <xsl:text>
                 \noindent
                 </xsl:text>
             </xsl:otherwise>
@@ -1058,8 +1062,10 @@
     <xsl:template match="app[not(@type = 'structural-variance')]/lem/note[@type = 'authorial']">
         <xsl:variable name="omWitTmp" select="string-join(../../rdg[@type = 'om']/@wit, '')"/>
         <xsl:variable name="omWit" select="replace($omWitTmp, '[^a-z]', '')"/>
-        <xsl:text>
+        <!--<xsl:text>
             \blank[4pt]
+        </xsl:text>-->
+        <xsl:text>
             {\switchtobodyfont[8.5pt]
             \startnarrower[left]
             \noindent
@@ -1117,7 +1123,9 @@
 
         <xsl:text>            
             \stopnarrower}
-            \blank[4pt]
+        </xsl:text>
+          <!--  \blank[4pt]-->
+        <xsl:text>
             \noindent
         </xsl:text>
     </xsl:template>
@@ -1324,18 +1332,18 @@
             <xsl:text>\par </xsl:text>
         </xsl:if>
 
-        <xsl:if test="ancestor::div[@subtype = 'print'] and ancestor::div[1]/descendant::p[last()] = .">
+        <!--<xsl:if test="ancestor::div[@subtype = 'print'] and ancestor::div[1]/descendant::p[last()] = .">
             <xsl:text>\blank[24pt]</xsl:text>
-        </xsl:if>
+        </xsl:if>-->
     </xsl:template>
 
 
     <xsl:template match="div[not(@type = 'editors')]/p[@rend = 'margin-vertical']">
         <xsl:text>\crlf \crlf </xsl:text>
         <xsl:apply-templates/>
-        <xsl:if test="ancestor::div[@subtype = 'print'] and ancestor::div[1]/descendant::p[last()] = .">
+       <!-- <xsl:if test="ancestor::div[@subtype = 'print'] and ancestor::div[1]/descendant::p[last()] = .">
             <xsl:text>\blank[24pt]</xsl:text>
-        </xsl:if>
+        </xsl:if>-->
         <xsl:text>\par </xsl:text>
     </xsl:template>
 
@@ -1486,7 +1494,9 @@
             <xsl:if test="position() != last()">
                 <xsl:text>
                     \par
-                    \blank[6pt]
+                </xsl:text>
+                    <!--\blank[6pt]-->
+                <xsl:text>
                     \noindent
                 </xsl:text>
             </xsl:if>
@@ -1602,12 +1612,12 @@
     </xsl:template>
 
     <xsl:template match="list[ancestor::div[@subtype = 'print' and @type = 'editorial'] and descendant::label]">
-        <!--<xsl:text>\starttabulate[|l|p|] </xsl:text>
+        <xsl:text>\starttabulate[|l|p|] </xsl:text>
         <xsl:apply-templates/>
-        <xsl:text>\stoptabulate </xsl:text>-->
-        <xsl:text>\starttwocolumns </xsl:text>
+        <xsl:text>\stoptabulate </xsl:text>
+        <!--<xsl:text>\starttwocolumns </xsl:text>
         <xsl:apply-templates/>
-        <xsl:text>\stoptwocolumns </xsl:text>
+        <xsl:text>\stoptwocolumns </xsl:text>-->
     </xsl:template>
 
     <xsl:template match="item">
@@ -1900,14 +1910,15 @@
             <xsl:value-of select="head"/>
             <xsl:text>}</xsl:text>
         </xsl:if>
-
-        <xsl:text>\page[yes,right]</xsl:text>
-        <xsl:text>\noheaderandfooterlines</xsl:text>
-        <xsl:apply-templates/>
-        <xsl:if test="parent::front">
-            <!--<xsl:text>\page[yes,right]</xsl:text>
-            <xsl:text>\noheaderandfooterlines</xsl:text>-->
+        
+        <xsl:if test="not(parent::front)">
+            <xsl:text>\page[right,empty]</xsl:text>
+            <xsl:text>\noheaderandfooterlines</xsl:text>
         </xsl:if>
+        
+        <!--<xsl:text>\page[right,empty]</xsl:text>
+        <xsl:text>\noheaderandfooterlines</xsl:text>-->
+        <xsl:apply-templates/>
     </xsl:template>
 
 
@@ -1916,15 +1927,23 @@
             <xsl:text>\page</xsl:text>
             <xsl:apply-templates/>
         </xsl:if>-->
+        <xsl:choose>
+            <xsl:when test="ancestor::group">
+                <xsl:text>\marking[evHeader]{{\tfx\it J. A. Nösselt, Anweisung zur Bildung angehender Theologen\ \high{1}1786/89–\high{3}1818/19}}</xsl:text>
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:text>\marking[evHeader]{Inhalt}</xsl:text>
+            </xsl:otherwise>
+        </xsl:choose>
+       
         <xsl:text>\marking[oddHeader]{Inhalt}</xsl:text>
-        <xsl:text>\marking[evHeader]{Inhalt}</xsl:text>
         
         <xsl:choose>
             <xsl:when test="parent::front">
                 <xsl:apply-templates select="divGen[@type = 'Inhalt']"/>
             </xsl:when>
             <xsl:otherwise>
-                <xsl:text>\page[yes,right,empty]</xsl:text>
+                <xsl:text>\page[right]</xsl:text>
                 <xsl:text>\noheaderandfooterlines</xsl:text>
                 <xsl:apply-templates/>
             </xsl:otherwise>
@@ -1942,7 +1961,7 @@
 
     <xsl:template match="text">
         <xsl:apply-templates/>
-        <!--<xsl:text>\page[yes,right]</xsl:text>
+        <!--<xsl:text>\page[right,empty]</xsl:text>
         <xsl:text>\noheaderandfooterlines</xsl:text>-->
     </xsl:template>
 
@@ -2109,6 +2128,7 @@
 
     <xsl:template match="group">
         <xsl:text>
+            \noheaderandfooterlines
             \marking[evHeader]{
             {\tfx\it J. A. Nösselt, Anweisung zur Bildung angehender Theologen\ \high{1}1786/89–\high{3}1818/19}
             }</xsl:text>
@@ -2309,16 +2329,24 @@
     </xsl:template>
 
     <xsl:template match="div[@type = 'part']">
-        <xsl:text>\page[yes,right,empty]</xsl:text>
+        <xsl:text>\page[right,empty]</xsl:text>
         <xsl:text>\noheaderandfooterlines</xsl:text>
         <!--<xsl:text>\setupheader[empty]</xsl:text>-->
         <xsl:apply-templates/>
     </xsl:template>
 
     <xsl:template match="div[@type = 'chapter']">
-        <xsl:text>\page[yes,right,empty]</xsl:text>
+        <xsl:text>\page[right,empty]</xsl:text>
         <xsl:text>\noheaderandfooterlines</xsl:text>
         <!--<xsl:text>\setupheader[empty]</xsl:text>-->
+        <xsl:apply-templates/>
+    </xsl:template>
+    
+    <xsl:template match="div[@type = 'introduction'][ancestor::group]">
+        <xsl:text>
+            \page[right,empty]
+            \noheaderandfooterlines
+        </xsl:text>
         <xsl:apply-templates/>
     </xsl:template>
 
@@ -2346,7 +2374,7 @@
         <xsl:text>\marking[oddHeader]{</xsl:text>
         <xsl:value-of select="head"/>
         <xsl:text>}</xsl:text>
-        <!--<xsl:text>\page[yes,right,empty]</xsl:text>
+        <!--<xsl:text>\page[right,empty]</xsl:text>
         <xsl:text>\noheaderandfooterlines</xsl:text>-->
 
         <xsl:apply-templates/>
