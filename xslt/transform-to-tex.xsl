@@ -247,9 +247,13 @@
                 </xsl:if>
 
                 <xsl:text>
-                    \stop                               
+                    \stop
                 </xsl:text>
                 <!-- \blank[4pt] -->
+
+                <xsl:if test="child::titlePage and child::*[last()][self::pb]">
+                    <xsl:text>\hspace[big]</xsl:text>
+                </xsl:if>
 
                 <xsl:if test="not(parent::app/following-sibling::*[1][self::p])"> \noindent </xsl:if>
             </xsl:for-each>
@@ -310,7 +314,7 @@
                 <xsl:text>\crlf </xsl:text>
                 <xsl:choose>
                     <xsl:when test="@unit = 'p' and (not(preceding-sibling::*[1][self::list]) and not(preceding-sibling::*[1][self::seg][child::*[last()][self::list]]))">
-                        <!-- hidden element necessary, otherwise no display of hspace 
+                        <!-- hidden element necessary, otherwise no display of hspace
                     at the beginning of a paragraph -->
                         <xsl:text>
                         \starteffect[hidden]
@@ -326,7 +330,7 @@
                     </xsl:when>
                 </xsl:choose>
                 <!--<xsl:if test="@unit = 'p' and not(preceding-sibling::*[1][self::list]) and not(preceding-sibling::*[1][self::seg][child::*[last()][self::list]])">-->
-                <!-- hidden element necessary, otherwise no display of hspace 
+                <!-- hidden element necessary, otherwise no display of hspace
                     at the beginning of a paragraph -->
                 <!--<xsl:text>
                         \starteffect[hidden]
@@ -432,7 +436,7 @@
                 \hfill
                 \llap{\pagenumber}
                 \stopsetups
- 
+
                 \startcolumns
                 \placebibelIndex
                 \stopcolumns
@@ -442,7 +446,7 @@
     <xsl:template match="divGen[@type = 'persons']">
         <xsl:text>
             \writetolist[chapter]{}{Personen}
- 
+
                 \startsetups[a]
                 \switchtobodyfont[default]
                 \rlap{}
@@ -451,7 +455,7 @@
                 \hfill
                 \llap{\pagenumber}
                 \stopsetups
- 
+
                 \startcolumns
                 \placepersIndex
                 \stopcolumns
@@ -459,9 +463,9 @@
     </xsl:template>
 
     <xsl:template match="divGen[@type = 'classical-authors']">
-        <xsl:text>              
+        <xsl:text>
             \writetolist[chapter]{}{Antike Autoren}
- 
+
                 \startsetups[a]
                 \switchtobodyfont[default]
                 \rlap{}
@@ -470,7 +474,7 @@
                 \hfill
                 \llap{\pagenumber}
                 \stopsetups
- 
+
                 {\startcolumns
                 \placeantIndex
                 \stopcolumns}
@@ -480,7 +484,7 @@
     <xsl:template match="divGen[@type = 'subjects']">
         <xsl:text>
             \writetolist[chapter]{}{Sachen}
- 
+
             \startsetups[a]
             \switchtobodyfont[default]
             \rlap{}
@@ -635,7 +639,7 @@
         <xsl:text>]{</xsl:text>
         <xsl:text>{\switchtobodyfont[9pt]</xsl:text>
         <xsl:apply-templates/>
-        <xsl:text>}}</xsl:text>    
+        <xsl:text>}}</xsl:text>
     </xsl:template>-->
 
     <xsl:template match="foreign[@xml:lang = 'gr']">
@@ -650,7 +654,7 @@
     </xsl:template>
 
     <xsl:template match="foreign[@xml:lang = 'he']">
-        <xsl:text>{\switchtobodyfont[7pt] 
+        <xsl:text>{\switchtobodyfont[7pt]
             \ezraFont </xsl:text>
         <xsl:apply-templates/>
         <xsl:text>}</xsl:text>
@@ -809,7 +813,7 @@
         <xsl:value-of select="persName"/>
 
         <!-- Achtung: auch Fälle mit zwei term-Elementen!! -->
-        <!-- OS: Wir haben bislang nur wenige Fälle der Indexierung mit zwei <terms>. 
+        <!-- OS: Wir haben bislang nur wenige Fälle der Indexierung mit zwei <terms>.
             Hier sollte sich die Seitenanzeige im Print nur bei dem zweiten Term ausgegeben werden.-->
 
         <xsl:if test="title">
@@ -917,7 +921,7 @@
         <xsl:text>\sachIndex{</xsl:text>
         <!-- sorting of entries is now done by \setupregister[method=...]-->
         <!--<xsl:text>\sachIndex[</xsl:text>-->
-        <!-- necessary for indexing. 
+        <!-- necessary for indexing.
             otherwise terms beginning with lower case will be sorted after terms with upper case.
             only sachIndex has items which start with lower case letters. -->
         <!--<xsl:value-of select="upper-case(.)"/>
@@ -954,6 +958,13 @@
 
         <xsl:choose>
             <xsl:when test="ancestor::rdg[@type = 'ppl' or @type = 'ptl']">
+              <xsl:if test="ancestor::rdg[@type = 'ppl' or @type = 'ptl']/child::*[self::div] = ancestor::div[1]">
+                <xsl:text>
+                  {\switchtobodyfont[8.5pt]
+                  \startnarrower[left]
+                  \noindentation
+                </xsl:text>
+              </xsl:if>
                 <xsl:call-template name="pbBefore"/>
                 <xsl:apply-templates/>
 
@@ -971,6 +982,16 @@
                     <xsl:text>}}{</xsl:text>
                     <xsl:value-of select="replace(ancestor::rdg[@type = 'ppl' or @type = 'ptl'][1]/@wit, '[#\s]', '')"/>
                     <xsl:text>}</xsl:text>
+                </xsl:if>
+
+                <xsl:if test="ancestor::rdg[@type = 'ppl' or @type = 'ptl']/child::*[self::div] = ancestor::div[1]">
+                  <xsl:text>
+                    \stopnarrower}
+                  </xsl:text>
+                  <!--\blank[4pt]-->
+                  <xsl:text>
+                    \noindent
+                  </xsl:text>
                 </xsl:if>
             </xsl:when>
 
@@ -1014,7 +1035,7 @@
                     <xsl:value-of select="replace(parent::lem/following-sibling::rdg[@type = 'om']/@wit, '[#\s]', '')"/>
                     <xsl:text>\textbackslash}}{</xsl:text>
                     <xsl:value-of select="replace(parent::lem/following-sibling::rdg[@type = 'om']/@wit, '[#\s]', '')"/>
-                    <xsl:text>\textbackslash}</xsl:text>  
+                    <xsl:text>\textbackslash}</xsl:text>
                 </xsl:if> -->
 
                 <xsl:if test="
@@ -1121,7 +1142,7 @@
             <xsl:text>\textbackslash}}</xsl:text>
         </xsl:if>
 
-        <xsl:text>            
+        <xsl:text>
             \stopnarrower}
         </xsl:text>
           <!--  \blank[4pt]-->
@@ -1258,8 +1279,8 @@
 
         <xsl:apply-templates/>
 
-        <!-- more general XPath: 
-            ancestor::lem[1]/following-sibling::rdg[@type = 'om'] 
+        <!-- more general XPath:
+            ancestor::lem[1]/following-sibling::rdg[@type = 'om']
             and ancestor::lem/descendant::node()[last()][matches(., '\w')]/parent::* = . -->
         <!-- might cover more cases in other works than in Nösselt -->
         <xsl:if test="parent::lem[1]/following-sibling::rdg[@type = 'om'] and parent::lem/child::*[last()] = .">
@@ -1612,12 +1633,12 @@
     </xsl:template>
 
     <xsl:template match="list[ancestor::div[@subtype = 'print' and @type = 'editorial'] and descendant::label]">
-        <xsl:text>\starttabulate[|l|p|] </xsl:text>
+        <!--<xsl:text>\starttabulate[|l|p|] </xsl:text>
         <xsl:apply-templates/>
-        <xsl:text>\stoptabulate </xsl:text>
-        <!--<xsl:text>\starttwocolumns </xsl:text>
+        <xsl:text>\stoptabulate </xsl:text>-->
+        <xsl:text>\starttwocolumns </xsl:text>
         <xsl:apply-templates/>
-        <xsl:text>\stoptwocolumns </xsl:text>-->
+        <xsl:text>\stoptwocolumns </xsl:text>
     </xsl:template>
 
     <xsl:template match="item">
@@ -1854,7 +1875,7 @@
         <xsl:if test="descendant::seg[@type = 'toc-item']">
             <xsl:apply-templates select="descendant::seg[@type = 'toc-item']"/>
         </xsl:if>
-        
+
         <xsl:if test="descendant::seg[@type = 'condensed']">
             <xsl:apply-templates select="descendant::seg[@type = 'condensed']"/>
         </xsl:if>
@@ -1871,7 +1892,7 @@
         <xsl:if test="descendant::seg[@type = 'toc-item']">
             <xsl:apply-templates select="descendant::seg[@type = 'toc-item']"/>
         </xsl:if>
-        
+
         <xsl:if test="descendant::seg[@type = 'condensed']">
             <xsl:apply-templates select="descendant::seg[@type = 'condensed']"/>
         </xsl:if>
@@ -1910,41 +1931,43 @@
             <xsl:value-of select="head"/>
             <xsl:text>}</xsl:text>
         </xsl:if>
-        
+
         <xsl:if test="not(parent::front)">
-            <xsl:text>\page[right,empty]</xsl:text>
-            <xsl:text>\noheaderandfooterlines</xsl:text>
+            <xsl:text>\page[yes,left,empty]</xsl:text>
+            <xsl:text>\noheaderandfooterlines </xsl:text>
         </xsl:if>
-        
+
         <!--<xsl:text>\page[right,empty]</xsl:text>
-        <xsl:text>\noheaderandfooterlines</xsl:text>-->
+        <xsl:text>\noheaderandfooterlines </xsl:text>-->
         <xsl:apply-templates/>
     </xsl:template>
 
 
     <xsl:template match="div[@type = 'contents']">
-        <!--<xsl:if test="ancestor::group"> 
+        <!--<xsl:if test="ancestor::group">
             <xsl:text>\page</xsl:text>
             <xsl:apply-templates/>
         </xsl:if>-->
         <xsl:choose>
             <xsl:when test="ancestor::group">
-                <xsl:text>\marking[evHeader]{{\tfx\it J. A. Nösselt, Anweisung zur Bildung angehender Theologen\ \high{1}1786/89–\high{3}1818/19}}</xsl:text>
+                <xsl:text>\marking[evHeader]{{\tfx\it </xsl:text>
+                <xsl:apply-templates select="//teiHeader//title[@level = 'a']/title[@type = 'condensed']"/>
+                <xsl:text>}}</xsl:text>
             </xsl:when>
             <xsl:otherwise>
                 <xsl:text>\marking[evHeader]{Inhalt}</xsl:text>
             </xsl:otherwise>
         </xsl:choose>
-       
+
         <xsl:text>\marking[oddHeader]{Inhalt}</xsl:text>
-        
+
         <xsl:choose>
             <xsl:when test="parent::front">
                 <xsl:apply-templates select="divGen[@type = 'Inhalt']"/>
             </xsl:when>
             <xsl:otherwise>
                 <xsl:text>\page[right]</xsl:text>
-                <xsl:text>\noheaderandfooterlines</xsl:text>
+                <xsl:text>\noheaderandfooterlines </xsl:text>
                 <xsl:apply-templates/>
             </xsl:otherwise>
         </xsl:choose>
@@ -1960,9 +1983,12 @@
 
 
     <xsl:template match="text">
+        <xsl:text>\marking[evHeader]{{\tfx\it </xsl:text>
+        <xsl:apply-templates select="//teiHeader//title[@level = 'a']/title[@type = 'condensed']"/>
+        <xsl:text>}}</xsl:text>
         <xsl:apply-templates/>
         <!--<xsl:text>\page[right,empty]</xsl:text>
-        <xsl:text>\noheaderandfooterlines</xsl:text>-->
+        <xsl:text>\noheaderandfooterlines </xsl:text>-->
     </xsl:template>
 
 
@@ -2030,8 +2056,8 @@
         <xsl:apply-templates/>
         <xsl:text>}</xsl:text>
     </xsl:template>
-    
-    
+
+
     <xsl:template match="back">
         <xsl:apply-templates/>
     </xsl:template>
@@ -2053,7 +2079,7 @@
             \writebetweenlist[part]{\blank[20pt]}
             \writetolist[part]{}{Erläuterungen}
             \subject[Erläuterungen]{Erläuterungen}-->
-    
+
             <xsl:text>\definelayout[odd]
             [backspace=48.5mm,
             width=113mm,
@@ -2109,7 +2135,7 @@
 
     <!--<xsl:template match="div[@type = 'editors']">
         <xsl:text>
-            \page 
+            \page
             \startsetups[b]
             \switchtobodyfont[default]
             \rlap{\pagenumber}
@@ -2127,13 +2153,12 @@
     </xsl:template>
 
     <xsl:template match="group">
-        <xsl:text>
-            \noheaderandfooterlines
-            \marking[evHeader]{
-            {\tfx\it J. A. Nösselt, Anweisung zur Bildung angehender Theologen\ \high{1}1786/89–\high{3}1818/19}
-            }</xsl:text>
+        <xsl:text>\noheaderandfooterlines </xsl:text>
+        <xsl:text>\marking[evHeader]{{\tfx\it </xsl:text>
+        <xsl:apply-templates select="//teiHeader//title[@level = 'a']/title[@type = 'condensed']"/>
+        <xsl:text>}}</xsl:text>
             <!--\emptyEvenPage -->
-        <xsl:text>            
+        <xsl:text>
             \startbodymatter
             \setuppagenumber[number=1]</xsl:text>
         <xsl:apply-templates/>
@@ -2323,28 +2348,36 @@
         </xsl:if>
 
         <xsl:if test="ancestor::group">
-            <xsl:text>\marking[evHeader]{{\tfx\it J. A. Nösselt, Anweisung zur Bildung angehender Theologen\ \high{1}1786/89–\high{3}1818/19}}</xsl:text>
+            <xsl:text>\page[right,empty]</xsl:text>
+            <xsl:text>\noheaderandfooterlines </xsl:text>
+            <xsl:text>\marking[evHeader]{{\tfx\it </xsl:text>
+            <xsl:apply-templates select="//teiHeader//title[@level = 'a']/title[@type = 'condensed']"/>
+            <xsl:text>}}</xsl:text>
         </xsl:if>
         <xsl:apply-templates/>
     </xsl:template>
 
     <xsl:template match="div[@type = 'part']">
         <xsl:text>\page[right,empty]</xsl:text>
-        <xsl:text>\noheaderandfooterlines</xsl:text>
+        <xsl:text>\noheaderandfooterlines </xsl:text>
         <!--<xsl:text>\setupheader[empty]</xsl:text>-->
         <xsl:apply-templates/>
     </xsl:template>
 
     <xsl:template match="div[@type = 'chapter']">
         <xsl:text>\page[right,empty]</xsl:text>
-        <xsl:text>\noheaderandfooterlines</xsl:text>
+        <xsl:text>\noheaderandfooterlines </xsl:text>
         <!--<xsl:text>\setupheader[empty]</xsl:text>-->
         <xsl:apply-templates/>
     </xsl:template>
-    
+
     <xsl:template match="div[@type = 'introduction'][ancestor::group]">
+        <xsl:if test="not(preceding-sibling::*[1][descendant::div[@type = 'titlePage']])">
+            <xsl:text>
+                \page[right,empty]
+            </xsl:text>
+        </xsl:if>
         <xsl:text>
-            \page[right,empty]
             \noheaderandfooterlines
         </xsl:text>
         <xsl:apply-templates/>
@@ -2375,7 +2408,7 @@
         <xsl:value-of select="head"/>
         <xsl:text>}</xsl:text>
         <!--<xsl:text>\page[right,empty]</xsl:text>
-        <xsl:text>\noheaderandfooterlines</xsl:text>-->
+        <xsl:text>\noheaderandfooterlines </xsl:text>-->
 
         <xsl:apply-templates/>
     </xsl:template>
