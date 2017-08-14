@@ -130,14 +130,14 @@
 
         <xsl:if test="rdg[@type = 'ppl' or @type = 'ptl']">
             <xsl:for-each select="rdg[@type = 'ppl' or @type = 'ptl']">
-                <!--<xsl:choose>
+                <xsl:choose>
                     <xsl:when test="parent::note/*[1] = .">
                         <xsl:text>\blank[-4pt]</xsl:text>
                     </xsl:when>
                     <xsl:otherwise>
                         <xsl:text>\blank[4pt]</xsl:text>
                     </xsl:otherwise>
-                </xsl:choose>-->
+                </xsl:choose>
 
                 <xsl:text>
                     \start
@@ -236,8 +236,9 @@
                     <xsl:text>
                     \par
                     </xsl:text>
-                    <!--\blank[4pt]-->
+                    
                     <xsl:text>
+		    \blank[4pt]
                     \noindent
                     </xsl:text>
                 </xsl:if>
@@ -248,8 +249,9 @@
 
                 <xsl:text>
                     \stop
+			\blank[4pt]
                 </xsl:text>
-                <!-- \blank[4pt] -->
+                
 
                 <xsl:if test="child::titlePage and child::*[last()][self::pb]">
                     <xsl:text>\hspace[big]</xsl:text>
@@ -286,8 +288,8 @@
         <xsl:choose>
             <xsl:when test="
                     ancestor::rdg[@type = 'ppl' or @type = 'ptl']
-                    and not(preceding-sibling::node()
-                    or parent::seg/preceding-sibling::node())
+                    and (not(preceding-sibling::node())
+                    and not(parent::seg/preceding-sibling::node()))
                     or preceding-sibling::pb">
                 <xsl:if test="@unit = 'p'">
                     <xsl:text> \p{}</xsl:text>
@@ -947,12 +949,12 @@
             <xsl:when test="preceding-sibling::*[1][self::note] or preceding-sibling::*[1][self::app/rdg[@type = 'ppl' or 'ptl']]">
                 <!--<xsl:text>\blank[-10pt]</xsl:text>-->
                 <!--<xsl:text>\blank[-5pt]</xsl:text>-->
-                <!--<xsl:text>\blank[2pt]</xsl:text>-->
+                <xsl:text>\blank[2pt]</xsl:text>
             </xsl:when>
             <xsl:when test="parent::rdg[@type = 'ppl' or @type = 'ptl']/child::*[1] = ."/>
             <xsl:otherwise>
                 <!--<xsl:text>\blank[5pt]</xsl:text>-->
-                <!--<xsl:text>\blank[4pt]</xsl:text>-->
+                <xsl:text>\blank[4pt]</xsl:text>
             </xsl:otherwise>
         </xsl:choose>
 
@@ -988,8 +990,9 @@
                   <xsl:text>
                     \stopnarrower}
                   </xsl:text>
-                  <!--\blank[4pt]-->
+                  
                   <xsl:text>
+			  \blank[4pt]
                     \noindent
                   </xsl:text>
                 </xsl:if>
@@ -1071,8 +1074,9 @@
                 <xsl:text>
                 \stopnarrower}
                 </xsl:text>
-                <!--\blank[4pt]-->
+                
                 <xsl:text>
+			\blank[4pt]
                 \noindent
                 </xsl:text>
             </xsl:otherwise>
@@ -1083,9 +1087,9 @@
     <xsl:template match="app[not(@type = 'structural-variance')]/lem/note[@type = 'authorial']">
         <xsl:variable name="omWitTmp" select="string-join(../../rdg[@type = 'om']/@wit, '')"/>
         <xsl:variable name="omWit" select="replace($omWitTmp, '[^a-z]', '')"/>
-        <!--<xsl:text>
+        <xsl:text>
             \blank[4pt]
-        </xsl:text>-->
+        </xsl:text>
         <xsl:text>
             {\switchtobodyfont[8.5pt]
             \startnarrower[left]
@@ -1145,8 +1149,9 @@
         <xsl:text>
             \stopnarrower}
         </xsl:text>
-          <!--  \blank[4pt]-->
+        
         <xsl:text>
+		\blank[4pt]
             \noindent
         </xsl:text>
     </xsl:template>
@@ -1516,8 +1521,9 @@
                 <xsl:text>
                     \par
                 </xsl:text>
-                    <!--\blank[6pt]-->
+                
                 <xsl:text>
+			\blank[6pt]
                     \noindent
                 </xsl:text>
             </xsl:if>
