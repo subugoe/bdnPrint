@@ -105,7 +105,7 @@
 \definebodyfontenvironment[10pt]
   %[interlinespace=12.25pt, % xx for footnote markers
   % publisher guidelines: ``exactly'' 12pt
-  [interlinespace=12pt,
+  [interlinespace=12.25pt,
    a=11.5pt, x=8.5pt, xx=7.75pt]
 
 % footnotes, notes, rdg[@type = 'ppl'/'ptl']
@@ -115,11 +115,11 @@
   
 % for headers. check publisher guidelines!
 \definebodyfontenvironment[9.5pt]
-  [interlinespace=12pt,
+  [interlinespace=12.25pt,
    a=9pt, x=8.5pt, xx=7.75pt]
    
 \definebodyfontenvironment[10.5pt]
-  [interlinespace=12pt,
+  [interlinespace=12.25pt,
    a=9pt, x=8.5pt, xx=7.75pt]
    
 \definefont[petit]
@@ -144,6 +144,11 @@
 
 \definehead[mytitle][title]
 
+\definehead[tablemainhead][subject]
+\definehead[tablemainheadrdg][subject]
+\definehead[tablesubhead][subject]
+\definehead[tablesubheadrdg][subject]
+
 \setuphead[title]
   [number=no,
   header=high,
@@ -153,6 +158,7 @@
   
 \setuphead[mytitle]
   [number=no,
+  header=high,
   after={\blank[0pt]},
   style={\switchtobodyfont[14pt]},
   interlinespace=16pt]
@@ -171,11 +177,54 @@
   after={\blank[12pt]},
   style={\switchtobodyfont[12pt]},
   interlinespace=14pt,
-  align=middle]
+  align=middle] 
+  
   
 \setuphead[subject]
-  [header=high,
-  after={\blank[12pt]}]
+%   [header=high,
+%   after={\blank[12pt]}]
+  [number=no,
+  header=high,
+  after={\blank[12pt]},
+  style={\switchtobodyfont[10.5pt]},
+  interlinespace=14pt,
+  align=middle]
+  
+\setuphead[tablemainhead]  
+  [number=no,
+  header=high,
+  before={\blank[none]},
+  after={\blank[none]},
+  style={\switchtobodyfont[12pt]},
+  interlinespace=14pt,
+  align=middle]
+  
+\setuphead[tablemainheadrdg]  
+  [number=no,
+  header=high,
+  before={\blank[none]},
+  after={\blank[none]},
+  style={\switchtobodyfont[8.5pt]},
+  interlinespace=14pt,
+  align=middle]  
+  
+\setuphead[tablesubhead]  
+  [number=no,
+  header=high,
+  before={\blank[none]},
+  after={\blank[none]},
+  style={\switchtobodyfont[12pt]},
+  interlinespace=14pt,
+  align=middle]  
+  
+\setuphead[tablesubheadrdg]  
+  [number=no,
+  header=high,
+  before={\blank[none]},
+  after={\blank[none]},
+  style={\switchtobodyfont[8.5pt]},
+  interlinespace=14pt,
+  align=middle]   
 
 \definemarking[evHeader][]
 \definemarking[oddHeader][]
@@ -202,8 +251,6 @@
   % see http://tex.stackexchange.com/questions/200660/book-style-page-numbering-with-context
   \rlap{\userpagenumber}
   \hfill
-   % adapt for publication: information has to be retrieved from TEI header
-  %{\tfx\it J. A. Nösselt, Anweisung zur Bildung angehender Theologen\ \high{1}1786/89–\high{3}1818/19}
   {\tfx\it \getmarking[evHeader][first]}
   \hfill
   \llap{}
@@ -249,7 +296,7 @@
   %[before={\blank[10mm, force]},
    [after={\blank[6pt]},
    align=middle,
-   header=empty,
+  % header=empty,
    number=no,
    placehead=yes,
    style=\tfa]
@@ -258,7 +305,7 @@
   %[before={\blank[10mm, force]},
    [after={\blank[6pt]},
    align=middle,
-   header=empty,
+   %header=empty,
    number=no,
    placehead=yes,
    style=\tfa]
@@ -270,10 +317,11 @@
 %   style=\tfa]
    
 \setuphead[subject]
-  %[before={\blank[8pt]},
-   [after={\blank[4pt]},
+  [before={\blank[8pt]},
+   after={\blank[4pt]},
    align=middle,
-   style=\tfa]
+   %style=\tfa,
+   header=high]
    
 \setuplist[part]
   [alternative=c]
@@ -325,7 +373,30 @@
 
 \setupnarrower
   [left=4mm]
-  
+
+\definedelimitedtext[rdg]
+
+\setupdelimitedtext
+        [rdg]
+        [before={\blank[medium]\noindentation\switchtobodyfont[8.5pt]},
+        %[before={\blank[big,fixed]\switchtobodyfont[8.5pt]},
+after={\removeunwantedspaces%\par
+\blank[medium]
+\switchtobodyfont[default]},
+leftmargin=0pt]
+
+\definedelimitedtext[narrow]
+
+\setupdelimitedtext
+        [narrow]
+        [before={%\blank[big,fixed]
+        \switchtobodyfont[8.5pt]},
+after={\removeunwantedspaces%\par
+%\blank[big,fixed]
+\switchtobodyfont[default]},
+leftmargin=4mm]
+
+
 % TODO: optimize inter word spacing
 \setuptolerance
   [verytolerant]
@@ -365,8 +436,7 @@
    interlinespace=10.5pt,
    header=repeat,
    before={\blank[12pt,force]}, 
-   after={\blank[12pt,force]},
-   textcolor=blue]
+   after={\blank[12pt,force]}]
 
 % registers
 
@@ -420,7 +490,7 @@
    \typo_injectors_mark_register}
 \protect
 
-\hyphenation{Er-zie-hungs-we-sens Schul-schrif-ten Ab-sicht The-o-phrast's Wis-sen-schaf-ten Er-läu-ter-ungs-schrif-ten Kir-chen-ge-schich-te ge-nomm-ne An-drer wo-rü-ber Mit-thei-lung noth-wen-dig noth-wen-di-ge noth-wen-di-ges noth-wen-di-gen Noth-wen-dig-keit Noth-wen-dig-kei-ten Ein-thei-lung be-ur-theilt Be-ur-thei-lung nach-thei-lig Vor-ur-theil se-ue-ra Ur-thei-le wo-raus groß-en-theils Irr-thum Irr-thü-mer Ra-ti-o-nal-er-kennt-niß Wolf-schen ein-thei-len Haupt\-, mit-thei-len Wa-cker-barth be-ur-thei-len ei-gen-thüm-li-chen Chris-ten-thums un-grie-chisch-e vor-tref-li-ches Pro-fan-scri-ben-ten mit-theilt Ue-ber-ei-lun-gen Ver-mu-thun-gen Prü-fe-stein ver-thei-di-gen un-par-they-isch-e Vor-theil Un-thä-ti-gkeit größ-ten-theils Ver-stan-de Vor-ur-thei-le Lieg-nitz vie-ler-ley Ver-muth-ung der-sel-ben ge-mein-schaft-li-cher letzt-er-wähn-ten Er-kennt-niß-quel-le Re-li-gions-par-they-en un-par-they-isch-en}
+\hyphenation{Er-zie-hungs-we-sens Schul-schrif-ten Ab-sicht The-o-phrast's Wis-sen-schaf-ten Er-läu-ter-ungs-schrif-ten Kir-chen-ge-schich-te ge-nomm-ne An-drer wo-rü-ber Mit-thei-lung noth-wen-dig noth-wen-di-ge noth-wen-di-ges noth-wen-di-gen Noth-wen-dig-keit Noth-wen-dig-kei-ten Ein-thei-lung be-ur-theilt Be-ur-thei-lung nach-thei-lig Vor-ur-theil se-ue-ra Ur-thei-le wo-raus groß-en-theils Irr-thum Irr-thü-mer Ra-ti-o-nal-er-kennt-niß Wolf-schen ein-thei-len Haupt\-, mit-thei-len Wa-cker-barth be-ur-thei-len ei-gen-thüm-li-chen Chris-ten-thums un-grie-chisch-e vor-tref-li-ches Pro-fan-scri-ben-ten mit-theilt Ue-ber-ei-lun-gen Ver-mu-thun-gen Prü-fe-stein ver-thei-di-gen un-par-they-isch-e Vor-theil Un-thä-ti-gkeit größ-ten-theils Ver-stan-de Vor-ur-thei-le Lieg-nitz vie-ler-ley Ver-muth-ung der-sel-ben ge-mein-schaft-li-cher letzt-er-wähn-ten Er-kennt-niß-quel-le Re-li-gions-par-they-en un-par-they-isch-en (1725–-1791) die-ie-ni-ge Ver-mu-thung-en Nach-theil Be-ur-theil-ung wohl-thä-tigs-ten ur-theil-en}
 
 
 % lua
@@ -568,6 +638,8 @@ nodes.tasks.appendaction("finalizers", "after", "processMargins")
  
  \protect
 
+ 
+ 
 \starttext
 
 % for lining numbers instead of oldstyle numbers (default)
