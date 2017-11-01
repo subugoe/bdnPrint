@@ -23,20 +23,25 @@ $tail =~ s/ \\marking\[oddHeader\]\{Vorreden/\\marking\[oddHeader\]\{Vorreden/g;
 $tail =~ s/\{b\[II\]\} \{\\tfx\\high\{ac\\textbackslash\}\}/\{b\[II\]\}\{\\tfx\\high\{ac\\textbackslash\}\}/g;
 $tail =~ s/Werke, \\margin\{\}\{plClose\}/Werke,\\margin\{\}\{plClose\}/g;
 $tail =~ s/\\crlf 1818\.\\stopalignment\}\\margin\{\}\{pb\}\{\}\{\\vl\}\{c\[II\]\} \\margin\{\}\{plClose\}\{\}\{\\tfx\\high\{c\}\}\{c\}\}/\\crlf 1818\.\\stopalignment\}\\margin\{\}\{pb\}\{\}\{\\vl\}\{c\[II\]\}\\margin\{\}\{plClose\}\{\}\{\\tfx\\high\{c\}\}\{c\}\}/g;
-$tail =~ s/257\\aNote\{259\}\~\.\}/257\\aNote\{259\}\.\}/g;
-$tail =~ s/258\\aNote\{260\}\~\./258\\aNote\{260\}\./g;
-$tail =~ s/259\\aNote\{261\}\~\./259\\aNote\{261\}\./g;
-$tail =~ s/geliefert hat\}\~\.\\par \\blank\[2pt\] /geliefert hat\}\../g;
-$tail =~ s/1735\.\\aNote\{1735\}\~\\margin\{\}/1735\.\\aNote\{1735\} \\margin\{\}/g;
-$tail =~ s/S\. 166 fgg\. \\sym\{\}\\margin\{\}\{omOpen\}\{\}\{\\tfx\\high\{\/a\}\}\{\/a\} /S\. 166 fgg\. \\sym\{\}\\margin\{\}\{omOpen\}\{\}\{\\tfx\\high\{\/a\}\}\{\/a\}/g;
+#$tail =~ s/257\\aNote\{259\}\~\.\}/257\\aNote\{259\}\.\}/g;
+#$tail =~ s/258\\aNote\{260\}\~\./258\\aNote\{260\}\./g;
+#$tail =~ s/259\\aNote\{261\}\~\./259\\aNote\{261\}\./g;
+#$tail =~ s/geliefert hat\}\~\.\\par \\blank\[2pt\] /geliefert hat\}\../g;
+#$tail =~ s/1735\.\\aNote\{1735\}\~\\margin\{\}/1735\.\\aNote\{1735\} \\margin\{\}/g;
+#$tail =~ s/S\. 166 fgg\. \\sym\{\}\\margin\{\}\{omOpen\}\{\}\{\\tfx\\high\{\/a\}\}\{\/a\} /S\. 166 fgg\. \\sym\{\}\\margin\{\}\{omOpen\}\{\}\{\\tfx\\high\{\/a\}\}\{\/a\}/g;
 $tail =~ s/30\.\\cNote\{30\} f\./30\.\\cNote\{30\}f\./g;
 $tail =~ s/S\. 3 f\.\) Auch in/S\. 3f\.\) Auch in/g;
 $tail =~ s/,\}\\margin\{\}\{e\}\{\}\{\\hbox\{\}\}\{E\}/,\} \\margin\{\}\{e\}\{\}\{\\hbox\{\}\}\{E\}/g;
-$tail =~ s/\}\~\./\}\./g;
-$tail =~ s/higkeiten\}\}\~und/higkeiten\}\} und/g;
-$tail =~ s/Frankfurt\}\~und /Frankfurt\} und /g;
-$tail =~ s/5\.\}\~Halae/5\.\} Halae/g;
-$tail =~ s/kann\}\~man/kann\} man/g;
+#$tail =~ s/\}\~\./\}\./g;
+#$tail =~ s/higkeiten\}\}\~und/higkeiten\}\} und/g;
+#$tail =~ s/Frankfurt\}\~und /Frankfurt\} und /g;
+#$tail =~ s/5\.\}\~Halae/5\.\} Halae/g;
+#$tail =~ s/kann\}\~man/kann\} man/g;
+#$tail =~ s/Uebung\}\~im/Uebung\} im/g;
+#$tail =~ s/dadurch\}\~und/dadurch\} und/g;
+#$tail =~ s/sobald\}\~man/sobald\} man/g;
+$tail =~ s/\}\~([\w]{1})/\} $1/g;
+$tail =~ s/\}\~([\.,\]\)]{1})/\}$1/g;
 
 
 # wrong indentation
@@ -82,7 +87,7 @@ $tail =~ s/an die Hand geben\.\\par \\blank\[2pt\]\\stoprdg\}/an die Hand geben\
 
 # paragraphs
 
-$tail =~ s/im Jahr 1791\.\\par/im Jahr 1791\./g;
+$tail =~ s/im Jahr 1791\.\\par /im Jahr 1791\./g;
 $tail =~ s/\\par \\stoprdg\}\} \\noindentation \\resetnumber/\\stoprdg\}\} \\resetnumber/g;
 $tail =~ s/\\setuppagenumber\[number=1\]\\setuppagenumber\[number=25\]/\\setuppagenumber\[number=25\]/g;
 $tail =~ s/1818\/19\}\} \\crlf \{\\switchtobodyfont\[8\.5pt\]\{\\startrdg\\noindentation/1818\/19\}\} \{\\switchtobodyfont\[8\.5pt\]\{\\startrdg/g;
@@ -104,7 +109,8 @@ $tail =~ s/Gleichwohl hat man/\\starteffect\[hidden\]\. \\stopeffect \\hspace\[p
 $tail =~ s/Man that/\\starteffect\[hidden\]\. \\stopeffect \\hspace\[p\]Man that/g;
 $tail =~ s/ssig seyn\.\\par/ssig seyn\.\\par\\starteffect\[hidden\]\. \\stopeffect \\hspace\[p\]Man that/g;
 $tail =~ s/des Werks zusammen\. /des Werks zusammen\. \\blank\[2pt\]/g;
-$tail =~ s/joinedup, inmargin\]\\blank\[12pt\]\\tablemainheadrdg\[Vierter Theil\.\]/joinedup, inmargin\]\\tablemainheadrdg\[Vierter Theil\.\]/g;
+#$tail =~ s/joinedup, inmargin\]\\blank\[12pt\]\\tablemainheadrdg\[Vierter Theil\.\]/joinedup, inmargin\]\\tablemainheadrdg\[Vierter Theil\.\]/g;
+$tail =~ s/Ansichten des Verfassers des Werks zusammen\. \\blank\[2pt\]/Ansichten des Verfassers des Werks zusammen\. \\blank\[4pt\]/g;
 
 
 # errors dealing with the commentary + margins
@@ -172,7 +178,7 @@ $tail =~ s/\\subject\[195\.\]\{\{195\.\}\}\\blank/\\subject\[195\.\]\{\{\\switch
 $tail =~ s/\\subject\[196\.\]\{\{196\.\}\}\\blank/\\subject\[196\.\]\{\{\\switchtobodyfont\[8pt\] 196\.\}\}\\blank/g;
 $tail =~ s/\\subject\[178\.\]\{\{178\.\}\}\\blank/\\subject\[178\.\]\{\{\\switchtobodyfont\[8pt\] 178\.\}\}\\blank/g;
 $tail =~ s/\\subject\[179\.\]\{\{179\.\}\}\\blank/\\subject\[179\.\]\{\{\\switchtobodyfont\[8pt\] 179\.\}\}\\blank/g;
-$tail =~ s/\\subject\[173\.\]\{\{173\.\}\}\\blank/\\subject\[173\.\]\{\{\\switchtobodyfont\[8pt\] 173\.\}\}\\blank/g;
+$tail =~ s/tigen\.\\stopnarrow\}\\blank\[2pt\] \\subject\[173\.\]\{\{173\.\}\}\\blank/tigen\.\\stopnarrow\}\\blank\[2pt\] \\subject\[173\.\]\{\{\\switchtobodyfont\[8pt\] 173\.\}\}\\blank/g;
 $tail =~ s/\\tablemainhead\[Zweyter Theil\.\]\{\{Zweyter Theil\.\}\}\\tablesubheadrdg/\\tablemainheadrdg\[Zweyter Theil\.\]\{\{Zweyter Theil\.\}\}\\tablesubheadrdg/g;
 $tail =~ s/\\tablemainhead\[ Dritter Theil\.\]\{\{\\margin\{\}\{pb\}\{\}\{\\vl\}\{a\[X\]\} Dritter Theil\.\}\}\\tablesubheadrdg/\\tablemainheadrdg\[ Dritter Theil\.\]\{\{\\margin\{\}\{pb\}\{\}\{\\vl\}\{a\[X\]\} Dritter Theil\.\}\}\\tablesubheadrdg/g;
 $tail =~ s/\\marking\[oddHeader\]\{III\. Inhalt des dritten Theils \(c\)\}\}\}\\subject/\\marking\[oddHeader\]\{III\. Inhalt des dritten Theils \(c\)\}\}\}\\tablesubheadrdg/g;
@@ -188,100 +194,27 @@ $tail =~ s/1832\) sind 1798/ 1832\) sind 1798/g;
 $tail =~ s/gemeinschaftlicher Wiederholung/gemeinschaft-licher Wiederholung/g;
 $tail =~ s/Theile \\margin\{\}\{omOpen\}\{\}\{\\tfx\\high\{\/c\}\}\{\/c\}derselben/Theile \\margin\{\}\{omOpen\}\{\}\{\\tfx\\high\{\/c\}\}\{\/c\}dersel-ben/g;
 $tail =~ s/Kirchengeschichte, mehr als/Kirchen-geschichte, mehr als/g;
+$tail =~ s/\{\\tfx\\high\{\/c\}\}\{\\tfx\\high\{\/a\}\}suchen\;/\{\\tfx\\high\{\/c\}\}\{\\tfx\\high\{\/a\}\}su\\\\chen\;/g;
 
 
 # alignment
 $tail =~ s/\\margin\{\}\{pb\}\{\}\{\\vl\}\{b\[II\]\}\{\\tfx\\high\{ac\\textbackslash\}\}/\\leftaligned\{\\margin\{\}\{pb\}\{\}\{\\vl\}\{b\[II\]\}\{\\tfx\\high\{ac\\textbackslash\}\}\}/g;
 $tail =~ s/\\switchtobodyfont\[8\.5pt\]\\margin\{\}\{plOpen\}\{\}\{\\tfx\\high\{c\}\}\{c\}\\marking\[oddHeader\]\{Vorreden\}\{\\startalignment\[center\]\\margin\{\}\{pb\}\{\}\{\\vl\}\{c\[I\]\} Anweisung /\\switchtobodyfont\[8\.5pt\]\{\\startalignment\[center\]\\margin\{\}\{plOpen\}\{\}\{\\tfx\\high\{c\}\}\{c\}\\margin\{\}\{pb\}\{\}\{\\vl\}\{c\[I\]\} Anweisung /g;
-$tail =~ s/Wittwe\. 1791\.\\stopalignment\}\\margin\{\}\{pb\}\{\}\{\\vl\}\{b\[2\]\}\{\\tfx\\high\{ac\\textbackslash\}\}/Wittwe\. 1791\.\\stopalignment\}\\leftaligned\{\\margin\{\}\{pb\}\{\}\{\\vl\}\{b\[2\]\}\{\\tfx\\high\{ac\\textbackslash\}\}\}/g;
-$tail =~ s/\\stopalignment\}\\margin\{\}\{pb\}\{\}\{\\vl\}\{c\[II\]\}/\\stopalignment\}\\leftaligned\{\\margin\{\}\{pb\}\{\}\{\\vl\}\{c\[II\]\}\}/g;
+#$tail =~ s/Wittwe\. 1791\.\\stopalignment\}\\margin\{\}\{pb\}\{\}\{\\vl\}\{b\[2\]\}\{\\tfx\\high\{ac\\textbackslash\}\}/Wittwe\. 1791\.\\stopalignment\}\\leftaligned\{\\margin\{\}\{pb\}\{\}\{\\vl\}\{b\[2\]\}\{\\tfx\\high\{ac\\textbackslash\}\}\}/g;
+#$tail =~ s/\\stopalignment\}\\margin\{\}\{pb\}\{\}\{\\vl\}\{c\[II\]\}\\margin\{\}\{plClose\}\{\}\{\\tfx\\high\{c\}\}\{c\}\}/\\stopalignment\}\\leftaligned\{\\margin\{\}\{pb\}\{\}\{\\vl\}\{c\[II\]\}\\margin\{\}\{plClose\}\{\}\{\\tfx\\high\{c\}\}\{c\}\}\}/g;
 
 
 # orphan and widow lines
-$tail =~ s/93\.\\sym\{\}\\italic\{Erster Abschnitt\:/93\.\\sym\{\}\\page\\italic\{Erster Abschnitt\:/g;
+$tail =~ s/93\.\\page\\sym\{\}\\italic\{Erster Abschnitt\:/93\.\\sym\{\}\\italic\{Erster Abschnitt\:/g;
 $tail =~ s/287\.\\stopitemize \\stopitemize \\sym\{\}/287\.\\stopitemize \\stopitemize \\sym\{\}\\page/g;
 $tail =~ s/Zuletzt, von der vor dem Studium/Zuletzt, von\\page der vor dem Studium/g;
+$tail =~ s/\\stopitemize \\stopitemize \\stopitemize \\sym\{\}\\italic\{Zweyter Abschnitt\: Philosophie\.\}/\\stopitemize \\stopitemize \\stopitemize \\page\\sym\{\}\\italic\{Zweyter Abschnitt\: Philosophie\.\}/g;
 
 # page breaks in margins
-$tail =~ s/\\margin\{\}\{pb\}\{\}\{\\vl\}\{a27\} zu werden/\\margin\{\}\{pb\}\{\}\{\\vl\}\{\; a27\} zu werden/g;
-$tail =~ s/\{b143\}ten der Deutschen/\{\; b143\}ten der Deutschen/g;
-$tail =~ s/a\[IX\]\}chen Gr/\; a\[IX\]\}chen Gr/g;
-$tail =~ s/\{b\[VIII\]\} zu gew/\{\; b\[VIII\]\]\} zu gew/g;
-$tail =~ s/c21\}schen, womit/\; c21\}schen, womit/g;
-$tail =~ s/b234\} dies/\; b234\} dies/g;
-$tail =~ s/c207\} Studierenden/\; c207\} Studierenden/g;
-$tail =~ s/a795\} Denn/\; a795\} Denn/g;
-$tail =~ s/a788\} unterrichtet/\; a788\} unterrichtet/g;
-$tail =~ s/c189\} ists/\; c189\} ists/g;
-$tail =~ s/b191\}cher/\; b191\}cher/g;
-$tail =~ s/c156\}ben/\; c156\}ben/g;
-$tail =~ s/c147\} oder/\; c147\} oder/g;
-#$tail =~ s/b159\}lich/\; b159\}lich/g;
-$tail =~ s/c143\}fen/\; c143\}fen/g;
-$tail =~ s/a733\} Umst/\; a733\]\} Umst/g;
-$tail =~ s/\{b140\} trachten/\{\; b140\} trachten/g;
-$tail =~ s/a708\} die/\; a708\} die/g;
-$tail =~ s/b130\}keit/\; b130\}keit/g;
-$tail =~ s/b111\}t/\; b111\}t/g;
-$tail =~ s/b108\}laubte/\; b108\}laubte/g;
-$tail =~ s/a671\} uns/\; a671\} uns/g;
-$tail =~ s/c80\} ist/\; c80\} ist/g;
-$tail =~ s/b89\} geschriebnes/\; b89} geschriebnes/g;
-$tail =~ s/c70\} beyge/\; c70\} beyge/g;
-$tail =~ s/a626\} den/\; a626\} den/g;
-$tail =~ s/c41\} dazu/\; c41\} dazu/g;
-$tail =~ s/b38\} sie/\; b38\} sie/g;
-$tail =~ s/b37\} eine/\; b37\} eine/g;
-$tail =~ s/a614\} nur/\; a614\} nur/g;
-#$tail =~ s/c29\} als/\; c29\} als/g;
-$tail =~ s/c4\} nicht/\; c4\} nicht/g;
-$tail =~ s/c256\}sen, oder jene/\; c256\}sen, oder jene/g;
-$tail =~ s/c255\} Christenthums nicht/\; c255\} Christenthums nicht/g;
-$tail =~ s/a539\} sowohl durch/\; a539\} sowohl durch/g;
-$tail =~ s/c201\}glichen/\; c201\}glichen/g;
-$tail =~ s/b229\} αὐτοῦ/\; b229\} αὐτοῦ/g;
-$tail =~ s/a454\}lichen Kenntnisse/\; a454\}lichen Kenntnisse/g;
-$tail =~ s/b168\}den Meinungen/\; b168\}den Meinungen/g;
-$tail =~ s/a434\}setz/\; a434\}setz/g;
-$tail =~ s/b164\} Vorstellungen/\; b164\} Vorstellungen/g;
-$tail =~ s/b161\}logie/\; b161\}logie/g;
-$tail =~ s/b148\}gen/\; b148\}gen/g;
-$tail =~ s/b146\}schichte/\; b146\}schichte/g;
-$tail =~ s/b143\} Untersuchung/\; b143\} Untersuchung/g;
-$tail =~ s/b142\} Einfall/\; b142\} Einfall/g;
-$tail =~ s/b128\} Verehrung/\; b128\} Verehrung/g;
-$tail =~ s/b79\} selbst/\; b79\} selbst/g;
-$tail =~ s/c65\} zu/\; c65\} zu/g;
-$tail =~ s/c63\} Regeln/\; c63\} Regeln/g;
-$tail =~ s/a355\}/\; a355\}/g;
-$tail =~ s/a351\}/\; a351\}/g;
-$tail =~ s/a328\}/\; a328\}/g;
-$tail =~ s/b38\} ein/\; b38\} ein/g;
-$tail =~ s/c31\} ersch/\; c31\} ersch/g;
-$tail =~ s/a308\}/\; a308\}/g;
-$tail =~ s/a307\}/\; a307\}/g;
-$tail =~ s/a294\}/\; a294\}/g;
-$tail =~ s/b7\} auch/\; b7\} auch/g;
-$tail =~ s/b6\} werden/\; b6\} werden/g;
-$tail =~ s/c\[3\]\} Dritter/c\[3\]\]\} Dritter/g;
-$tail =~ s/b330\} kan/\; b330\} kan/g;
-$tail =~ s/a270\} wenigstens/\; a270\} wenigstens/g;
-$tail =~ s/a264\}/\; a264\}/g;
-$tail =~ s/b297\} mit/\; b297\} mit/g;
-$tail =~ s/b248\} bestimmt/\; b248\} bestimmt/g;
-$tail =~ s/a235\}/\; a235\}/g;
-$tail =~ s/b277\} mehrere/\; b277\} mehrere/g;
-$tail =~ s/b269\} man/\; b269\} man/g;
-$tail =~ s/c193\} stimmter/\; c193\} stimmter/g;
-$tail =~ s/a159\} Dinge/\; a159\} Dinge/g;
-$tail =~ s/c148\}ler/\; c148\}ler/g;
-$tail =~ s/c147\}rum/\; c147\}rum/g;
-$tail =~ s/b160\} neuern/\; b160\} neuern/g;
-$tail =~ s/a709\}/\; a709\}/g;
-$tail =~ s/b154\} Berufe/\; b154\} Berufe/g;
-$tail =~ s/b155\} ihre/\; b155\} ihre/g;
-$tail =~ s/a798\}/\; a798\}/g;
-$tail =~ s/c169\} bey/\; c169\} bey/g;
+
+# corrigenda
+$tail =~ s/sq\.\)\\NC sq\.\\NC \\NR \\NC ac/sq\.\)\\NC sq\.\\NC \\NR \\NC a448, c157/g;
+$tail =~ s/theologischen\\NC \\NR \\NC ac/theologischen\\NC \\NR \\NC a576, c269/g;
 
 
 $head = $head . $tail;
