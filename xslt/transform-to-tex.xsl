@@ -1,7 +1,6 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xpath-default-namespace="http://www.tei-c.org/ns/1.0" xmlns:math="http://exslt.org/math" version="2.0">
 
     <xsl:output method="text"/>
-
     <xsl:strip-space elements="*"/>
     <xsl:preserve-space elements="abbr byline corr docImprint edition head hi
     item label lem note p persName rdg ref sic term titlePart"/>
@@ -171,9 +170,9 @@
                 </xsl:choose>
 
 
-                <xsl:if test="not(child::*[1][self::p or self::note[child::*[1][self::p]]])">
+                <!--<xsl:if test="not(child::*[1][self::p or self::note[child::*[1][self::p]]])">
                     <xsl:text>\noindentation</xsl:text>
-                </xsl:if>
+                </xsl:if>-->
 
                 <!-- SOME PROBLEM HERE WITH MODE PL -->
                 <!-- no scribal abbreviation before prefaces and TOCs -->
@@ -295,7 +294,7 @@
                     <xsl:text>\hspace[big]</xsl:text>
                 </xsl:if>-->
                 <xsl:text>}</xsl:text>
-                <xsl:if test="not(parent::app/following-sibling::*[1][self::p])"> \noindentation </xsl:if>
+                <!--<xsl:if test="not(parent::app/following-sibling::*[1][self::p])"> \noindentation </xsl:if>-->
             </xsl:for-each>
         </xsl:if>
 
@@ -591,22 +590,27 @@
 
             <xsl:otherwise>
                 <xsl:choose>
-                    <xsl:when test="@type = 'main' and ancestor::list and not(ancestor::rdg)">
-                        <!--or ancestor::list and not(following-sibling::head) and not(preceding-sibling::head)
-                        or ancestor::div[@type = 'contents']/descendant::head[1] = .">-->
-                        <xsl:if test="ancestor::list[1]/parent::item/preceding-sibling::item">
-                            <xsl:text>\blank[12pt]</xsl:text>
-                        </xsl:if>
-                        <xsl:text>\tablemainhead[</xsl:text>
-                    </xsl:when>
-                    <xsl:when test="@type = 'main' and ancestor::list and ancestor::rdg">
-                        <!--or ancestor::list and not(following-sibling::head) and not(preceding-sibling::head)
-                        or ancestor::div[@type = 'contents']/descendant::head[1] = .">-->
+                    <xsl:when test="@type = 'main' and ancestor::list and ancestor::rdg
+                        or ancestor::list and not(following-sibling::head) and not(preceding-sibling::head)
+                        or ancestor::div[@type = 'contents']/descendant::head[1] = .">
                         <xsl:if test="ancestor::list[1]/parent::item/preceding-sibling::item">
                             <xsl:text>\blank[12pt]</xsl:text>
                         </xsl:if>
                         <xsl:text>\tablemainheadrdg[</xsl:text>
                     </xsl:when>
+                    <xsl:when test="@type = 'main' and ancestor::list and not(ancestor::rdg) or ancestor::list and not(following-sibling::head) and not(preceding-sibling::head)
+                        or ancestor::div[@type = 'contents']/descendant::head[1] = .">
+                        <xsl:if test="ancestor::list[1]/parent::item/preceding-sibling::item">
+                            <xsl:text>\blank[12pt]</xsl:text>
+                        </xsl:if>
+                        <xsl:text>\tablemainhead[</xsl:text>
+                    </xsl:when>
+		    <xsl:when test="ancestor::list and ancestor::rdg[@type = 'ppl' and @type = 'ptl']">
+			<xsl:text>\tablemainhead[</xsl:text>
+		    </xsl:when>
+		    <xsl:when test="ancestor::list and not(@type)">
+			<xsl:text>\tablemainhead[</xsl:text>
+		    </xsl:when>
                     <xsl:when test="@type = 'sub' and ancestor::list and ancestor::rdg">
                         <xsl:text>\tablesubheadrdg[</xsl:text>
                     </xsl:when>
@@ -1044,6 +1048,9 @@
         <xsl:choose>
             <xsl:when test="ancestor::rdg[@type = 'ppl' or @type = 'ptl']">
                 <xsl:call-template name="pbBefore"/>
+		<!--<xsl:if test="not(ancestor::rdg[@type = 'ppl' or @type = 'ptl'][1]/preceding-sibling::lem/child::*[last()][self::note])">
+			<xsl:text>{\startnarrow </xsl:text>
+		</xsl:if>-->
                 <xsl:apply-templates/>
 
                 <xsl:if test="
@@ -1061,14 +1068,17 @@
                     <xsl:value-of select="replace(ancestor::rdg[@type = 'ppl' or @type = 'ptl'][1]/@wit, '[#\s]', '')"/>
                     <xsl:text>}</xsl:text>
                 </xsl:if>
+		<!--<xsl:if test="not(ancestor::rdg[@type = 'ppl' or @type = 'ptl'][1]/preceding-sibling::lem/child::*[last()][self::note])">
+			<xsl:text>\stopnarrow}</xsl:text>
+		</xsl:if>-->
             </xsl:when>
 
             <xsl:otherwise>
                 <xsl:text>
                 {\switchtobodyfont[8.5pt]
                 \startnarrow
-                \noindentation
                 </xsl:text>
+		<!--<xsl:text>\noindentation</xsl:text>-->
                 <xsl:call-template name="pbBefore"/>
 
                 <xsl:if test="
@@ -1159,8 +1169,8 @@
         <xsl:text>
             {\switchtobodyfont[8.5pt]
             \startnarrow
-            \noindentation
         </xsl:text>
+	<!--<xsl:text>\noindentation</xsl:text>-->
 
         <xsl:if test="
                 parent::lem/following-sibling::rdg[@type = 'ppl']
@@ -1296,7 +1306,7 @@
     <xsl:template match="p">
         <xsl:choose>
             <xsl:when test="parent::div[@type = 'section']/child::*[1] = .">
-                <xsl:text>\noindentation </xsl:text>
+                <!--<xsl:text>\noindentation </xsl:text>-->
                 <!--<xsl:text>\indenting[next] </xsl:text>-->
             </xsl:when>
             <!--<xsl:when test="preceding-sibling::*[1][self::p] and not(preceding-sibling::*[1][self::p]/child::*[last()][self::list])">
@@ -1552,7 +1562,7 @@
         <xsl:if test="
                 following-sibling::node()[1][self::choice] or
                 following-sibling::*[1][self::app[rdg[@type = 'om' or @type = 'ppl' or @type = 'pp']]]
-                and not(following-sibling::node()[1][matches(., '\w')])">
+                and not(following-sibling::node()[1][matches(., '[\w§]')])">
             <xsl:text> </xsl:text>
         </xsl:if>
     </xsl:template>
@@ -1606,7 +1616,7 @@
             <xsl:text>}</xsl:text>
         </xsl:if>
 
-        <xsl:if test="following::*[1][self::app] and not(following::node()[1][matches(., '[\w–,?\)\(§]')])">
+        <xsl:if test="following::*[1][self::app] and not(following::node()[1][matches(., '[\w–,?\)\(§]\.')])">
             <!--<xsl:text> </xsl:text>-->
             <xsl:text>~</xsl:text>
         </xsl:if>
@@ -2365,14 +2375,15 @@
     </xsl:template>
 
     <xsl:template match="closer">
-        <xsl:text>\blank \noindentation </xsl:text>
+        <xsl:text>\blank </xsl:text>
+	<!--<xsl:text>\noindentation</xsl:text>-->
         <xsl:apply-templates/>
         <xsl:text/>
     </xsl:template>
 
     <xsl:template match="ref">
         <xsl:apply-templates/>
-        <xsl:if test="following::node()[1][self::choice]">
+        <xsl:if test="following::node()[1][self::choice/child::abbr[not(contains(., 'f.'))]]">
             <xsl:text> </xsl:text>
         </xsl:if>
     </xsl:template>
