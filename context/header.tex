@@ -190,12 +190,22 @@
   interlinespace=14pt,
   align=middle]
   
+\setuphead[subjectrdg]
+%   [header=high,
+%   after={\blank[12pt]}]
+  [number=no,
+  header=high,
+  after={\blank[12pt]},
+  style={\switchtobodyfont[8pt]},
+  interlinespace=14pt,
+  align=middle]  
+  
 \setuphead[tablemainhead]  
   [number=no,
   header=high,
   before={\blank[none]},
   after={\blank[none]},
-  style={\switchtobodyfont[12pt]},
+  style={\switchtobodyfont[10.5pt]},
   interlinespace=14pt,
   align=middle]
   
@@ -213,7 +223,7 @@
   header=high,
   before={\blank[none]},
   after={\blank[none]},
-  style={\switchtobodyfont[12pt]},
+  style={\switchtobodyfont[10.5pt]},
   interlinespace=14pt,
   align=middle]  
   
@@ -321,7 +331,7 @@
    after={\blank[4pt]},
    align=middle,
    %style=\tfa,
-   header=high]
+   header=high]  
    
 \setuplist[part]
   [alternative=c]
@@ -389,13 +399,12 @@ leftmargin=0pt]
 
 \setupdelimitedtext
         [narrow]
-        [before={%\blank[big,fixed]
+        [before={\blank[medium]
         \switchtobodyfont[8.5pt]},
 after={\removeunwantedspaces%\par
 %\blank[big,fixed]
 \switchtobodyfont[default]},
-leftmargin=4mm]
-
+leftmargin=4mm, rightmargin=0mm]
 
 % TODO: optimize inter word spacing
 \setuptolerance
@@ -490,7 +499,7 @@ leftmargin=4mm]
    \typo_injectors_mark_register}
 \protect
 
-\hyphenation{Er-zie-hungs-we-sens Schul-schrif-ten Ab-sicht The-o-phrast's Wis-sen-schaf-ten Er-läu-ter-ungs-schrif-ten Kir-chen-ge-schich-te ge-nomm-ne An-drer wo-rü-ber Mit-thei-lung noth-wen-dig noth-wen-di-ge noth-wen-di-ges noth-wen-di-gen Noth-wen-dig-keit Noth-wen-dig-kei-ten Ein-thei-lung be-ur-theilt Be-ur-thei-lung nach-thei-lig Vor-ur-theil se-ue-ra Ur-thei-le wo-raus groß-en-theils Irr-thum Irr-thü-mer Ra-ti-o-nal-er-kennt-niß Wolf-schen ein-thei-len Haupt\-, mit-thei-len Wa-cker-barth be-ur-thei-len ei-gen-thüm-li-chen Chris-ten-thums un-grie-chisch-e vor-tref-li-ches Pro-fan-scri-ben-ten mit-theilt Ue-ber-ei-lun-gen Ver-mu-thun-gen Prü-fe-stein ver-thei-di-gen un-par-they-isch-e Vor-theil Un-thä-ti-gkeit größ-ten-theils Ver-stan-de Vor-ur-thei-le Lieg-nitz vie-ler-ley Ver-muth-ung der-sel-ben ge-mein-schaft-li-cher letzt-er-wähn-ten Er-kennt-niß-quel-le Re-li-gions-par-they-en un-par-they-isch-en (1725–-1791) die-ie-ni-ge Ver-mu-thung-en Nach-theil Be-ur-theil-ung wohl-thä-tigs-ten ur-theil-en}
+\hyphenation{Er-zie-hungs-we-sens Schul-schrif-ten Ab-sicht The-o-phrast's Wis-sen-schaf-ten Er-läu-ter-ungs-schrif-ten Kir-chen-ge-schich-te ge-nomm-ne An-drer wo-rü-ber Mit-thei-lung noth-wen-dig noth-wen-di-ge noth-wen-di-ges noth-wen-di-gen Noth-wen-dig-keit Noth-wen-dig-kei-ten Ein-thei-lung be-ur-theilt Be-ur-thei-lung nach-thei-lig Vor-ur-theil se-ue-ra Ur-thei-le wo-raus groß-en-theils Irr-thum Irr-thü-mer Ra-ti-o-nal-er-kennt-niß Wolf-schen ein-thei-len Haupt\-, mit-thei-len Wa-cker-barth be-ur-thei-len ei-gen-thüm-li-chen Chris-ten-thums un-grie-chisch-e vor-tref-li-ches Pro-fan-scri-ben-ten mit-theilt Ue-ber-ei-lun-gen Ver-mu-thun-gen Prü-fe-stein ver-thei-di-gen un-par-they-isch-e Vor-theil Un-thä-ti-gkeit größ-ten-theils Ver-stan-de Vor-ur-thei-le Lieg-nitz vie-ler-ley Ver-muth-ung der-sel-ben ge-mein-schaft-li-cher letzt-er-wähn-ten Er-kennt-niß-quel-le Re-li-gions-par-they-en un-par-they-isch-en (1725–-1791) die-ie-ni-ge Ver-mu-thung-en Nach-theil Be-ur-theil-ung wohl-thä-tigs-ten ur-theil-en an-ti-qui Be-stand-thei-le}
 
 
 % lua
