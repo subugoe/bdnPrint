@@ -593,16 +593,16 @@
                     <xsl:when test="@type = 'main' and ancestor::list and ancestor::rdg
                         or ancestor::list and not(following-sibling::head) and not(preceding-sibling::head)
                         or ancestor::div[@type = 'contents']/descendant::head[1] = .">
-                        <!--<xsl:if test="ancestor::list[1]/parent::item/preceding-sibling::item">
-                            <xsl:text>\blank[12pt]</xsl:text>
-                        </xsl:if>-->
+                        <xsl:if test="ancestor::list[1]/parent::item/preceding-sibling::item">
+                            <xsl:text>\blank[4pt]</xsl:text>
+                        </xsl:if>
                         <xsl:text>\tablemainheadrdg[</xsl:text>
                     </xsl:when>
                     <xsl:when test="@type = 'main' and ancestor::list and not(ancestor::rdg) or ancestor::list and not(following-sibling::head) and not(preceding-sibling::head)
                         or ancestor::div[@type = 'contents']/descendant::head[1] = .">
-                        <!--<xsl:if test="ancestor::list[1]/parent::item/preceding-sibling::item">
-                            <xsl:text>\blank[12pt]</xsl:text>
-                        </xsl:if>-->
+                        <xsl:if test="ancestor::list[1]/parent::item/preceding-sibling::item">
+                            <xsl:text>\blank[4pt]</xsl:text>
+                        </xsl:if>
                         <xsl:text>\tablemainhead[</xsl:text>
                     </xsl:when>
 		    <xsl:when test="ancestor::list and ancestor::rdg[@type = 'ppl' and @type = 'ptl']">
