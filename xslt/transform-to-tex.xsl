@@ -50,7 +50,7 @@
                 and not(lem/child::*[1][self::app[@type = 'structural-variance']]/lem[child::*[1][self::note]])">
             <xsl:for-each select="rdg[@type = 'om']">
                 <xsl:text>\margin{}{omOpen}{</xsl:text>
-                <xsl:value-of select="generate-id()"/>
+                <!--<xsl:value-of select="generate-id()"/>-->
                 <xsl:text>}{\tfx\high{/</xsl:text>
                 <xsl:value-of select="replace(@wit, '[#\s]', '')"/>
                 <xsl:text>}}{/</xsl:text>
@@ -86,7 +86,7 @@
                 and not(lem/child::*[last()][self::app][rdg[@type = 'var-structure'] and lem/child::*[last()][self::note]])">
             <xsl:for-each select="rdg[@type = 'om']">
                 <xsl:text>\margin{}{omClose}{</xsl:text>
-                <xsl:value-of select="generate-id()"/>
+                <!--<xsl:value-of select="generate-id()"/>-->
                 <xsl:text>}{\tfx\high{</xsl:text>
                 <xsl:value-of select="replace(@wit, '[#\s]', '')"/>
                 <xsl:text>\textbackslash}}{</xsl:text>
@@ -129,33 +129,57 @@
         </xsl:if>
 
         <xsl:if test="rdg[@type = 'ppl' or @type = 'ptl']">
+           
             <xsl:for-each select="rdg[@type = 'ppl' or @type = 'ptl']">
+                <xsl:if test="parent::app/child::rdg[@type = 'ppl' or @type = 'ptl'][1] = .">
+                    <xsl:text> \crlf </xsl:text>
+                </xsl:if>
                 <!--<xsl:choose>
                     <xsl:when test="parent::note/*[1] = .">
-                        <xsl:text>\blank[-4pt]</xsl:text>
+                        <xsl:text>\blank[-2pt]</xsl:text>
                     </xsl:when>
                     <xsl:otherwise>
-                        <xsl:text>\blank[4pt]</xsl:text>
+                        <xsl:text>\blank[2pt]</xsl:text>
                     </xsl:otherwise>
                 </xsl:choose>-->
 
-                <xsl:text>
+               <!-- <xsl:text>
                     \start
-                    \switchtobodyfont[8.5pt]</xsl:text>
+                    \switchtobodyfont[8.5pt]</xsl:text>-->
+                
+                <xsl:text>{\switchtobodyfont[8.5pt]</xsl:text>
 
-                <xsl:if test="child::*[1][self::note[@type = 'authorial']]">
-                    <xsl:text>\startnarrower[left]</xsl:text>
-                </xsl:if>
+                <xsl:choose>
+                    <xsl:when test="child::*[1][self::note[@type = 'authorial']]">
+                        <xsl:text>\startnarrow</xsl:text>
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <xsl:if test="not(child::*[1][self::titlePage])">
+                            <xsl:text>{\startrdg</xsl:text>
+                        </xsl:if>
+                        
+                        
+                        <xsl:if test="child::*[1][self::p]">
+                            <xsl:text>
+                                \starteffect[hidden]
+                                .
+                                \stopeffect
+                                \hspace[p]
+                            </xsl:text>
+                        </xsl:if>
+                    </xsl:otherwise>
+                </xsl:choose>
+
 
                 <xsl:if test="not(child::*[1][self::p or self::note[child::*[1][self::p]]])">
-                    <xsl:text>\noindent</xsl:text>
+                    <xsl:text>\noindentation</xsl:text>
                 </xsl:if>
 
                 <!-- SOME PROBLEM HERE WITH MODE PL -->
                 <!-- no scribal abbreviation before prefaces and TOCs -->
                 <xsl:if test="not(child::*[1][self::div[not(@type = 'titlePage')]])">
                     <xsl:text>\margin{}{plOpen}{</xsl:text>
-                    <xsl:value-of select="generate-id()"/>
+                    <!--xsl:value-of select="generate-id()"/>-->
                     <xsl:text>}{\tfx\high{</xsl:text>
                     <xsl:value-of select="replace(@wit, '[#\s]', '')"/>
                     <xsl:text>}}{</xsl:text>
@@ -207,7 +231,7 @@
                     <xsl:text> </xsl:text>
                     <xsl:for-each select="ancestor::lem[1]/following-sibling::rdg[@type = 'om']">
                         <xsl:text>\margin{}{omClose}{</xsl:text>
-                        <xsl:value-of select="generate-id()"/>
+                        <!--<xsl:value-of select="generate-id()"/>-->
                         <xsl:text>}{ \tfx\high{</xsl:text>
                         <xsl:value-of select="replace(@wit, '[#\s]', '')"/>
                         <xsl:text>\textbackslash}}{</xsl:text>
@@ -223,7 +247,7 @@
                     <xsl:text> </xsl:text>
                     <xsl:for-each select="ancestor::lem[2]/following-sibling::rdg[@type = 'om']">
                         <xsl:text>\margin{}{omClose}{</xsl:text>
-                        <xsl:value-of select="generate-id()"/>
+                        <!--<xsl:value-of select="generate-id()"/>-->
                         <xsl:text>}{ \tfx\high{</xsl:text>
                         <xsl:value-of select="replace(@wit, '[#\s]', '')"/>
                         <xsl:text>\textbackslash}}{</xsl:text>
@@ -236,22 +260,42 @@
                     <xsl:text>
                     \par
                     </xsl:text>
-                    <!--\blank[4pt]-->
                     <xsl:text>
-                    \noindent
+                        \blank[2pt]
                     </xsl:text>
+                    
+                    <!--<xsl:text>
+                         \noindent
+                    </xsl:text>-->
                 </xsl:if>
 
-                <xsl:if test="child::*[1][self::note[@type = 'authorial']]">
-                    <xsl:text>\stopnarrower</xsl:text>
-                </xsl:if>
+                <xsl:choose>
+                    <xsl:when test="child::*[1][self::note[@type = 'authorial']]">
+                        <xsl:text>\stopnarrow</xsl:text>
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <xsl:if test="not(child::*[1][self::titlePage])">
+                            <xsl:text>\stoprdg}</xsl:text>
+                        </xsl:if>
+                    </xsl:otherwise>
+                </xsl:choose>
+                <!--<xsl:if test="child::*[1][self::note[@type = 'authorial']]">
+                    <xsl:text>\stopnarrow</xsl:text>
+                </xsl:if>-->
 
-                <xsl:text>
-                    \stop                               
+                <!--<xsl:text>
+                    \stop 
+                </xsl:text>-->
+                
+                <!--<xsl:text>
+                    \blank[2pt]
                 </xsl:text>
-                <!-- \blank[4pt] -->
-
-                <xsl:if test="not(parent::app/following-sibling::*[1][self::p])"> \noindent </xsl:if>
+                
+                <xsl:if test="child::titlePage and child::*[last()][self::pb]">
+                    <xsl:text>\hspace[big]</xsl:text>
+                </xsl:if>-->
+                <xsl:text>}</xsl:text>
+                <xsl:if test="not(parent::app/following-sibling::*[1][self::p])"> \noindentation </xsl:if>
             </xsl:for-each>
         </xsl:if>
 
@@ -381,7 +425,7 @@
     <xsl:template match="div[@type = 'section']">
         <xsl:apply-templates/>
         <!--<xsl:text>\blank[2*big]</xsl:text>-->
-        <!--<xsl:text>\blank[4pt]</xsl:text>-->
+        <xsl:text>\blank[2pt]</xsl:text>
     </xsl:template>
 
     <xsl:template match="divGen[@type = 'Inhalt']">
@@ -546,13 +590,41 @@
             </xsl:when>
 
             <xsl:otherwise>
-                <xsl:text>\subject[</xsl:text>
+                <xsl:choose>
+                    <xsl:when test="@type = 'main' and ancestor::list and not(ancestor::rdg)">
+                        <!--or ancestor::list and not(following-sibling::head) and not(preceding-sibling::head)
+                        or ancestor::div[@type = 'contents']/descendant::head[1] = .">-->
+                        <xsl:if test="ancestor::list[1]/parent::item/preceding-sibling::item">
+                            <xsl:text>\blank[12pt]</xsl:text>
+                        </xsl:if>
+                        <xsl:text>\tablemainhead[</xsl:text>
+                    </xsl:when>
+                    <xsl:when test="@type = 'main' and ancestor::list and ancestor::rdg">
+                        <!--or ancestor::list and not(following-sibling::head) and not(preceding-sibling::head)
+                        or ancestor::div[@type = 'contents']/descendant::head[1] = .">-->
+                        <xsl:if test="ancestor::list[1]/parent::item/preceding-sibling::item">
+                            <xsl:text>\blank[12pt]</xsl:text>
+                        </xsl:if>
+                        <xsl:text>\tablemainheadrdg[</xsl:text>
+                    </xsl:when>
+                    <xsl:when test="@type = 'sub' and ancestor::list and ancestor::rdg">
+                        <xsl:text>\tablesubheadrdg[</xsl:text>
+                    </xsl:when>
+                    <xsl:when test="@type = 'sub' and ancestor::list">
+                        <xsl:text>\tablesubhead[</xsl:text>
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <xsl:text>\subject[</xsl:text>
+                    </xsl:otherwise>
+                </xsl:choose>
+                
                 <xsl:value-of select="."/>
                 <xsl:text>]{</xsl:text>
 
                 <xsl:choose>
                     <xsl:when test="ancestor::rdg[@type = 'ptl' or @type = 'ppl' or @type = 'pp' or @type = 'om'] and not(preceding-sibling::*) and not(parent::*/preceding-sibling::*) and ancestor::div/child::*[1] = .">
-                        <xsl:text>{\switchtobodyfont[9.5pt]</xsl:text>
+                        <!--<xsl:text>{\switchtobodyfont[9.5pt]</xsl:text>-->
+                        <xsl:text>{</xsl:text>
                         <!--<xsl:for-each select="ancestor::rdg[@type = 'pp']">
                     <xsl:text>{\tfx\high{</xsl:text>
                     <xsl:value-of select="replace(@wit, '[#\s]', '')"/>
@@ -561,7 +633,7 @@
 
                         <xsl:for-each select="ancestor::rdg[@type = 'ptl' or @type = 'ppl']">
                             <xsl:text>\margin{}{plOpen}{</xsl:text>
-                            <xsl:value-of select="generate-id()"/>
+                            <!--<xsl:value-of select="generate-id()"/>-->
                             <xsl:text>}{\tfx\high{</xsl:text>
                             <xsl:value-of select="replace(@wit, '[#\s]', '')"/>
                             <xsl:text>}}{</xsl:text>
@@ -572,7 +644,7 @@
                         <!-- check -->
                         <xsl:for-each select="ancestor::rdg[@type = 'om']">
                             <xsl:text>\margin{}{omOpen}{</xsl:text>
-                            <xsl:value-of select="generate-id()"/>
+                            <!--<xsl:value-of select="generate-id()"/>-->
                             <xsl:text>}{\tfx\high{/</xsl:text>
                             <xsl:value-of select="replace(@wit, '[#\s]', '')"/>
                             <xsl:text>}}{/</xsl:text>
@@ -584,7 +656,8 @@
                     </xsl:when>
 
                     <xsl:when test="ancestor::lem and ancestor::lem/following-sibling::rdg[@type = 'om' or @type = 'ppl'] and ancestor::lem/descendant::head[1] = .">
-                        <xsl:text>{\switchtobodyfont[9.5pt]</xsl:text>
+                        <!--<xsl:text>{\switchtobodyfont[9.5pt]</xsl:text>-->
+                        <xsl:text>{</xsl:text>
                         <xsl:if test="ancestor::lem/following-sibling::rdg[@type = 'ppl']">
                             <xsl:text>{\tfx\high{/</xsl:text>
                             <xsl:for-each select="ancestor::lem/following-sibling::rdg[@type = 'ppl']">
@@ -596,7 +669,7 @@
                         <xsl:if test="ancestor::lem/following-sibling::rdg[@type = 'om']">
                             <xsl:for-each select="ancestor::lem/following-sibling::rdg[@type = 'om']">
                                 <xsl:text>\margin{}{omOpen}{</xsl:text>
-                                <xsl:value-of select="generate-id()"/>
+                                <!--<xsl:value-of select="generate-id()"/>-->
                                 <xsl:text>}{\tfx\high{/</xsl:text>
                                 <xsl:text/>
                                 <xsl:value-of select="replace(@wit, '[#\s]', '')"/>
@@ -605,18 +678,26 @@
                                 <xsl:text>}</xsl:text>
                             </xsl:for-each>
                         </xsl:if>
-                        <xsl:text>}{\switchtobodyfont[10.5pt]</xsl:text>
+                        <!--<xsl:text>}{\switchtobodyfont[10.5pt]</xsl:text>-->
+                        <xsl:text>}{</xsl:text>
                     </xsl:when>
 
                     <!--<xsl:when test="ancestor::rdg">
                         <xsl:text>{\switchtobodyfont[8pt]</xsl:text>
                     </xsl:when>-->
-                    <xsl:otherwise>
+                    <!--<xsl:otherwise>
                         <xsl:text>{\switchtobodyfont[10.5pt]</xsl:text>
+                    </xsl:otherwise>-->
+                    <xsl:otherwise>
+                        <xsl:text>{</xsl:text>
                     </xsl:otherwise>
                 </xsl:choose>
                 <xsl:apply-templates/>
                 <xsl:text>}}</xsl:text>
+                
+                <xsl:if test="not(following-sibling::head) and not(ancestor::div[@type = 'contents']/descendant::head[1] = .)">
+                    <xsl:text>\blank[2pt]</xsl:text>
+                </xsl:if>
             </xsl:otherwise>
         </xsl:choose>
     </xsl:template>
@@ -713,7 +794,7 @@
                             and ancestor::lem[1]/following-sibling::rdg[@type = 'om']">
                         <xsl:text>~</xsl:text>
                         <xsl:text>\margin{}{omClose}{</xsl:text>
-                        <xsl:value-of select="generate-id()"/>
+                        <!--<xsl:value-of select="generate-id()"/>-->
                         <xsl:text>}{\tfx\high{</xsl:text>
                         <xsl:value-of select="replace(ancestor::lem/following-sibling::rdg[@type = 'om']/@wit, '[#\s]', '')"/>
                         <xsl:text>\textbackslash}}{</xsl:text>
@@ -793,6 +874,12 @@
                 <xsl:text>\high{{\tx </xsl:text>
                 <xsl:apply-templates/>
                 <xsl:text>}}</xsl:text>
+            </xsl:when>
+            
+            <xsl:when test="@rend = 'overline'">
+                <xsl:text>\overbar{</xsl:text>
+                <xsl:apply-templates/>
+                <xsl:text>}</xsl:text>
             </xsl:when>
         </xsl:choose>
     </xsl:template>
@@ -927,7 +1014,9 @@
     </xsl:template>
 
     <xsl:template match="lb">
-        <xsl:text>\crlf </xsl:text>
+        <xsl:if test="not(preceding-sibling::*[1][self::head])">
+            <xsl:text>\crlf </xsl:text>
+        </xsl:if>
     </xsl:template>
 
     <xsl:template match="persName">
@@ -943,12 +1032,12 @@
             <xsl:when test="preceding-sibling::*[1][self::note] or preceding-sibling::*[1][self::app/rdg[@type = 'ppl' or 'ptl']]">
                 <!--<xsl:text>\blank[-10pt]</xsl:text>-->
                 <!--<xsl:text>\blank[-5pt]</xsl:text>-->
-                <!--<xsl:text>\blank[2pt]</xsl:text>-->
+                <xsl:text>\blank[2pt]</xsl:text>
             </xsl:when>
             <xsl:when test="parent::rdg[@type = 'ppl' or @type = 'ptl']/child::*[1] = ."/>
             <xsl:otherwise>
                 <!--<xsl:text>\blank[5pt]</xsl:text>-->
-                <!--<xsl:text>\blank[4pt]</xsl:text>-->
+                <xsl:text>\blank[2pt]</xsl:text>
             </xsl:otherwise>
         </xsl:choose>
 
@@ -977,7 +1066,7 @@
             <xsl:otherwise>
                 <xsl:text>
                 {\switchtobodyfont[8.5pt]
-                \startnarrower[left]
+                \startnarrow
                 \noindentation
                 </xsl:text>
                 <xsl:call-template name="pbBefore"/>
@@ -987,7 +1076,7 @@
                         and ancestor::app[1] = ancestor::lem[2]/child::*[1]
                         and ancestor::lem[2]/following-sibling::rdg[@type = 'om']">
                     <xsl:text>\margin{}{omOpen}{</xsl:text>
-                    <xsl:value-of select="generate-id()"/>
+                    <!--<xsl:value-of select="generate-id()"/>-->
                     <xsl:text>}{\tfx\high{/</xsl:text>
                     <xsl:value-of select="replace(ancestor::lem[2]/following-sibling::rdg[@type = 'om']/@wit, '[#\s]', '')"/>
                     <xsl:text>}}{/</xsl:text>
@@ -1035,7 +1124,7 @@
                         or descendant::hi[@rend = 'right-aligned'][not(following-sibling::*)]
                         or ancestor::app[1]/following-sibling::*)">
                     <xsl:text>\margin{}{omClose}{</xsl:text>
-                    <xsl:value-of select="generate-id()"/>
+                    <!--<xsl:value-of select="generate-id()"/>-->
                     <xsl:text>}{\tfx\high{</xsl:text>
                     <xsl:value-of select="replace(ancestor::div[1]/parent::lem/following-sibling::rdg[@type = 'om']/@wit, '[#\s]', '')"/>
                     <xsl:text>\textbackslash}}{</xsl:text>
@@ -1043,17 +1132,19 @@
                     <xsl:text>\textbackslash}</xsl:text>
                 </xsl:if>
                 <!--<xsl:text>
-            \stopnarrower}
+            \stopnarrow}
             \blank[2pt]
             \noindent
         </xsl:text>-->
                 <xsl:text>
-                \stopnarrower}
+                \stopnarrow}
+                \blank[2pt]
+                
                 </xsl:text>
-                <!--\blank[4pt]-->
-                <xsl:text>
-                \noindent
-                </xsl:text>
+                
+                <!--<xsl:text>
+                         \noindent
+                    </xsl:text>-->
             </xsl:otherwise>
         </xsl:choose>
     </xsl:template>
@@ -1063,12 +1154,12 @@
         <xsl:variable name="omWitTmp" select="string-join(../../rdg[@type = 'om']/@wit, '')"/>
         <xsl:variable name="omWit" select="replace($omWitTmp, '[^a-z]', '')"/>
         <!--<xsl:text>
-            \blank[4pt]
+            \blank[2pt]
         </xsl:text>-->
         <xsl:text>
             {\switchtobodyfont[8.5pt]
-            \startnarrower[left]
-            \noindent
+            \startnarrow
+            \noindentation
         </xsl:text>
 
         <xsl:if test="
@@ -1086,7 +1177,7 @@
                 and parent::lem/child::*[1] = .
                 and not(child::*[1][self::list])">
             <xsl:text>\margin{}{omOpen}{</xsl:text>
-            <xsl:value-of select="generate-id()"/>
+            <!--<xsl:value-of select="generate-id()"/>-->
             <xsl:text>}{\tfx\high{/</xsl:text>
             <xsl:value-of select="$omWit"/>
             <xsl:text>}}{/</xsl:text>
@@ -1103,7 +1194,7 @@
                 and not(child::*[last()][self::list]
                 or descendant::hi[@rend = 'right-aligned'][not(following-sibling::* or following-sibling::node()[matches(., '\w')])])">
             <xsl:text>\margin{}{omClose}{</xsl:text>
-            <xsl:value-of select="generate-id()"/>
+            <!--<xsl:value-of select="generate-id()"/>-->
             <xsl:text>}{\tfx\high{</xsl:text>
             <xsl:value-of select="$omWit"/>
             <xsl:text>\textbackslash}}{</xsl:text>
@@ -1122,12 +1213,12 @@
         </xsl:if>
 
         <xsl:text>            
-            \stopnarrower}
+            \stopnarrow}
         </xsl:text>
-          <!--  \blank[4pt]-->
-        <xsl:text>
+          <!--  \blank[2pt]-->
+        <!--<xsl:text>
             \noindent
-        </xsl:text>
+        </xsl:text>-->
     </xsl:template>
 
     <!--<xsl:template match="rdg/note[@type = 'authorial']">
@@ -1136,7 +1227,7 @@
     </xsl:template>-->
 
     <xsl:template match="note[@type = 'editorial' and @place = 'bottom']">
-        <xsl:text>\editor{</xsl:text>
+        <xsl:text>\editor{</xsl:text>f
         <xsl:apply-templates/>
         <xsl:text>}</xsl:text>
     </xsl:template>
@@ -1170,7 +1261,7 @@
         <xsl:if test="
                 ancestor::lem[2][following-sibling::rdg[@type = 'om']]/(descendant::node()[matches(., '\w')])[1] = ./ancestor::*">
             <xsl:text>\margin{}{omOpen}{</xsl:text>
-            <xsl:value-of select="generate-id()"/>
+            <!--<xsl:value-of select="generate-id()"/>-->
             <xsl:text>}{\tfx\high{/</xsl:text>
             <xsl:for-each select="ancestor::lem[2]/following-sibling::rdg[@type = 'om']">
                 <xsl:value-of select="replace(@wit, '[#\s]', '')"/>
@@ -1186,7 +1277,7 @@
                 (parent::lem/following-sibling::rdg[@type = 'om']
                 and parent::lem/child::*[1] = .)">
             <xsl:text>\margin{}{omOpen}{</xsl:text>
-            <xsl:value-of select="generate-id()"/>
+            <!--<xsl:value-of select="generate-id()"/>-->
             <xsl:text>}{\tfx\high{/</xsl:text>
             <xsl:for-each select="parent::lem/following-sibling::rdg[@type = 'om']">
                 <xsl:value-of select="replace(@wit, '[#\s]', '')"/>
@@ -1205,7 +1296,7 @@
     <xsl:template match="p">
         <xsl:choose>
             <xsl:when test="parent::div[@type = 'section']/child::*[1] = .">
-                <xsl:text>\noindenting </xsl:text>
+                <xsl:text>\noindentation </xsl:text>
                 <!--<xsl:text>\indenting[next] </xsl:text>-->
             </xsl:when>
             <!--<xsl:when test="preceding-sibling::*[1][self::p] and not(preceding-sibling::*[1][self::p]/child::*[last()][self::list])">
@@ -1225,14 +1316,14 @@
                     </xsl:text>
             </xsl:when>
 
-            <xsl:when test="preceding-sibling::*[1][self::p] and ancestor::div[parent::rdg] and not(preceding-sibling::*[1][self::p]/child::*[last()][self::list])">
+<!--            <xsl:when test="preceding-sibling::*[1][self::p] and ancestor::div[parent::rdg] and not(preceding-sibling::*[1][self::p]/child::*[last()][self::list])">
                 <xsl:text>
                         \starteffect[hidden]
                             .
                         \stopeffect
                         \hspace[p]
                     </xsl:text>
-            </xsl:when>
+            </xsl:when>-->
 
             <xsl:when test="parent::lem and ancestor::app[@type = 'structural-variance']/preceding-sibling::*[1][self::p]">
                 <xsl:text>
@@ -1246,7 +1337,7 @@
             <xsl:when test="parent::lem and parent::lem/child::*[last()] = . and ancestor::rdg[@type = 'om']">
                 <xsl:variable name="omWit" select="preceding-sibling::*[1][self::app]/child::rdg[@type = 'om']/@wit"/>
                 <xsl:text>\margin{}{omClose}{</xsl:text>
-                <xsl:value-of select="generate-id()"/>
+                <!--<xsl:value-of select="generate-id()"/>-->
                 <xsl:text>}{\tfx\high{</xsl:text>
                 <xsl:value-of select="replace($omWit, '#', '')"/>
                 <xsl:text>\textbackslash}}{</xsl:text>
@@ -1265,7 +1356,7 @@
         <xsl:if test="parent::lem[1]/following-sibling::rdg[@type = 'om'] and parent::lem/child::*[last()] = .">
             <xsl:variable name="omWit" select="parent::lem[1]/following-sibling::rdg[@type = 'om']/@wit"/>
             <xsl:text>\margin{}{omClose}{</xsl:text>
-            <xsl:value-of select="generate-id()"/>
+            <!--<xsl:value-of select="generate-id()"/>-->
             <xsl:text>}{\tfx\high{</xsl:text>
             <xsl:value-of select="replace($omWit, '#', '')"/>
             <xsl:text>\textbackslash}}{</xsl:text>
@@ -1280,7 +1371,7 @@
                 and not(child::*[last()][self::app]/child::rdg[@type = 'ppl' or @type = 'ptl'])">
             <xsl:for-each select="parent::div/parent::lem/following-sibling::rdg[@type = 'om']">
                 <xsl:text>\margin{}{omClose}{</xsl:text>
-                <xsl:value-of select="generate-id()"/>
+                <!--<xsl:value-of select="generate-id()"/>-->
                 <xsl:text>}{\tfx\high{</xsl:text>
                 <xsl:value-of select="replace(@wit, '#', '')"/>
                 <xsl:text>\textbackslash}}{</xsl:text>
@@ -1333,7 +1424,7 @@
         </xsl:if>
 
         <!--<xsl:if test="ancestor::div[@subtype = 'print'] and ancestor::div[1]/descendant::p[last()] = .">
-            <xsl:text>\blank[24pt]</xsl:text>
+            <xsl:text>\blank[22pt]</xsl:text>
         </xsl:if>-->
     </xsl:template>
 
@@ -1342,7 +1433,7 @@
         <xsl:text>\crlf \crlf </xsl:text>
         <xsl:apply-templates/>
        <!-- <xsl:if test="ancestor::div[@subtype = 'print'] and ancestor::div[1]/descendant::p[last()] = .">
-            <xsl:text>\blank[24pt]</xsl:text>
+            <xsl:text>\blank[22pt]</xsl:text>
         </xsl:if>-->
         <xsl:text>\par </xsl:text>
     </xsl:template>
@@ -1474,7 +1565,7 @@
             <xsl:variable name="wit" select="replace(@wit, '[# ]+', '')"/>
 
             <xsl:text>\margin{}{plOpen}{</xsl:text>
-            <xsl:value-of select="generate-id()"/>
+            <!--<xsl:value-of select="generate-id()"/>-->
             <xsl:text>}{\tfx\high{</xsl:text>
             <xsl:value-of select="$wit"/>
             <xsl:text>}}{</xsl:text>
@@ -1496,9 +1587,9 @@
                     \par
                 </xsl:text>
                     <!--\blank[6pt]-->
-                <xsl:text>
+                <!--<xsl:text>
                     \noindent
-                </xsl:text>
+                </xsl:text>-->
             </xsl:if>
         </xsl:if>
         <xsl:value-of select="string('ppl/ptl')"/>
@@ -1590,21 +1681,34 @@
             </xsl:when>
 
             <xsl:when test="(ancestor::div[@type = 'contents'] or descendant::list) and not(ancestor::list)">
-                <xsl:text>
+                <xsl:if test="not(item[1]/child::*[1][self::list])">
+                    <xsl:text>
                     \setupindenting[yes,medium]
-	                \setupitemgroup[itemize][leftmargin=-1.5em]
+	                \setupitemgroup[itemize][indenting={40pt,next}]
 	                   \startitemize[packed, paragraph, joinedup]
-	            </xsl:text>
+	            </xsl:text>   
+                </xsl:if>
+
                 <xsl:apply-templates/>
-                <xsl:text>\stopitemize </xsl:text>
+                
+                <xsl:if test="not(item[1]/child::*[1][self::list])">
+                    <xsl:text>\stopitemize </xsl:text>
+                </xsl:if>
             </xsl:when>
 
             <xsl:otherwise>
                 <xsl:text>
                     \setupindenting[yes,medium]
-	                \setupitemgroup[itemize][indenting={40pt,next}][leftmargin=-5em]
-	                   \startitemize[packed, paragraph, joinedup]
+	                \setupitemgroup[itemize][indenting={40pt,next}]
+	                   \startitemize[packed, paragraph, joinedup
 	            </xsl:text>
+                
+                <!-- in a TOC the first level shouldn't be indented --> 
+                <xsl:if test="ancestor::div[@type = 'contents']/child::list[1]/child::item/descendant::list[1] = .">
+                    <xsl:text>, inmargin</xsl:text>
+                </xsl:if>
+                
+                <xsl:text>]</xsl:text>
                 <xsl:apply-templates/>
                 <xsl:text>\stopitemize </xsl:text>
             </xsl:otherwise>
@@ -1612,12 +1716,12 @@
     </xsl:template>
 
     <xsl:template match="list[ancestor::div[@subtype = 'print' and @type = 'editorial'] and descendant::label]">
-        <xsl:text>\starttabulate[|l|p|] </xsl:text>
+        <!--<xsl:text>\starttabulate[|l|p|] </xsl:text>
         <xsl:apply-templates/>
-        <xsl:text>\stoptabulate </xsl:text>
-        <!--<xsl:text>\starttwocolumns </xsl:text>
+        <xsl:text>\stoptabulate </xsl:text>-->
+        <xsl:text>\starttwocolumns </xsl:text>
         <xsl:apply-templates/>
-        <xsl:text>\stoptwocolumns </xsl:text>-->
+        <xsl:text>\stoptwocolumns </xsl:text>
     </xsl:template>
 
     <xsl:template match="item">
@@ -1653,7 +1757,7 @@
                         and parent::list/child::*[1] = .">
                     <xsl:for-each select="ancestor::note/parent::lem/following-sibling::rdg[@type = 'om']">
                         <xsl:text>\margin{}{omOpen}{</xsl:text>
-                        <xsl:value-of select="generate-id()"/>
+                        <!--<xsl:value-of select="generate-id()"/>-->
                         <xsl:text>}{\tfx\high{/</xsl:text>
                         <xsl:value-of select="replace(@wit, '[#\s]', '')"/>
                         <xsl:text>}}{/</xsl:text>
@@ -1667,7 +1771,7 @@
                         and parent::list/child::*[1] = .">
                     <xsl:for-each select="parent::list/parent::lem/following-sibling::rdg[@type = 'om']">
                         <xsl:text>\margin{}{omOpen}{</xsl:text>
-                        <xsl:value-of select="generate-id()"/>
+                        <!--<xsl:value-of select="generate-id()"/>-->
                         <xsl:text>}{\tfx\high{/</xsl:text>
                         <xsl:value-of select="replace(@wit, '[#\s]', '')"/>
                         <xsl:text>}}{/</xsl:text>
@@ -1697,7 +1801,7 @@
                         and not(ancestor::rdg[@type = 'ppl' or @type = 'ptl']/descendant::*[last()]/ancestor::item/../following-sibling::node()[matches(., '\w')])">
                     <xsl:for-each select="ancestor::rdg[@type = 'ppl' or @type = 'ptl']">
                         <xsl:text>\margin{}{plClose}{</xsl:text>
-                        <xsl:value-of select="generate-id()"/>
+                        <!--<xsl:value-of select="generate-id()"/>-->
                         <xsl:text>}{\tfx\high{</xsl:text>
                         <xsl:value-of select="replace(@wit, '[#\s]', '')"/>
                         <xsl:text>}}{</xsl:text>
@@ -1716,7 +1820,7 @@
                         and not(descendant::list)">
                     <xsl:for-each select="ancestor::lem[1]/following-sibling::rdg[@type = 'om']">
                         <xsl:text>\margin{}{omClose}{</xsl:text>
-                        <xsl:value-of select="generate-id()"/>
+                        <!--<xsl:value-of select="generate-id()"/>-->
                         <xsl:text>}{\tfx\high{</xsl:text>
                         <xsl:value-of select="replace(@wit, '[#\s]', '')"/>
                         <xsl:text>\textbackslash}}{</xsl:text>
@@ -1748,7 +1852,7 @@
                         and not(following-sibling::*)">
                     <xsl:for-each select="ancestor::rdg[@type = 'ptl']/ancestor::lem[1][following-sibling::rdg[@type = 'var-structure']]/ancestor::lem[1]/following-sibling::rdg[@type = 'om']">
                         <xsl:text>\margin{}{omClose}{</xsl:text>
-                        <xsl:value-of select="generate-id()"/>
+                        <!--<xsl:value-of select="generate-id()"/>-->
                         <xsl:text>}{\tfx\high{</xsl:text>
                         <xsl:value-of select="replace(@wit, '[#\s]', '')"/>
                         <xsl:text>\textbackslash}}{</xsl:text>
@@ -1777,7 +1881,7 @@
                         and not(ancestor::div[@type = 'contents'][ancestor::lem]/descendant::*[last()]/ancestor::item/../following-sibling::node()[matches(., '\w')])">
                     <xsl:for-each select="ancestor::div[@type = 'contents']/ancestor::lem/following-sibling::rdg[@type = 'om']">
                         <xsl:text>\margin{}{omClose}{</xsl:text>
-                        <xsl:value-of select="generate-id()"/>
+                        <!--<xsl:value-of select="generate-id()"/>-->
                         <xsl:text>}{\tfx\high{</xsl:text>
                         <xsl:value-of select="replace(@wit, '[#\s]', '')"/>
                         <xsl:text>\textbackslash}}{</xsl:text>
@@ -1812,7 +1916,7 @@
                         and not(parent::list[following-sibling::node()[matches(., '\w')]])">
                     <xsl:for-each select="ancestor::div[@type = 'section'][1]/parent::lem/following-sibling::rdg[@type = 'om']">
                         <xsl:text>\margin{}{omClose}{</xsl:text>
-                        <xsl:value-of select="generate-id()"/>
+                        <!--<xsl:value-of select="generate-id()"/>-->
                         <xsl:text>}{\tfx\high{</xsl:text>
                         <xsl:value-of select="replace(@wit, '[#\s]', '')"/>
                         <xsl:text>\textbackslash}}{</xsl:text>
@@ -1912,7 +2016,7 @@
         </xsl:if>
         
         <xsl:if test="not(parent::front)">
-            <xsl:text>\page[right,empty]</xsl:text>
+            <xsl:text>\page[yes,left,empty]</xsl:text>
             <xsl:text>\noheaderandfooterlines</xsl:text>
         </xsl:if>
         
@@ -1929,7 +2033,9 @@
         </xsl:if>-->
         <xsl:choose>
             <xsl:when test="ancestor::group">
-                <xsl:text>\marking[evHeader]{{\tfx\it J. A. Nösselt, Anweisung zur Bildung angehender Theologen\ \high{1}1786/89–\high{3}1818/19}}</xsl:text>
+                <xsl:text>\marking[evHeader]{{\tfx\it </xsl:text>
+                <xsl:apply-templates select="//teiHeader//title[@level = 'a']/title[@type = 'condensed']"/>
+                <xsl:text>}}</xsl:text>
             </xsl:when>
             <xsl:otherwise>
                 <xsl:text>\marking[evHeader]{Inhalt}</xsl:text>
@@ -1960,6 +2066,9 @@
 
 
     <xsl:template match="text">
+        <xsl:text>\marking[evHeader]{{\tfx\it </xsl:text>
+        <xsl:apply-templates select="//teiHeader//title[@level = 'a']/title[@type = 'condensed']"/>
+        <xsl:text>}}</xsl:text>
         <xsl:apply-templates/>
         <!--<xsl:text>\page[right,empty]</xsl:text>
         <xsl:text>\noheaderandfooterlines</xsl:text>-->
@@ -1979,7 +2088,9 @@
                 \setuppagenumber[number=1]</xsl:text>
         </xsl:if>
         <xsl:if test="not(ancestor::group)">
-            <xsl:text>\stopfrontmatter </xsl:text>
+            <xsl:text>
+                \page[empty]
+                \stopfrontmatter </xsl:text>
         </xsl:if>
     </xsl:template>
 
@@ -2127,11 +2238,10 @@
     </xsl:template>
 
     <xsl:template match="group">
-        <xsl:text>
-            \noheaderandfooterlines
-            \marking[evHeader]{
-            {\tfx\it J. A. Nösselt, Anweisung zur Bildung angehender Theologen\ \high{1}1786/89–\high{3}1818/19}
-            }</xsl:text>
+        <xsl:text>\noheaderandfooterlines</xsl:text>
+        <xsl:text>\marking[evHeader]{{\tfx\it </xsl:text>
+        <xsl:apply-templates select="//teiHeader//title[@level = 'a']/title[@type = 'condensed']"/>
+        <xsl:text>}}</xsl:text>
             <!--\emptyEvenPage -->
         <xsl:text>            
             \startbodymatter
@@ -2203,6 +2313,10 @@
                 <xsl:text>\NC \NR </xsl:text>
             </xsl:otherwise>
         </xsl:choose>
+    </xsl:template>
+    
+    <xsl:template match="row[@rend = 'line']">
+        <xsl:text>\HL </xsl:text>
     </xsl:template>
 
     <xsl:template match="cell">
@@ -2323,16 +2437,22 @@
         </xsl:if>
 
         <xsl:if test="ancestor::group">
-            <xsl:text>\marking[evHeader]{{\tfx\it J. A. Nösselt, Anweisung zur Bildung angehender Theologen\ \high{1}1786/89–\high{3}1818/19}}</xsl:text>
+            <xsl:text>\page[right,empty]</xsl:text>
+            <xsl:text>\noheaderandfooterlines</xsl:text>
+            <xsl:text>\marking[evHeader]{{\tfx\it </xsl:text>
+            <xsl:apply-templates select="//teiHeader//title[@level = 'a']/title[@type = 'condensed']"/>
+            <xsl:text>}}</xsl:text>
         </xsl:if>
         <xsl:apply-templates/>
     </xsl:template>
 
     <xsl:template match="div[@type = 'part']">
-        <xsl:text>\page[right,empty]</xsl:text>
-        <xsl:text>\noheaderandfooterlines</xsl:text>
-        <!--<xsl:text>\setupheader[empty]</xsl:text>-->
-        <xsl:apply-templates/>
+        <xsl:if test="not(preceding::div[1][@type = 'titlePage'])">
+            <xsl:text>\page[right,empty]</xsl:text>
+            <xsl:text>\noheaderandfooterlines</xsl:text>
+        </xsl:if>    
+            <!--<xsl:text>\setupheader[empty]</xsl:text>-->
+            <xsl:apply-templates/>       
     </xsl:template>
 
     <xsl:template match="div[@type = 'chapter']">
@@ -2343,8 +2463,12 @@
     </xsl:template>
     
     <xsl:template match="div[@type = 'introduction'][ancestor::group]">
+        <xsl:if test="not(preceding-sibling::*[1][descendant::div[@type = 'titlePage']])">
+            <xsl:text>
+                \page[right,empty]
+            </xsl:text>
+        </xsl:if>
         <xsl:text>
-            \page[right,empty]
             \noheaderandfooterlines
         </xsl:text>
         <xsl:apply-templates/>
