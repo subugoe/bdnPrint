@@ -9,14 +9,15 @@ use File::Slurp;
 
 my $head = "";
 
-my $tail = read_file("2228w.7.xml");
-
+my $tail = read_file("noesselt_full.xml");
 
 
 # handling curly braces (otherwise they are interpreted as TeX command)
 $tail =~ s/\{/\\\{/g;
 $tail =~ s/\}/\\\}/g;
-
+$tail =~ s/\[Einleitung\]/\\char"005B Einleitung\\char"005D/g;
+$tail =~ s/a\\</a\\textbackslash </g;
+$tail =~ s/\|/\\|/g;
 
 $head = $head . $tail;
 print $head;
