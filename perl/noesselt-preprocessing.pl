@@ -130,6 +130,10 @@ $tail =~ s/\\margin\{\}\{e\}\{\}\{\\hbox\{\}\}\{E\}\\pagereference\[d1e63308\]//
 $tail =~ s/ber die Evidenz in metaphysichen Wissenschaften, von \\/ber die\\margin\{\}\{e\}\{\}\{\\hbox\{\}\}\{E\}\\pagereference\[d1e63308\] Evidenz in metaphysichen Wissenschaften, von \\/g;
 $tail =~ s/\\margin\{\}\{e\}\{\}\{\\hbox\{\}\}\{E\}\\pagereference\[d1e179251\]//g;
 $tail =~ s/Katechetische Magazine haben \\/Katechetische\\margin\{\}\{e\}\{\}\{\\hbox\{\}\}\{E\}\\pagereference\[d1e179251\] Magazine haben \\/g;
+$tail =~ s/\\margin\{\}\{e\}\{\}\{\\hbox\{\}\}\{E\}\\pagereference\[d1e89646\]//g;
+$tail =~ s/\\par Die Leser erhalten das Werk /\\par Die Leser \\margin\{\}\{e\}\{\}\{\\hbox\{\}\}\{E\}\\pagereference\[d1e89646\]erhalten das Werk /g;
+$tail =~ s/\\margin\{\}\{e\}\{\}\{\\hbox\{\}\}\{E\}\\pagereference\[d1e109434\]//g;
+$tail =~ s/\\par Was man neuerlich/\\par Was man \\margin\{\}\{e\}\{\}\{\\hbox\{\}\}\{E\}\\pagereference\[d1e109434\]neuerlich/g;
 
 
 # errors dealing with the commentary + scribal abbreviations
@@ -184,6 +188,8 @@ $tail =~ s/\\tablemainhead\[ Dritter Theil\.\]\{\{\\margin\{\}\{pb\}\{\}\{\\vl\}
 $tail =~ s/\\marking\[oddHeader\]\{III\. Inhalt des dritten Theils \(c\)\}\}\}\\subject/\\marking\[oddHeader\]\{III\. Inhalt des dritten Theils \(c\)\}\}\}\\tablesubheadrdg/g;
 $tail =~ s/90\.\\stopitemize \\stopitemize \\stopitemize \\subject\[ Vierter Theil\./90\.\\stopitemize \\stopitemize \\stopitemize \\page \\tablemainheadrdg\[ Vierter Theil\./g;
 $tail =~ s/cIX\} Vierter Theil\.\}\}\\subject\[Von/cIX\} Vierter Theil\.\}\}\\tablesubheadrdg\[Von/g;
+$tail =~ s/zweiten Theils \(c\)\}\}\}\\subject\[Von den eigentlichen theologischen Wissenschaften\.\]\{\{Von den eigentlichen theologischen Wissenschaften\.\}\}\\blank\[2pt\]/zweiten Theils \(c\)\}\}\}\\tablesubheadrdg\[Von den eigentlichen theologischen Wissenschaften\.\]\{\{Von den eigentlichen theologischen Wissenschaften\.\}\}\\blank\[2pt\]/g;
+$tail =~ s/ndet\.\\par \\blank\[2pt\] \{\\switchtobodyfont\[8\.5pt\]/ndet\. \\blank\[2pt\] \{\\switchtobodyfont\[8\.5pt\]/g;
 
 
 # pagebreaks
@@ -193,7 +199,7 @@ $tail =~ s/thig sey\\cNote\{sei\}\.\\par \\blank\[2pt\]\\marking/thig sey\\cNote
 $tail =~ s/1832\) sind 1798/ 1832\) sind 1798/g;
 $tail =~ s/gemeinschaftlicher Wiederholung/gemeinschaft-licher Wiederholung/g;
 $tail =~ s/Theile \\margin\{\}\{omOpen\}\{\}\{\\tfx\\high\{\/c\}\}\{\/c\}derselben/Theile \\margin\{\}\{omOpen\}\{\}\{\\tfx\\high\{\/c\}\}\{\/c\}dersel-ben/g;
-$tail =~ s/Kirchengeschichte, mehr als/Kirchen-geschichte, mehr als/g;
+$tail =~ s/Kirchengeschichte, mehr als/Kirchen-\\\\geschichte, mehr als/g;
 $tail =~ s/\{\\tfx\\high\{\/c\}\}\{\\tfx\\high\{\/a\}\}suchen\;/\{\\tfx\\high\{\/c\}\}\{\\tfx\\high\{\/a\}\}su\\\\chen\;/g;
 
 
@@ -211,6 +217,8 @@ $tail =~ s/Zuletzt, von der vor dem Studium/Zuletzt, von\\page der vor dem Studi
 $tail =~ s/\\stopitemize \\stopitemize \\stopitemize \\sym\{\}\\italic\{Zweyter Abschnitt\: Philosophie\.\}/\\stopitemize \\stopitemize \\stopitemize \\page\\sym\{\}\\italic\{Zweyter Abschnitt\: Philosophie\.\}/g;
 
 # page breaks in margins
+
+$tail =~ s/a235\}/\; a235\}/g;
 
 # corrigenda
 $tail =~ s/sq\.\)\\NC sq\.\\NC \\NR \\NC ac/sq\.\)\\NC sq\.\\NC \\NR \\NC a448, c157/g;
