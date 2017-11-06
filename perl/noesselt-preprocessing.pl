@@ -12,6 +12,7 @@ my $head = "";
 my $tail = read_file("tmp/tmp-1.tex");
 
 
+
 # specific processing for Noesselt
 # wrong whitespaces
 $tail =~ s/c\[II\], c\} /c\[II\], c\}/g;
@@ -23,26 +24,10 @@ $tail =~ s/ \\marking\[oddHeader\]\{Vorreden/\\marking\[oddHeader\]\{Vorreden/g;
 $tail =~ s/\{b\[II\]\} \{\\tfx\\high\{ac\\textbackslash\}\}/\{b\[II\]\}\{\\tfx\\high\{ac\\textbackslash\}\}/g;
 $tail =~ s/Werke, \\margin\{\}\{plClose\}/Werke,\\margin\{\}\{plClose\}/g;
 $tail =~ s/\\crlf 1818\.\\stopalignment\}\\margin\{\}\{pb\}\{\}\{\\vl\}\{c\[II\]\} \\margin\{\}\{plClose\}\{\}\{\\tfx\\high\{c\}\}\{c\}\}/\\crlf 1818\.\\stopalignment\}\\margin\{\}\{pb\}\{\}\{\\vl\}\{c\[II\]\}\\margin\{\}\{plClose\}\{\}\{\\tfx\\high\{c\}\}\{c\}\}/g;
-#$tail =~ s/257\\aNote\{259\}\~\.\}/257\\aNote\{259\}\.\}/g;
-#$tail =~ s/258\\aNote\{260\}\~\./258\\aNote\{260\}\./g;
-#$tail =~ s/259\\aNote\{261\}\~\./259\\aNote\{261\}\./g;
-#$tail =~ s/geliefert hat\}\~\.\\par \\blank\[2pt\] /geliefert hat\}\../g;
-#$tail =~ s/1735\.\\aNote\{1735\}\~\\margin\{\}/1735\.\\aNote\{1735\} \\margin\{\}/g;
-#$tail =~ s/S\. 166 fgg\. \\sym\{\}\\margin\{\}\{omOpen\}\{\}\{\\tfx\\high\{\/a\}\}\{\/a\} /S\. 166 fgg\. \\sym\{\}\\margin\{\}\{omOpen\}\{\}\{\\tfx\\high\{\/a\}\}\{\/a\}/g;
 $tail =~ s/30\.\\cNote\{30\} f\./30\.\\cNote\{30\}f\./g;
 $tail =~ s/S\. 3 f\.\) Auch in/S\. 3f\.\) Auch in/g;
 $tail =~ s/,\}\\margin\{\}\{e\}\{\}\{\\hbox\{\}\}\{E\}/,\} \\margin\{\}\{e\}\{\}\{\\hbox\{\}\}\{E\}/g;
-#$tail =~ s/\}\~\./\}\./g;
-#$tail =~ s/higkeiten\}\}\~und/higkeiten\}\} und/g;
-#$tail =~ s/Frankfurt\}\~und /Frankfurt\} und /g;
-#$tail =~ s/5\.\}\~Halae/5\.\} Halae/g;
-#$tail =~ s/kann\}\~man/kann\} man/g;
-#$tail =~ s/Uebung\}\~im/Uebung\} im/g;
-#$tail =~ s/dadurch\}\~und/dadurch\} und/g;
-#$tail =~ s/sobald\}\~man/sobald\} man/g;
-$tail =~ s/\}\~([\w]{1})/\} $1/g;
-$tail =~ s/\}\~([\.,\]\)]{1})/\}$1/g;
-
+$tail =~ s/\}\~([^\\\{]{1})/\} $1/g;
 
 # wrong indentation
 $tail =~ s/dazu eignete.\\par \\starteffect\[hidden\]\. \\stopeffect \\hspace\[p\]/dazu eignete.\\par /g;
@@ -83,6 +68,8 @@ $tail =~ s/A\. d\. H\.\{\[\\\}\]\}\\margin\{\}\{plClose\}\{\}\{\\tfx\\high\{c\}\
 $tail =~ s/nne\.\\blank\[2pt\]\\stoprdg\}\}\\subject\[§\. 211214\.\]/nne\.\\margin\{\}\{plClose\}\{\}\{\\tfx\\high\{a\}\}\{a\}\\stoprdg\}\}\\subject\[§\. 211214\.\]/g;
 #$tail =~ s/Halle 1781\. 8\.\\stopitemize/Halle 1781\. 8\.\\margin\{\}\{plClose\}\{\}\{\\tfx\\high\{a\}\}\{a\}\\stopitemize/g;
 $tail =~ s/an die Hand geben\.\\par \\blank\[2pt\]\\stoprdg\}/an die Hand geben\.\\margin\{\}\{plClose\}\{\}\{\\tfx\\high\{c\}\}\{c\}\\stoprdg\}/g;
+$tail =~ s/20\. October 1818\. \\crlf \\rightaligned\{\\italic\{Der Herausgeber\.\}\}\\par/20\. October 1818\. \\crlf \\rightaligned\{\\italic\{Der Herausgeber\.\}\}\\margin\{\}\{plClose\}\{\}\{\\tfx\\high\{c\}\}\{c\}/g;
+$tail =~ s/die Zukunft\. \\crlf \\rightaligned\{D\. H\.\}\\par \\blank\[2pt\]/die Zukunft\. \\crlf \\rightaligned\{D\. H\.\}\\margin\{\}\{plClose\}\{\}\{\\tfx\\high\{c\}\}\{c\}/g;
 
 
 # paragraphs
@@ -111,6 +98,7 @@ $tail =~ s/ssig seyn\.\\par/ssig seyn\.\\par\\starteffect\[hidden\]\. \\stopeffe
 $tail =~ s/des Werks zusammen\. /des Werks zusammen\. \\blank\[2pt\]/g;
 #$tail =~ s/joinedup, inmargin\]\\blank\[12pt\]\\tablemainheadrdg\[Vierter Theil\.\]/joinedup, inmargin\]\\tablemainheadrdg\[Vierter Theil\.\]/g;
 $tail =~ s/Ansichten des Verfassers des Werks zusammen\. \\blank\[2pt\]/Ansichten des Verfassers des Werks zusammen\. \\blank\[4pt\]/g;
+$tail =~ s/ndet\.\\par \\blank\[2pt\] \{\\switchtobodyfont\[8\.5pt\] \\startnarrow \{\\dvl\}/ndet\. \\noindentation \\blank\[2pt\] \{\\switchtobodyfont\[8\.5pt\] \\startnarrow \{\\dvl\}/g;
 
 
 # errors dealing with the commentary + margins
@@ -124,16 +112,16 @@ $tail =~ s/\\margin\{\}\{e\}\{\}\{\\hbox\{\}\}\{E\}\\pagereference\[d1e29961\]//
 $tail =~ s/ mit sich bringt\.\\par \\blank\[2pt\] \{\\switchtobodyfont\[8\.5pt\] \\startnarrow \\persIndex\{Adelung, Johann Christoph\}\\italic\{Adelungs\}\\cNote\{\\italic\{Adelung's\}\} Magazin/ mit sich bringt\. \{\\switchtobodyfont\[8\.5pt\] \\startnarrow \\persIndex\{Adelung, Johann Christoph\}\\italic\{Adelungs\}\\cNote\{\\italic\{Adelung's\}\} Magazin\\margin\{\}\{e\}\{\}\{\\hbox\{\}\}\{E\}\\pagereference\[d1e29961\]/g;
 $tail =~ s/\\margin\{\}\{e\}\{\}\{\\hbox\{\}\}\{E\}\\pagereference\[d1e160171\]//g;
 $tail =~ s/Zu \\italic\{literarischen\} Berichtigungen/\\starteffect\[hidden\]\. \\stopeffect \\hspace\[p\]Zu \\italic\{literarischen\} Berichtigungen\\margin\{\}\{e\}\{\}\{\\hbox\{\}\}\{E\}\\pagereference\[d1e160171\]/g;
-$tail =~ s/\\margin\{\}\{e\}\{\}\{\\hbox\{\}\}\{E\}\\pagereference\[d1e109434\]//g;
-$tail =~ s/\\par Was man neuerlich/\\par \\starteffect\[hidden\]\. \\stopeffect \\hspace\[p\]Was man\\margin\{\}\{e\}\{\}\{\\hbox\{\}\}\{E\}\\pagereference\[d1e109434\] neuerlich/g;
 $tail =~ s/\\margin\{\}\{e\}\{\}\{\\hbox\{\}\}\{E\}\\pagereference\[d1e63308\]//g;
 $tail =~ s/ber die Evidenz in metaphysichen Wissenschaften, von \\/ber die\\margin\{\}\{e\}\{\}\{\\hbox\{\}\}\{E\}\\pagereference\[d1e63308\] Evidenz in metaphysichen Wissenschaften, von \\/g;
 $tail =~ s/\\margin\{\}\{e\}\{\}\{\\hbox\{\}\}\{E\}\\pagereference\[d1e179251\]//g;
 $tail =~ s/Katechetische Magazine haben \\/Katechetische\\margin\{\}\{e\}\{\}\{\\hbox\{\}\}\{E\}\\pagereference\[d1e179251\] Magazine haben \\/g;
-$tail =~ s/\\margin\{\}\{e\}\{\}\{\\hbox\{\}\}\{E\}\\pagereference\[d1e89646\]//g;
-$tail =~ s/\\par Die Leser erhalten das Werk /\\par Die Leser \\margin\{\}\{e\}\{\}\{\\hbox\{\}\}\{E\}\\pagereference\[d1e89646\]erhalten das Werk /g;
 $tail =~ s/\\margin\{\}\{e\}\{\}\{\\hbox\{\}\}\{E\}\\pagereference\[d1e109434\]//g;
 $tail =~ s/\\par Was man neuerlich/\\par Was man \\margin\{\}\{e\}\{\}\{\\hbox\{\}\}\{E\}\\pagereference\[d1e109434\]neuerlich/g;
+$tail =~ s/\\margin\{\}\{e\}\{\}\{\\hbox\{\}\}\{E\}\\pagereference\[d1e1694\]//g;
+$tail =~ s/\\par Die Leser erhalten/\\par Die Leser erhalten\\margin\{\}\{e\}\{\}\{\\hbox\{\}\}\{E\}\\pagereference\[d1e1694\]/g;
+$tail =~ s/\\margin\{\}\{e\}\{\}\{\\hbox\{\}\}\{E\}\\pagereference\[d1e21482\]//g;
+$tail =~ s/\\par Was man neuerlich/\\par \\starteffect\[hidden\]\. \\stopeffect \\hspace\[p\] Was man neuerlich\\margin\{\}\{e\}\{\}\{\\hbox\{\}\}\{E\}\\pagereference\[d1e21482\]/g;
 
 
 # errors dealing with the commentary + scribal abbreviations
@@ -189,7 +177,6 @@ $tail =~ s/\\marking\[oddHeader\]\{III\. Inhalt des dritten Theils \(c\)\}\}\}\\
 $tail =~ s/90\.\\stopitemize \\stopitemize \\stopitemize \\subject\[ Vierter Theil\./90\.\\stopitemize \\stopitemize \\stopitemize \\page \\tablemainheadrdg\[ Vierter Theil\./g;
 $tail =~ s/cIX\} Vierter Theil\.\}\}\\subject\[Von/cIX\} Vierter Theil\.\}\}\\tablesubheadrdg\[Von/g;
 $tail =~ s/zweiten Theils \(c\)\}\}\}\\subject\[Von den eigentlichen theologischen Wissenschaften\.\]\{\{Von den eigentlichen theologischen Wissenschaften\.\}\}\\blank\[2pt\]/zweiten Theils \(c\)\}\}\}\\tablesubheadrdg\[Von den eigentlichen theologischen Wissenschaften\.\]\{\{Von den eigentlichen theologischen Wissenschaften\.\}\}\\blank\[2pt\]/g;
-$tail =~ s/ndet\.\\par \\blank\[2pt\] \{\\switchtobodyfont\[8\.5pt\]/ndet\. \\blank\[2pt\] \{\\switchtobodyfont\[8\.5pt\]/g;
 
 
 # pagebreaks
@@ -198,7 +185,7 @@ $tail =~ s/thig sey\\cNote\{sei\}\.\\par \\blank\[2pt\]\\marking/thig sey\\cNote
 # hyphenation
 $tail =~ s/1832\) sind 1798/ 1832\) sind 1798/g;
 $tail =~ s/gemeinschaftlicher Wiederholung/gemeinschaft-licher Wiederholung/g;
-$tail =~ s/Theile \\margin\{\}\{omOpen\}\{\}\{\\tfx\\high\{\/c\}\}\{\/c\}derselben/Theile \\margin\{\}\{omOpen\}\{\}\{\\tfx\\high\{\/c\}\}\{\/c\}dersel-ben/g;
+$tail =~ s/Theile \\margin\{\}\{omOpen\}\{\}\{\\tfx\\high\{\/c\}\}\{\/c\}derselben/Theile \\margin\{\}\{omOpen\}\{\}\{\\tfx\\high\{\/c\}\}\{\/c\}dersel-\\\\ben/g;
 $tail =~ s/Kirchengeschichte, mehr als/Kirchen-\\\\geschichte, mehr als/g;
 $tail =~ s/\{\\tfx\\high\{\/c\}\}\{\\tfx\\high\{\/a\}\}suchen\;/\{\\tfx\\high\{\/c\}\}\{\\tfx\\high\{\/a\}\}su\\\\chen\;/g;
 
@@ -206,8 +193,9 @@ $tail =~ s/\{\\tfx\\high\{\/c\}\}\{\\tfx\\high\{\/a\}\}suchen\;/\{\\tfx\\high\{\
 # alignment
 $tail =~ s/\\margin\{\}\{pb\}\{\}\{\\vl\}\{b\[II\]\}\{\\tfx\\high\{ac\\textbackslash\}\}/\\leftaligned\{\\margin\{\}\{pb\}\{\}\{\\vl\}\{b\[II\]\}\{\\tfx\\high\{ac\\textbackslash\}\}\}/g;
 $tail =~ s/\\switchtobodyfont\[8\.5pt\]\\margin\{\}\{plOpen\}\{\}\{\\tfx\\high\{c\}\}\{c\}\\marking\[oddHeader\]\{Vorreden\}\{\\startalignment\[center\]\\margin\{\}\{pb\}\{\}\{\\vl\}\{c\[I\]\} Anweisung /\\switchtobodyfont\[8\.5pt\]\{\\startalignment\[center\]\\margin\{\}\{plOpen\}\{\}\{\\tfx\\high\{c\}\}\{c\}\\margin\{\}\{pb\}\{\}\{\\vl\}\{c\[I\]\} Anweisung /g;
-#$tail =~ s/Wittwe\. 1791\.\\stopalignment\}\\margin\{\}\{pb\}\{\}\{\\vl\}\{b\[2\]\}\{\\tfx\\high\{ac\\textbackslash\}\}/Wittwe\. 1791\.\\stopalignment\}\\leftaligned\{\\margin\{\}\{pb\}\{\}\{\\vl\}\{b\[2\]\}\{\\tfx\\high\{ac\\textbackslash\}\}\}/g;
-#$tail =~ s/\\stopalignment\}\\margin\{\}\{pb\}\{\}\{\\vl\}\{c\[II\]\}\\margin\{\}\{plClose\}\{\}\{\\tfx\\high\{c\}\}\{c\}\}/\\stopalignment\}\\leftaligned\{\\margin\{\}\{pb\}\{\}\{\\vl\}\{c\[II\]\}\\margin\{\}\{plClose\}\{\}\{\\tfx\\high\{c\}\}\{c\}\}\}/g;
+$tail =~ s/Wittwe\. 1791\.\\stopalignment\}\\margin\{\}\{pb\}\{\}\{\\vl\}\{b\[2\]\}\{\\tfx\\high\{ac\\textbackslash\}\} \\crlf/Wittwe\. 1791\.\\stopalignment\}\\leftaligned\{\\margin\{\}\{pb\}\{\}\{\\vl\}\{b\[2\]\}\{\\tfx\\high\{ac\\textbackslash\}\}\}/g;
+$tail =~ s/\\stopalignment\}\\margin\{\}\{pb\}\{\}\{\\vl\}\{c\[II\]\}\\margin\{\}\{plClose\}\{\}\{\\tfx\\high\{c\}\}\{c\}\} \\crlf/\\stopalignment\}\\leftaligned\{\\margin\{\}\{pb\}\{\}\{\\vl\}\{c\[II\]\}\\margin\{\}\{plClose\}\{\}\{\\tfx\\high\{c\}\}\{c\}\}\}/g;
+$tail =~ s/\\stopalignment\}\\margin\{\}\{pb\}\{\}\{\\vl\}\{a\[II\]\}\\margin\{\}\{plClose\}\{\}\{\\tfx\\high\{a\}\}\{a\} \\par \\blank\[2pt\]\}/\\stopalignment\}\\leftaligned\{\\margin\{\}\{pb\}\{\}\{\\vl\}\{a\[II\]\}\\margin\{\}\{plClose\}\{\}\{\\tfx\\high\{a\}\}\{a\}\}\}/g;
 
 
 # orphan and widow lines
@@ -215,14 +203,20 @@ $tail =~ s/93\.\\page\\sym\{\}\\italic\{Erster Abschnitt\:/93\.\\sym\{\}\\italic
 $tail =~ s/287\.\\stopitemize \\stopitemize \\sym\{\}/287\.\\stopitemize \\stopitemize \\sym\{\}\\page/g;
 $tail =~ s/Zuletzt, von der vor dem Studium/Zuletzt, von\\page der vor dem Studium/g;
 $tail =~ s/\\stopitemize \\stopitemize \\stopitemize \\sym\{\}\\italic\{Zweyter Abschnitt\: Philosophie\.\}/\\stopitemize \\stopitemize \\stopitemize \\page\\sym\{\}\\italic\{Zweyter Abschnitt\: Philosophie\.\}/g;
+$tail =~ s/\\margin\{\}\{e\}\{\}\{\\hbox\{\}\}\{E\}\\pagereference\[d1e11424\]Verfassers Anweisung zur theologischen/\\margin\{\}\{e\}\{\}\{\\hbox\{\}\}\{E\}\\pagereference\[d1e11424\]Verfassers Anweisung zur theo-\\page logischen/g;
 
 # page breaks in margins
 
 $tail =~ s/a235\}/\; a235\}/g;
+$tail =~ s/c\[3\]\} Zweyter/c\[3\]\]\} Zweyter/g;
+
 
 # corrigenda
 $tail =~ s/sq\.\)\\NC sq\.\\NC \\NR \\NC ac/sq\.\)\\NC sq\.\\NC \\NR \\NC a448, c157/g;
 $tail =~ s/theologischen\\NC \\NR \\NC ac/theologischen\\NC \\NR \\NC a576, c269/g;
+
+
+
 
 
 $head = $head . $tail;
