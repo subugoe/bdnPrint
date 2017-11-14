@@ -16,8 +16,7 @@
     
     <xsl:template match="body"><!-- ok -->
         <xsl:if test="ancestor::group">
-            <xsl:text>\page[right,empty]</xsl:text>
-            <xsl:text>\noheaderandfooterlines </xsl:text>
+            <xsl:call-template name="new-page"/>
         </xsl:if>
         <xsl:apply-templates/>
     </xsl:template>
@@ -42,10 +41,8 @@
     <xsl:template match="front[ancestor::group]"><!-- ok -->
         <xsl:apply-templates/>
         <xsl:if test="ancestor::group/descendant::front[1] = .">
-            <xsl:text>
-                \resetnumber[page]
-                \setuppagenumber[number=1]
-            </xsl:text>
+            <xsl:text>\resetnumber[page]</xsl:text>
+            <xsl:text>\setuppagenumber[number=1]</xsl:text>
         </xsl:if>
     </xsl:template>
     
@@ -74,16 +71,10 @@
     
     <!-- inside edition text -->
     <xsl:template match="div[@type = 'preface' and parent::front]"><!-- ok -->
-        <xsl:text>\setuppagenumber[number=5]</xsl:text>
-        
-        <xsl:text>\marking[oddHeader]{</xsl:text>
-        <xsl:value-of select="head"/>
-        <xsl:text>}</xsl:text>
-        
-        <xsl:text>\marking[evHeader]{</xsl:text>
-        <xsl:value-of select="head"/>
-        <xsl:text>}</xsl:text>
-        
+        <xsl:text>\setuppagenumber[number=5]</xsl:text>       
+        <xsl:call-template name="make-both-columns">
+            <xsl:with-param name="contents" select="head"/>
+        </xsl:call-template>       
         <xsl:apply-templates/>
     </xsl:template>
     
@@ -125,12 +116,9 @@
     
     
     <xsl:template match="div[@type = 'editorialNotes']"><!-- ok -->
-        <xsl:text>\marking[oddHeader]{</xsl:text>
-        <xsl:value-of select="head[1]"/>
-        <xsl:text>}</xsl:text>
-        <xsl:text>\marking[evHeader]{</xsl:text>
-        <xsl:value-of select="head[1]"/>
-        <xsl:text>}</xsl:text>
+        <xsl:call-template name="make-both-columns">
+            <xsl:with-param name="contents" select="head[1]"/>
+        </xsl:call-template>
         <xsl:apply-templates/>
     </xsl:template>
     
@@ -156,8 +144,7 @@
     
     <xsl:template match="div[@type = 'part']"><!-- ok -->
         <xsl:if test="not(preceding::div[1][@type = 'titlePage'])">
-            <xsl:text>\page[right,empty]</xsl:text>
-            <xsl:text>\noheaderandfooterlines </xsl:text>
+            <xsl:call-template name="new-page"/>
         </xsl:if>    
 
         <xsl:apply-templates/>  
@@ -165,9 +152,7 @@
     
     
     <xsl:template match="div[@type = 'chapter']"><!-- ok -->
-        <xsl:text>\page[right,empty]</xsl:text>
-        <xsl:text>\noheaderandfooterlines </xsl:text>
-
+        <xsl:call-template name="new-page"/>
         <xsl:apply-templates/>
     </xsl:template>
     
@@ -185,15 +170,9 @@
     <!-- outside edition text -->
     <xsl:template match="div[@type = 'introduction' and not(ancestor::group)]"><!-- ok -->
         <xsl:text>\resetcounter[footnote]</xsl:text>
-        
-        <xsl:text>\marking[evHeader]{</xsl:text>
-        <xsl:value-of select="head[1]"/>
-        <xsl:text>}</xsl:text>
-        
-        <xsl:text>\marking[oddHeader]{</xsl:text>
-        <xsl:value-of select="head[1]"/>
-        <xsl:text>}</xsl:text>
-        
+        <xsl:call-template name="make-both-columns">
+            <xsl:with-param name="contents" select="head[1]"/>
+        </xsl:call-template>        
         <xsl:apply-templates/>
     </xsl:template>
     
@@ -210,15 +189,9 @@
     
     <xsl:template match="div[@type = 'editorial']"><!-- ok -->
         <xsl:text>\resetcounter[footnote]</xsl:text>
-        
-        <xsl:text>\marking[evHeader]{</xsl:text>
-        <xsl:value-of select="head"/>
-        <xsl:text>}</xsl:text>
-        
-        <xsl:text>\marking[oddHeader]{</xsl:text>
-        <xsl:value-of select="head"/>
-        <xsl:text>}</xsl:text>
-        
+        <xsl:call-template name="make-both-columns">
+            <xsl:with-param name="contents" select="head[1]"/>
+        </xsl:call-template>        
         <xsl:apply-templates/>
     </xsl:template>
     
@@ -451,10 +424,7 @@
                     <xsl:text>{\startrdg</xsl:text>
                 </xsl:if>
                 <xsl:if test="child::*[1][self::p]">
-                    <xsl:text>\starteffect[hidden]</xsl:text>
-                    <xsl:text>.</xsl:text>
-                    <xsl:text>\stopeffect</xsl:text>
-                    <xsl:text>\hspace[p]</xsl:text>
+                    <xsl:call-template name="paragraph-indent"/>
                 </xsl:if>
             </xsl:otherwise>
         </xsl:choose>
@@ -628,7 +598,21 @@
  
  
     <xsl:template match="index[@indexName = 'classical-authors']">
-        <xsl:apply-templates/>
+        <xsl:text>\classical-authorsIndex{</xsl:text>
+        <xsl:value-of select="persName"/>
+        
+        <!-- Achtung: auch Fälle mit zwei term-Elementen!! -->
+        <!-- OS: Wir haben bislang nur wenige Fälle der Indexierung mit zwei <terms>. 
+            Hier sollte sich die Seitenanzeige im Print nur bei dem zweiten Term ausgegeben werden.-->
+        
+        <xsl:if test="term/title">
+            <xsl:text>+</xsl:text>
+        </xsl:if>
+        
+        <xsl:apply-templates select="term/title"/>
+        <xsl:text> </xsl:text>
+        <xsl:apply-templates select="term/measure"/>
+        <xsl:text>}</xsl:text>
     </xsl:template>
  
  
@@ -638,21 +622,23 @@
  
  
     <xsl:template match="index[@indexName = 'persons']">
-        <!--<xsl:choose>-->
-            <!-- cross reference handling -->
-            <!--<xsl:when test="contains(child::term, 's. ')">
+        <xsl:choose>
+            <xsl:when test="count(term) gt 1">
                 <xsl:text>\seepersonsIndex{</xsl:text>
-                <xsl:value-of select="substring-before(child::term, ',')"/>
+                <xsl:value-of select="substring-before(child::term[1], ',')"/>
                 <xsl:text>}{</xsl:text>
-                <xsl:value-of select="substring-after(child::term, 's. ')"/>
-                <xsl:text>}</xsl:text>
+                <xsl:value-of select="substring-after(child::term[1], 's. ')"/>
+                <xsl:text>}</xsl:text>  
+                <xsl:text>\personsIndex{</xsl:text>
+                <xsl:value-of select="child::term[2]"/>
+                <xsl:text>}</xsl:text>                
             </xsl:when>
             <xsl:otherwise>
                 <xsl:text>\personsIndex{</xsl:text>
                 <xsl:value-of select="child::term"/>
                 <xsl:text>}</xsl:text>
             </xsl:otherwise>
-        </xsl:choose>-->
+        </xsl:choose>
     </xsl:template>
  
  
@@ -711,14 +697,7 @@
                 <xsl:text>\crlf </xsl:text>
                 <xsl:choose>
                     <xsl:when test="@unit = 'p' and (not(preceding-sibling::*[1][self::list]) and not(preceding-sibling::*[1][self::seg][child::*[last()][self::list]]))">
-                        <!-- hidden element necessary, otherwise no display of hspace 
-                    at the beginning of a paragraph -->
-                        <xsl:text>
-                        \starteffect[hidden]
-                            .
-                        \stopeffect
-                        \hspace[p]
-                    </xsl:text>
+                        <xsl:call-template name="paragraph-indent"/>
                     </xsl:when>                   
                     <xsl:when test="@unit = 'p' and (preceding-sibling::*[1][self::list] or preceding-sibling::*[1][self::seg][child::*[last()][self::list]])">
                         <xsl:text>\hspace[p] </xsl:text>
@@ -899,8 +878,9 @@
     
     
     <xsl:template match="divGen[@type = 'Inhalt']"><!-- ok -->
-        <xsl:text>\marking[evHeader]{Inhalt}</xsl:text>        
-        <xsl:text>\marking[oddHeader]{Inhalt}</xsl:text>
+        <xsl:call-template name="make-both-columns">
+            <xsl:with-param name="contents" select="string('Inhalt')"/>
+        </xsl:call-template>
         
         <xsl:text>\title[</xsl:text>
         <xsl:value-of select="preceding-sibling::head"/>
@@ -1055,5 +1035,32 @@
         <xsl:if test="@type = 'sp'">
             <xsl:text>]</xsl:text>
         </xsl:if>
+    </xsl:template>
+    
+    
+    <xsl:template name="new-page">
+        <xsl:text>\page[right,empty]</xsl:text>
+        <xsl:text>\noheaderandfooterlines </xsl:text>
+    </xsl:template>
+    
+    
+    <xsl:template name="paragraph-indent">
+        <xsl:text>\starteffect[hidden]</xsl:text>
+        <xsl:text>.</xsl:text>
+        <xsl:text>\stopeffect</xsl:text>
+        <xsl:text>\hspace[p]</xsl:text>
+    </xsl:template>
+    
+    
+    <xsl:template name="make-both-columns">
+        <xsl:param name="contents"/>
+        
+        <xsl:text>\marking[oddHeader]{</xsl:text>
+        <xsl:value-of select="$contents"/>
+        <xsl:text>}</xsl:text>
+        
+        <xsl:text>\marking[evHeader]{</xsl:text>
+        <xsl:value-of select="$contents"/>
+        <xsl:text>}</xsl:text>
     </xsl:template>
 </xsl:stylesheet>
