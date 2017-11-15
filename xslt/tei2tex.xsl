@@ -238,6 +238,7 @@
         <xsl:text>}</xsl:text>        
     </xsl:template>
 
+
     <xsl:template match="head[ancestor::group and (@type = 'main' or not(@type) and not(ancestor::list))]">
         <xsl:if test="descendant::seg[@type = 'toc-item']">
             <xsl:apply-templates select="descendant::seg[@type = 'toc-item']"/>
@@ -246,13 +247,22 @@
             <xsl:apply-templates select="descendant::seg[@type = 'condensed']"/>
         </xsl:if>
         
-        <xsl:text>\subject[]{</xsl:text>
-        <xsl:apply-templates/>
-        <xsl:text>}</xsl:text> 
-    </xsl:template> 
+        <xsl:choose>
+            <xsl:when test="not(ancestor::rdg[@type = 'ppl' or @type = 'ptl'])">
+                <xsl:text>\subject[]{</xsl:text>
+                <xsl:apply-templates/>
+                <xsl:text>}</xsl:text>                 
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:text>{\switchtobodyfont[8.5pt]</xsl:text>
+                <xsl:apply-templates/>
+                <xsl:text>}</xsl:text>               
+            </xsl:otherwise>
+        </xsl:choose>
+    </xsl:template>
     
     
-    <xsl:template match="head[@type = 'sub']">
+    <xsl:template match="head[@type = 'sub']"><!-- ok -->
         <xsl:choose>
             <xsl:when test="ancestor::group">
                 <xsl:text>\subject[]{</xsl:text>
@@ -268,7 +278,7 @@
     </xsl:template>
 
  
-    <xsl:template match="head[ancestor::list]">
+    <xsl:template match="head[ancestor::list]"><!-- ok -->
         <xsl:choose>
             <xsl:when test="ancestor::rdg and (@type = 'main' or not(@type))">
                 <xsl:text>\listmainheadrdg[]{</xsl:text>
@@ -416,41 +426,21 @@
     
     
     <xsl:template match="rdg[@type = 'ppl' or @type = 'ptl']">
-       <xsl:if test="parent::app/child::rdg[@type = 'ppl' or @type = 'ptl'][1] = .">
-            <xsl:text>\crlf </xsl:text>
-        </xsl:if> 
-        <xsl:text>{</xsl:text>
-        <xsl:choose>
-            <xsl:when test="child::*[1][self::note[@type = 'authorial']]">
-                <xsl:text>\startnarrow</xsl:text>
-            </xsl:when>
-            <xsl:otherwise>
-                <xsl:if test="not(child::*[1][self::titlePage])">
-                    <xsl:text>{\startrdg</xsl:text>
-                </xsl:if>
-                <xsl:if test="child::*[1][self::p]">
-                    <xsl:call-template name="paragraph-indent"/>
-                </xsl:if>
-            </xsl:otherwise>
-        </xsl:choose>
-        <xsl:text>\switchtobodyfont[8.5pt]</xsl:text> 
-        <xsl:apply-templates/>
-        <xsl:if test="position() != last()">
-            <xsl:text>\par </xsl:text>
-            <xsl:text>\blank[2pt]  </xsl:text>
+        <xsl:if test="not(child::*[1][self::titlePage or self::note])">
+            <xsl:text>\startrdg </xsl:text>
+        </xsl:if>
+        <xsl:if test="child::*[1][self::p]">
+            <xsl:call-template name="paragraph-indent"/>
         </xsl:if>
         
-        <xsl:choose>
-            <xsl:when test="child::*[1][self::note[@type = 'authorial']]">
-                <xsl:text>\stopnarrow</xsl:text>
-            </xsl:when>
-            <xsl:otherwise>
-                <xsl:if test="not(child::*[1][self::titlePage])">
-                    <xsl:text>\stoprdg}</xsl:text>
-                </xsl:if>
-            </xsl:otherwise>
-        </xsl:choose>
-        <xsl:text>}</xsl:text>
+        <xsl:apply-templates/>
+        
+        <xsl:if test="position() != last()">
+            <xsl:text>\par </xsl:text>
+        </xsl:if>
+        <xsl:if test="not(child::*[1][self::titlePage or self::note])">
+            <xsl:text>\stoprdg </xsl:text>
+        </xsl:if>
         <xsl:text>\noindentation </xsl:text>
     </xsl:template>
     
@@ -513,7 +503,7 @@
                     <xsl:value-of select="$wit"/>
                     <xsl:text>}}{</xsl:text>
                     <xsl:value-of select="$wit"/>
-                    <xsl:text>} </xsl:text>                     
+                    <xsl:text>}</xsl:text>                     
                 </xsl:if>                
             </xsl:when>
             <xsl:when test="@type = 'om'">
@@ -531,7 +521,7 @@
                     <xsl:value-of select="$wit"/>
                     <xsl:text>\textbackslash}}{</xsl:text>
                     <xsl:value-of select="$wit"/>
-                    <xsl:text>\textbackslash} </xsl:text>   
+                    <xsl:text>\textbackslash}</xsl:text>   
                 </xsl:if>                
             </xsl:when>
         </xsl:choose>
@@ -581,7 +571,7 @@
                 <xsl:text>}{</xsl:text>
                 <xsl:call-template name="make-pb-content">
                     <xsl:with-param name="pb" select="."/>
-                </xsl:call-template>               
+                </xsl:call-template>
                 <xsl:text>}</xsl:text>
             </xsl:otherwise>
         </xsl:choose>
@@ -590,43 +580,25 @@
  
     <!-- within critical text -->
     <xsl:template match="note[@type = 'authorial' and ancestor::group]">
-        <xsl:choose>
-            <xsl:when test="@place = 'end'">
-                <xsl:text>{\switchtobodyfont[8.5pt]</xsl:text>
-                <xsl:text>\startnarrow </xsl:text>  
-                <xsl:apply-templates/>
-                <xsl:text>\stopnarrow}</xsl:text>
-                <xsl:text> \blank[2pt]</xsl:text>
-            </xsl:when>
-            <xsl:when test="@place = 'bottom'">
-                <xsl:text>{\switchtobodyfont[8.5pt]</xsl:text>
-                <xsl:text>\startnarrow </xsl:text>  
-                <xsl:apply-templates/>
-                <xsl:text>\stopnarrow}</xsl:text>
-                <xsl:text>\blank[2pt]</xsl:text>
-                <xsl:text>\noindentation </xsl:text>
-            </xsl:when>
-        </xsl:choose>
+        <xsl:text>\startnote </xsl:text>  
+        <xsl:apply-templates/>
+        <xsl:text>\stopnote </xsl:text>  
+        <xsl:text>\noindentation </xsl:text> 
     </xsl:template>
  
  
     <!-- within modern editorial text -->
-    <xsl:template match="note[@type = 'authorial' and not(ancestor::group)]">
+    <xsl:template match="note[@type = 'authorial' and not(ancestor::group)]"><!-- ok -->
         <xsl:text>\footnote{</xsl:text>
         <xsl:apply-templates/>
         <xsl:text>}</xsl:text>
     </xsl:template>
  
  
-    <!-- editorial comments -->
-    <xsl:template match="note[@type = 'editorial']"><!-- ok -->
-        <xsl:text>\editor{</xsl:text>
-        <xsl:apply-templates/>
-        <xsl:text>}</xsl:text>
-    </xsl:template>
+    <xsl:template match="note[@type = 'editorial']"/><!-- ok -->
  
  
-    <xsl:template match="index[@indexName = 'classical-authors']">
+    <xsl:template match="index[@indexName = 'classical-authors']"><!-- ok -->
         <xsl:text>\classical-authorsIndex{</xsl:text>
         <xsl:value-of select="persName"/>
         
@@ -709,7 +681,7 @@
     </xsl:template>
  
  
-    <xsl:template match="index[@indexName = 'persons']">
+    <xsl:template match="index[@indexName = 'persons']"><!-- ok -->
         <xsl:choose>
             <xsl:when test="count(term) gt 1">
                 <xsl:text>\seepersonsIndex{</xsl:text>
@@ -740,13 +712,13 @@
     <xsl:template match="term"/><!-- ok -->
  
  
-    <xsl:template match="list">
+    <xsl:template match="list"><!-- ok -->
         <xsl:text>\crlf </xsl:text>
         <xsl:apply-templates/>
     </xsl:template>
     
     
-    <xsl:template match="list[ancestor::div[@type = 'contents']]">
+    <xsl:template match="list[ancestor::div[@type = 'contents']]"><!-- ok -->
         <xsl:text>\setupindenting[yes,medium]</xsl:text>
         <xsl:text>\setupitemgroup[itemize][indenting={40pt,next}]</xsl:text>
         <xsl:text>\startitemize[packed, paragraph, joinedup</xsl:text>
@@ -1149,13 +1121,13 @@
     </xsl:template>
     
     
-    <xsl:template name="new-page">
+    <xsl:template name="new-page"><!-- ok -->
         <xsl:text>\page[right,empty]</xsl:text>
         <xsl:text>\noheaderandfooterlines </xsl:text>
     </xsl:template>
     
     
-    <xsl:template name="paragraph-indent">
+    <xsl:template name="paragraph-indent"><!-- ok -->
         <xsl:text>\starteffect[hidden]</xsl:text>
         <xsl:text>.</xsl:text>
         <xsl:text>\stopeffect</xsl:text>
@@ -1163,7 +1135,7 @@
     </xsl:template>
     
     
-    <xsl:template name="make-both-columns">
+    <xsl:template name="make-both-columns"><!-- ok -->
         <xsl:param name="contents"/>
         
         <xsl:text>\marking[oddHeader]{</xsl:text>
