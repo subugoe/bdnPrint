@@ -722,11 +722,11 @@
         <xsl:text>\startitemize[packed, paragraph, joinedup</xsl:text>
         
         <!-- in a TOC the first level shouldn't be indented --> 
-        <xsl:if test="ancestor::div[@type = 'contents']/descendant::list[2] = .">
+        <!--<xsl:if test="ancestor::div[@type = 'contents']/descendant::list[1] = .">
             <xsl:text>, inmargin</xsl:text>
-        </xsl:if>        
+        </xsl:if>       --> 
         <xsl:text>]</xsl:text>
-        <xsl:apply-templates select="item" mode="toc"/>
+        <xsl:apply-templates/>
         <xsl:text>\stopitemize </xsl:text>       
     </xsl:template>
 
@@ -734,7 +734,8 @@
     <xsl:template match="list[ancestor::div[@type = 'editorial']]"><!-- ok -->
         <xsl:text>\starttwocolumns </xsl:text>
         <xsl:apply-templates/>
-        <xsl:text>\stoptwocolumns </xsl:text>       
+        <xsl:text>\stoptwocolumns </xsl:text>    
+        <xsl:text>\noindentation </xsl:text> 
     </xsl:template>
  
  
@@ -745,17 +746,15 @@
                 <xsl:apply-templates/>
                 <xsl:text>\NC \NR </xsl:text>
             </xsl:when>
+            <xsl:when test="ancestor::div[@type = 'contents']">
+                <xsl:text>\sym{}</xsl:text>
+                <xsl:apply-templates/>
+            </xsl:when>
             <xsl:otherwise>
                 <xsl:apply-templates/>
                 <xsl:text>\crlf </xsl:text>
             </xsl:otherwise>
         </xsl:choose>
-    </xsl:template>
-    
-    
-    <xsl:template match="item" mode="toc">
-        <xsl:text>\sym{}</xsl:text>
-        <xsl:apply-templates/>
     </xsl:template>
  
  
