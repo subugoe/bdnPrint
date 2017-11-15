@@ -184,6 +184,9 @@
     
     <xsl:template match="div[@type = 'section']"><!-- ok -->
         <xsl:apply-templates/>
+        <xsl:if test="not(head)">
+            <xsl:text>\blank[8pt] </xsl:text>
+        </xsl:if>
     </xsl:template>
     
     
@@ -287,6 +290,9 @@
 
 
     <xsl:template match="p">
+        <xsl:if test="parent::*/child::*[1] = .">
+            <xsl:text>\noindentation </xsl:text>
+        </xsl:if>
         <xsl:apply-templates/>
     </xsl:template>
 
