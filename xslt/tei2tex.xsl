@@ -450,7 +450,7 @@
     
     <xsl:template match="rdg[@type = 'pp' or @type = 'pt']"><!-- ok -->
         <xsl:text>{\dvl}</xsl:text>
-        <xsl:for-each select="rdg[@type = 'pp' or @type = 'pt']">
+        <xsl:for-each select="parent::app/rdg[@type = 'pp' or @type = 'pt']">
             <xsl:apply-templates select="." mode="footnote"/>
         </xsl:for-each>
     </xsl:template>
