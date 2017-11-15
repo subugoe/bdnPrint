@@ -616,7 +616,66 @@
     </xsl:template>
  
  
-    <xsl:template match="bibl[@type = 'biblical-reference']">
+    <xsl:template match="bibl[@type = 'biblical-reference']">        
+        <xsl:choose>
+            <xsl:when test="citedRange/@from">
+                <xsl:variable name="from" select="tokenize(citedRange/@from, ':')"/>
+                <xsl:variable name="from-bibl-book" select="$from[1]"/>
+                <xsl:variable name="from-chapter" select="$from[2]"/>
+                <xsl:variable name="from-verse" select="$from[3]"/>
+                <xsl:variable name="from-passage" select="concat($from-chapter,',', $from-verse)"/>
+                <xsl:variable name="to" select="tokenize(citedRange/@to, ':')"/>
+                <xsl:variable name="to-bibl-book" select="$to[1]"/>
+                <xsl:variable name="to-chapter" select="$to[2]"/>
+                <xsl:variable name="to-verse" select="$to[3]"/>
+                <xsl:variable name="to-passage" select="concat($to-chapter,',', $to-verse)"/>
+                
+                <xsl:text>\bibelIndex{</xsl:text>
+                <xsl:value-of select="$from-bibl-book"/>
+                <xsl:text>+</xsl:text>  
+                <xsl:value-of select="$from-passage"/>
+                <xsl:choose>
+                    <xsl:when test="matches($to-bibl-book, 'f')">
+                        <xsl:value-of select="$to-bibl-book"/>
+                    </xsl:when>
+                    <xsl:when test="$from-bibl-book = $to-bibl-book 
+                        and $from-chapter = $to-chapter">
+                        <xsl:text>\endash</xsl:text>
+                        <xsl:value-of select="$to-verse"/>                      
+                    </xsl:when>
+                    <xsl:when test="$from-bibl-book = $to-bibl-book">
+                        <xsl:text>\endash</xsl:text>
+                        <xsl:value-of select="$to-passage"/>
+                    </xsl:when>
+                    <!-- does the otherwise case ever occur? -->
+                    <xsl:otherwise/>
+                </xsl:choose>
+                <xsl:text>}</xsl:text>
+            </xsl:when>
+            <xsl:when test="citedRange/@n">
+                <xsl:variable name="reference" select="tokenize(citedRange/@n, ' ')"/>
+                <xsl:for-each select="$reference">
+                    <xsl:variable name="n" select="tokenize(., ':')"/>
+                    <xsl:variable name="bibl-book" select="$n[1]"/>
+                    <xsl:variable name="chapter" select="$n[2]"/>
+                    <xsl:variable name="verse" select="$n[3]"/> 
+                    <xsl:variable name="passage" select="concat($chapter,',', $verse)"/>
+                    
+                    <xsl:text>\bibelIndex{</xsl:text>
+                    <xsl:value-of select="$bibl-book"/>
+                    <xsl:text>+</xsl:text>
+                    <xsl:choose>
+                        <xsl:when test="not($verse)">
+                            <xsl:value-of select="$chapter"/>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:value-of select="$passage"/>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                    <xsl:text>}</xsl:text>                   
+                </xsl:for-each>
+            </xsl:when>
+        </xsl:choose>       
         <xsl:apply-templates/>
     </xsl:template>
  
