@@ -772,12 +772,9 @@
             <xsl:text>\crlf </xsl:text>
         </xsl:if>
     </xsl:template>
+
     
-    
-    <xsl:template match="milestone[@unit = 'structure']"><!-- ok -->
-        <xsl:variable name="edt-tmp" select="replace(@edRef, '#', '')"/>
-        <xsl:variable name="edt" select="replace($edt-tmp, ' ', '')"/>
-        
+    <xsl:template match="milestone[@type = 'structure']"><!-- ok -->
         <xsl:choose>
             <xsl:when test="ancestor::rdg[@type = 'ppl' or @type = 'ptl'] 
                 and preceding-sibling::node() and not(preceding-sibling::pb)">
@@ -794,15 +791,13 @@
             <xsl:otherwise>
                 <xsl:call-template name="make-milestone">
                     <xsl:with-param name="milestone" select="."/>
-                    <xsl:with-param name="edition" select="$edt"/>
                 </xsl:call-template>                  
             </xsl:otherwise>
         </xsl:choose>
-        <xsl:apply-templates/>
     </xsl:template>
     
     
-    <xsl:template match="milestone[@unit = 'fn-break']"><!-- ok -->
+    <xsl:template match="milestone[@type = 'fn-break']"><!-- ok -->
         <xsl:variable name="edt" select="replace(replace(@edRef, '#', ''), ' ', '')"/>
         <xsl:variable name="n" select="@n"/>
         
@@ -1090,7 +1085,7 @@
     
     <xsl:template name="make-milestone"><!-- ok -->
         <xsl:param name="milestone"/>
-        <xsl:param name="edition"/>
+        <xsl:variable name="edition" select="replace(@edRef, '[#\s]+', '')"/>
         
         <xsl:if test="$milestone/@unit = 'p'">
             <xsl:text> \p{}</xsl:text>
