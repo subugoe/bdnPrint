@@ -479,13 +479,13 @@
         <xsl:variable name="wit" select="replace(@wit, ' ', '')"/>
         
         <xsl:choose>
-            <xsl:when test="@type = 'ppl' or @type = 'pp'">
-                <xsl:if test="@mark = 'open' and @context = 'lem'">
+            <xsl:when test="(@type = 'ppl' or @type = 'pp') and @context = 'lem'">
+                <xsl:if test="@mark = 'open'">
                     <xsl:text>{\tfx\high{/</xsl:text>
                     <xsl:value-of select="$wit"/>                   
                     <xsl:text>}}</xsl:text>
                 </xsl:if>
-                <xsl:if test="@mark = 'close' and @context = 'lem'">
+                <xsl:if test="@mark = 'close'">
                     <xsl:text>{\tfx\high{</xsl:text>
                     <xsl:value-of select="$wit"/>                   
                     <xsl:text>\textbackslash}}</xsl:text>                   
