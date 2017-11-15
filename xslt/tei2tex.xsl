@@ -445,6 +445,7 @@
             </xsl:otherwise>
         </xsl:choose>
         <xsl:text>}</xsl:text>
+        <xsl:text>\noindentation </xsl:text>
     </xsl:template>
     
     
