@@ -226,7 +226,9 @@
  
  
     <xsl:template match="head">
+        <xsl:text>\subject[]{</xsl:text>
         <xsl:apply-templates/>
+        <xsl:text>}</xsl:text>
     </xsl:template>
 
 
@@ -234,6 +236,16 @@
         <xsl:if test="parent::*/child::*[1] = .">
             <xsl:text>\noindentation </xsl:text>
         </xsl:if>
+        <xsl:if test="preceding-sibling::p">
+            <xsl:text>\par </xsl:text>
+        </xsl:if>
+        <xsl:apply-templates/>
+    </xsl:template>
+    
+    
+    <xsl:template match="p[@rend = 'margin-vertical']">
+        <xsl:text>\blank[big]</xsl:text>
+        <xsl:text>\noindentation </xsl:text>
         <xsl:apply-templates/>
     </xsl:template>
 
