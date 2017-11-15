@@ -584,18 +584,36 @@
  
     <!-- within critical text -->
     <xsl:template match="note[@type = 'authorial' and ancestor::group]">
-        <xsl:apply-templates/>
+        <xsl:choose>
+            <xsl:when test="@place = 'end'">
+                <xsl:text>{\switchtobodyfont[8.5pt]</xsl:text>
+                <xsl:text>\startnarrow </xsl:text>  
+                <xsl:apply-templates/>
+                <xsl:text>\stopnarrow}</xsl:text>
+                <xsl:text> \blank[2pt]</xsl:text>
+            </xsl:when>
+            <xsl:when test="@place = 'bottom'">
+                <xsl:text>{\switchtobodyfont[8.5pt]</xsl:text>
+                <xsl:text>\startnarrow </xsl:text>  
+                <xsl:apply-templates/>
+                <xsl:text>\stopnarrow}</xsl:text>
+                <xsl:text>\blank[2pt]</xsl:text>
+                <xsl:text>\noindentation </xsl:text>
+            </xsl:when>
+        </xsl:choose>
     </xsl:template>
  
  
     <!-- within modern editorial text -->
     <xsl:template match="note[@type = 'authorial' and not(ancestor::group)]">
+        <xsl:text>\footnote{</xsl:text>
         <xsl:apply-templates/>
+        <xsl:text>}</xsl:text>
     </xsl:template>
  
  
     <!-- editorial comments -->
-    <xsl:template match="note[@type = 'editorial']">
+    <xsl:template match="note[@type = 'editorial']"><!-- ok -->
         <xsl:text>\editor{</xsl:text>
         <xsl:apply-templates/>
         <xsl:text>}</xsl:text>
