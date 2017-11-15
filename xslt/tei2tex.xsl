@@ -376,7 +376,6 @@
                 <xsl:text>}</xsl:text>
             </xsl:when>
         </xsl:choose>
-        <xsl:apply-templates/>
     </xsl:template>
  
  
@@ -616,7 +615,7 @@
     </xsl:template>
  
  
-    <xsl:template match="bibl[@type = 'biblical-reference']">        
+    <xsl:template match="bibl[@type = 'biblical-reference']"><!-- ok -->        
         <xsl:choose>
             <xsl:when test="citedRange/@from">
                 <xsl:variable name="from" select="tokenize(citedRange/@from, ':')"/>
@@ -701,7 +700,7 @@
     </xsl:template>
  
  
-    <xsl:template match="index[@indexName = 'subjects']">
+    <xsl:template match="index[@indexName = 'subjects']"><!-- ok -->
         <xsl:text>\subjectsIndex{</xsl:text>
         <xsl:value-of select="term"/>
         <xsl:text>}</xsl:text>
@@ -712,7 +711,30 @@
  
  
     <xsl:template match="list">
+        <xsl:text>\crlf </xsl:text>
         <xsl:apply-templates/>
+    </xsl:template>
+    
+    
+    <xsl:template match="list[ancestor::div[@type = 'contents']]">
+        <xsl:text>\setupindenting[yes,medium]</xsl:text>
+        <xsl:text>\setupitemgroup[itemize][indenting={40pt,next}]</xsl:text>
+        <xsl:text>\startitemize[packed, paragraph, joinedup</xsl:text>
+        
+        <!-- in a TOC the first level shouldn't be indented --> 
+        <xsl:if test="ancestor::div[@type = 'contents']/descendant::list[2] = .">
+            <xsl:text>, inmargin</xsl:text>
+        </xsl:if>        
+        <xsl:text>]</xsl:text>
+        <xsl:apply-templates select="item" mode="toc"/>
+        <xsl:text>\stopitemize </xsl:text>       
+    </xsl:template>
+
+
+    <xsl:template match="list[ancestor::div[@type = 'editorial']]"><!-- ok -->
+        <xsl:text>\starttwocolumns </xsl:text>
+        <xsl:apply-templates/>
+        <xsl:text>\stoptwocolumns </xsl:text>       
     </xsl:template>
  
  
@@ -728,6 +750,12 @@
                 <xsl:text>\crlf </xsl:text>
             </xsl:otherwise>
         </xsl:choose>
+    </xsl:template>
+    
+    
+    <xsl:template match="item" mode="toc">
+        <xsl:text>\sym{}</xsl:text>
+        <xsl:apply-templates/>
     </xsl:template>
  
  
