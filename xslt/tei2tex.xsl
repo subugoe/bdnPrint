@@ -37,7 +37,7 @@
     </xsl:template>
     
     
-    <!-- within edition text -->
+    <!-- within critical text -->
     <xsl:template match="front[ancestor::group]"><!-- ok -->
         <xsl:apply-templates/>
         <xsl:if test="ancestor::group/descendant::front[1] = .">
@@ -47,7 +47,7 @@
     </xsl:template>
     
     
-    <!-- outside edition text -->
+    <!-- within modern editorial text -->
     <xsl:template match="front[not(ancestor::group)]"><!-- ok -->        
         <xsl:text>\startfrontmatter </xsl:text>
         <xsl:apply-templates/>
@@ -131,7 +131,7 @@
     </xsl:template>
     
     
-    <!-- within editorial texts -->
+    <!-- within modern editorial text -->
     <xsl:template match="div[@type = 'contents' and @subtype = 'print']"><!-- ok -->
         <xsl:apply-templates select="descendant::divGen[@type = 'Inhalt']"/>
     </xsl:template>
@@ -157,7 +157,7 @@
     </xsl:template>
     
     
-    <!-- within edition text -->
+    <!-- within critical text -->
     <xsl:template match="div[@type = 'introduction' and ancestor::group]"><!-- ok -->
         <xsl:if test="not(preceding-sibling::*[1][descendant::div[@type = 'titlePage']])">
             <xsl:text>\page[right,empty]</xsl:text>
@@ -167,7 +167,7 @@
     </xsl:template>
     
     
-    <!-- outside edition text -->
+    <!-- within modern editorial text -->
     <xsl:template match="div[@type = 'introduction' and not(ancestor::group)]"><!-- ok -->
         <xsl:text>\resetcounter[footnote]</xsl:text>
         <xsl:call-template name="make-both-columns">
@@ -450,10 +450,10 @@
     
     
     <xsl:template match="rdg[@type = 'pp' or @type = 'pt']"><!-- ok -->
-        <xsl:text>{\dvl}</xsl:text>
-        <xsl:for-each select="parent::app/rdg[@type = 'pp' or @type = 'pt']">
-            <xsl:apply-templates select="." mode="footnote"/>
-        </xsl:for-each>
+        <xsl:if test="not(preceding-sibling::rdg[@type = 'pp' or @type = 'pt'])">
+            <xsl:text>{\dvl}</xsl:text>
+        </xsl:if>
+        <xsl:apply-templates select="." mode="footnote"/>
     </xsl:template>
     
     
@@ -582,18 +582,23 @@
     </xsl:template>
  
  
-    <xsl:template match="note[@type = 'authorial' and @place = 'bottom']">
+    <!-- within critical text -->
+    <xsl:template match="note[@type = 'authorial' and ancestor::group]">
         <xsl:apply-templates/>
     </xsl:template>
  
  
-    <xsl:template match="note[@type = 'authorial' and @place = 'end']">
+    <!-- within modern editorial text -->
+    <xsl:template match="note[@type = 'authorial' and not(ancestor::group)]">
         <xsl:apply-templates/>
     </xsl:template>
  
  
+    <!-- editorial comments -->
     <xsl:template match="note[@type = 'editorial']">
+        <xsl:text>\editor{</xsl:text>
         <xsl:apply-templates/>
+        <xsl:text>}</xsl:text>
     </xsl:template>
  
  
