@@ -17,6 +17,8 @@
     <xsl:template match="body"><!-- ok -->
         <xsl:if test="ancestor::group">
             <xsl:call-template name="new-page"/>
+            <xsl:text>\setupnotation[footnote][numbercommand=\gobbleoneargument, rule=off]</xsl:text>
+            <xsl:text>\setupnote[footnote][textcommand=\gobbleoneargument, rule=off]</xsl:text>
         </xsl:if>
         <xsl:apply-templates/>
     </xsl:template>
@@ -351,7 +353,10 @@
     <xsl:template match="expan"/><!-- ok -->
  
  
-    <xsl:template match="sic"><!-- ok -->
+    <xsl:template match="sic"/><!-- ok -->
+
+
+    <xsl:template match="sic" mode="editorial-corrigenda">
         <xsl:apply-templates/>
     </xsl:template>
  
@@ -523,10 +528,27 @@
  
     <!-- within critical text -->
     <xsl:template match="note[@type = 'authorial' and ancestor::group]">
-        <xsl:text>\startnote </xsl:text>  
-        <xsl:apply-templates/>
-        <xsl:text>\stopnote </xsl:text>  
-        <xsl:text>\noindentation </xsl:text> 
+        <xsl:choose>
+            <xsl:when test="@place = 'bottom'">
+                <!--<xsl:text>{\startbottomnote</xsl:text>
+                <xsl:apply-templates/>
+                <xsl:text>\stopbottomnote}</xsl:text>-->
+                <xsl:text>\footnote{</xsl:text>
+                <xsl:apply-templates/>
+                <xsl:text>}</xsl:text>
+                
+                <xsl:variable name="rdgs" select="descendant::rdg[@type = 'pp' or @type = 'pt' or @type = 'v']"/>
+                <xsl:for-each select="$rdgs">
+                    <xsl:apply-templates select="."/>
+                </xsl:for-each>
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:text>\startnote </xsl:text>  
+                <xsl:apply-templates/>
+                <xsl:text>\stopnote </xsl:text>  
+                <xsl:text>\noindentation </xsl:text>  
+            </xsl:otherwise>
+        </xsl:choose>
     </xsl:template>
  
  
@@ -551,8 +573,7 @@
         
         <xsl:if test="term/title">
             <xsl:text>+</xsl:text>
-        </xsl:if>
-        
+        </xsl:if>       
         <xsl:apply-templates select="term/title"/>
         <xsl:text> </xsl:text>
         <xsl:apply-templates select="term/measure"/>
@@ -958,8 +979,7 @@
         <xsl:text>\NC fehlerhaftes Original </xsl:text>
         <xsl:text>\NC stillschweigende Korrektur \NC \AR </xsl:text>
         <xsl:text>\LL </xsl:text>
-        <xsl:text>\stoptabulatehead</xsl:text>
-        
+        <xsl:text>\stoptabulatehead</xsl:text>       
         <xsl:text>\starttabulate[|p(1cm)|p|p|] </xsl:text>
         <xsl:for-each select="//choice[child::sic and child::corr[@type = 'editorial']]">
             <xsl:text> \NC </xsl:text>
