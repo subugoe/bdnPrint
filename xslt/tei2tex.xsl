@@ -949,8 +949,45 @@
     </xsl:template>
 
 
-    <xsl:template match="divGen[@type = 'editorial_corrigenda']">
+    <xsl:template match="divGen[@type = 'editorial_corrigenda']"><!-- ok -->
+        <xsl:variable name="base-text" select="//desc[@type = 'base-text']/ancestor::witness/@xml:id"/>
+        
+        <xsl:text>\starttabulatehead</xsl:text>
+        <xsl:text>\FL </xsl:text>
+        <xsl:text>\NC Seite </xsl:text>
+        <xsl:text>\NC fehlerhaftes Original </xsl:text>
+        <xsl:text>\NC stillschweigende Korrektur \NC \AR </xsl:text>
+        <xsl:text>\LL </xsl:text>
+        <xsl:text>\stoptabulatehead</xsl:text>
+        
+        <xsl:text>\starttabulate[|p(1cm)|p|p|] </xsl:text>
+        <xsl:for-each select="//choice[child::sic and child::corr[@type = 'editorial']]">
+            <xsl:text> \NC </xsl:text>
+            <xsl:choose>
+                <xsl:when test="not(./ancestor::rdg)">
+                    <xsl:value-of select="$base-text"/>
+                    <xsl:value-of select="./preceding::pb[matches(@edRef, $base-text)][1]/@n"/>
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:variable name="wits" select="replace(./ancestor::rdg[1]/@wit, '#', '')"/>
+                    <xsl:variable name="wits-array" select="tokenize($wits, '\s')"/>
+                    <xsl:call-template name="find-prev-pbs">
+                        <xsl:with-param name="iii" select="1"/>
+                        <xsl:with-param name="limit" select="count($wits-array)"/>
+                        <xsl:with-param name="context" select="."/>
+                        <xsl:with-param name="wits" select="$wits-array"/>
+                    </xsl:call-template>
+                </xsl:otherwise>
+            </xsl:choose>
+            <xsl:text> \NC </xsl:text>
+            <xsl:apply-templates select="sic" mode="editorial-corrigenda"/>
+            <xsl:text>\NC </xsl:text>
+            <xsl:apply-templates select="corr"/>
+            <xsl:text>\NC \NR </xsl:text>            
+        </xsl:for-each>
         <xsl:apply-templates/>
+        <xsl:text>\HL </xsl:text>
+        <xsl:text>\stoptabulate </xsl:text>
     </xsl:template>
 
 
@@ -1088,5 +1125,29 @@
         <xsl:text>\marking[evHeader]{</xsl:text>
         <xsl:value-of select="$contents"/>
         <xsl:text>}</xsl:text>
+    </xsl:template>
+    
+    
+    <xsl:template name="find-prev-pbs"><!-- ok -->
+        <xsl:param name="iii"/>
+        <xsl:param name="limit"/>
+        <xsl:param name="context"/>
+        <xsl:param name="wits"/>
+        
+        <xsl:if test="$iii &lt;= $limit">
+            <xsl:variable name="prev-pb" select="$context/preceding::pb[matches(@edRef, $wits[$iii])][1]"/>
+            <xsl:value-of select="$wits[$iii]"/>
+            <xsl:value-of select="$prev-pb/@n"/>
+            <xsl:if test="$iii &lt; $limit">
+                <xsl:text>, </xsl:text>
+            </xsl:if>
+            
+            <xsl:call-template name="find-prev-pbs">
+                <xsl:with-param name="iii" select="$iii + 1"/>
+                <xsl:with-param name="limit" select="$limit"/>
+                <xsl:with-param name="context" select="$context"/>
+                <xsl:with-param name="wits" select="$wits"/>
+            </xsl:call-template>
+        </xsl:if>
     </xsl:template>
 </xsl:stylesheet>
