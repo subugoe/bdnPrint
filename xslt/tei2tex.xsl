@@ -262,13 +262,8 @@
                     </xsl:when>
                 </xsl:choose>
             </xsl:when>
-            <xsl:when test="ancestor::div[@type = 'section']">
-                <xsl:text>\subject[]{</xsl:text>
-                <xsl:apply-templates/>
-                <xsl:text>}</xsl:text>
-            </xsl:when>
             <xsl:otherwise>
-                <xsl:text>\notTOCsection[]{</xsl:text>
+                <xsl:text>\subject[]{</xsl:text>
                 <xsl:apply-templates/>
                 <xsl:text>}</xsl:text>                
             </xsl:otherwise>
