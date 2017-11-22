@@ -227,8 +227,70 @@
     </xsl:template>
  
  
+    <xsl:template match="head[not(ancestor::group)]">
+        <xsl:choose>
+            <xsl:when test="parent::div[@type]">
+                <xsl:text>\writetolist[part]{}{</xsl:text>
+                <xsl:apply-templates/>
+                <xsl:text>}</xsl:text>
+                <xsl:text>\title[]{</xsl:text>
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:text>\notTOCsection[]{</xsl:text>
+            </xsl:otherwise>
+        </xsl:choose>
+        <xsl:apply-templates/>
+        <xsl:text>}</xsl:text>
+    </xsl:template>
+    
+    
     <xsl:template match="head">
-        <xsl:text>\subject[]{</xsl:text>
+        <xsl:choose>
+            <xsl:when test="ancestor::list">
+                <xsl:choose>
+                    <xsl:when test="ancestor::rdg and (@type = 'main' or not(@type))">
+                        <xsl:text>\listmainheadrdg[]{</xsl:text>
+                    </xsl:when>
+                    <xsl:when test="ancestor::rdg and @type = 'sub'">
+                        <xsl:text>\listsubheadrdg[]{</xsl:text>
+                    </xsl:when>
+                    <xsl:when test="ancestor::lem and (@type = 'main' or not(@type))">
+                        <xsl:text>\listmainhead[]{</xsl:text>
+                    </xsl:when>
+                    <xsl:when test="ancestor::lem and @type = 'sub'">
+                        <xsl:text>\listsubhead[]{</xsl:text>
+                    </xsl:when>
+                </xsl:choose>
+            </xsl:when>
+            <xsl:when test="ancestor::div[@type = 'section']">
+                <xsl:text>\subject[]{</xsl:text>
+                <xsl:apply-templates/>
+                <xsl:text>}</xsl:text>
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:text>\notTOCsection[]{</xsl:text>
+                <xsl:apply-templates/>
+                <xsl:text>}</xsl:text>                
+            </xsl:otherwise>
+        </xsl:choose>
+    </xsl:template>
+
+
+    <xsl:template match="head[ancestor::list]">
+        <xsl:choose>
+            <xsl:when test="ancestor::rdg and (@type = 'main' or not(@type))">
+                <xsl:text>\listmainheadrdg[]{</xsl:text>
+            </xsl:when>
+            <xsl:when test="ancestor::rdg and @type = 'sub'">
+                <xsl:text>\listsubheadrdg[]{</xsl:text>
+            </xsl:when>
+            <xsl:when test="ancestor::lem and (@type = 'main' or not(@type))">
+                <xsl:text>\listmainhead[]{</xsl:text>
+            </xsl:when>
+            <xsl:when test="ancestor::lem and @type = 'sub'">
+                <xsl:text>\listsubhead[]{</xsl:text>
+            </xsl:when>
+        </xsl:choose>
         <xsl:apply-templates/>
         <xsl:text>}</xsl:text>
     </xsl:template>
