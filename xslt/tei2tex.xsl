@@ -271,26 +271,6 @@
     </xsl:template>
 
 
-    <xsl:template match="head[ancestor::list]">
-        <xsl:choose>
-            <xsl:when test="ancestor::rdg and (@type = 'main' or not(@type))">
-                <xsl:text>\listmainheadrdg[]{</xsl:text>
-            </xsl:when>
-            <xsl:when test="ancestor::rdg and @type = 'sub'">
-                <xsl:text>\listsubheadrdg[]{</xsl:text>
-            </xsl:when>
-            <xsl:when test="ancestor::lem and (@type = 'main' or not(@type))">
-                <xsl:text>\listmainhead[]{</xsl:text>
-            </xsl:when>
-            <xsl:when test="ancestor::lem and @type = 'sub'">
-                <xsl:text>\listsubhead[]{</xsl:text>
-            </xsl:when>
-        </xsl:choose>
-        <xsl:apply-templates/>
-        <xsl:text>}</xsl:text>
-    </xsl:template>
-
-
     <xsl:template match="p">
         <xsl:if test="parent::*/child::*[1] = .">
             <xsl:text>\noindentation </xsl:text>
