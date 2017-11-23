@@ -82,8 +82,8 @@
     
     
     <xsl:template match="titlePage"><!-- ok -->
-        <xsl:text>\marking[oddHeader]{Vorreden}</xsl:text>
         <xsl:if test="ancestor::lem">
+            <xsl:text>\marking[oddHeader]{Vorreden}</xsl:text>
             <xsl:text>\writetolist[part]{}{Vorreden}</xsl:text>
         </xsl:if>
         
@@ -265,7 +265,12 @@
                         <xsl:text>\listsubhead[]{</xsl:text>
                     </xsl:when>
                 </xsl:choose>
-            </xsl:when>                   
+            </xsl:when>   
+            <xsl:when test="ancestor::rdg">
+                <xsl:text>\rdgsubject[]{</xsl:text>
+                <xsl:apply-templates/>
+                <xsl:text>}</xsl:text>                
+            </xsl:when>
             <xsl:otherwise>
                 <xsl:text>\subject[]{</xsl:text>
                 <xsl:apply-templates/>
@@ -415,7 +420,7 @@
     
     
     <xsl:template match="rdg[@type = 'ppl' or @type = 'ptl']">
-        <xsl:if test="not(child::*[1][self::titlePage or self::note])">
+        <xsl:if test="not(child::*[1][self::note])">
             <xsl:text>\startrdg </xsl:text>
         </xsl:if>
         <xsl:if test="child::*[1][self::p]">
@@ -427,7 +432,7 @@
         <xsl:if test="position() != last()">
             <xsl:text>\par </xsl:text>
         </xsl:if>
-        <xsl:if test="not(child::*[1][self::titlePage or self::note])">
+        <xsl:if test="not(child::*[1][self::note])">
             <xsl:text>\stoprdg </xsl:text>
         </xsl:if>
         <xsl:text>\noindentation </xsl:text>
