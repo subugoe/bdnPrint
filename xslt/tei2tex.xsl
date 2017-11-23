@@ -42,10 +42,10 @@
     <!-- within critical text -->
     <xsl:template match="front[ancestor::group]"><!-- ok -->
         <xsl:apply-templates/>
-        <xsl:if test="ancestor::group/descendant::front[1] = .">
+        <!--<xsl:if test="ancestor::group/descendant::front[1] = .">
             <xsl:text>\resetnumber[page]</xsl:text>
             <xsl:text>\setuppagenumber[number=1]</xsl:text>
-        </xsl:if>
+        </xsl:if>-->
     </xsl:template>
     
     
