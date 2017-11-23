@@ -227,7 +227,7 @@
     </xsl:template>
  
  
-    <xsl:template match="head[not(ancestor::group)]">
+    <xsl:template match="head[not(ancestor::group)]"><!-- ok -->
         <xsl:choose>
             <xsl:when test="parent::div[@type]">
                 <xsl:text>\writetolist[part]{}{</xsl:text>
@@ -244,7 +244,11 @@
     </xsl:template>
     
     
-    <xsl:template match="head">
+    <xsl:template match="head"><!-- ok -->
+        <xsl:if test="parent::div[@type = 'introduction' or @type = 'part' or @type = 'chapter']">
+            <xsl:apply-templates select="descendant::seg[@type='toc-item']"/>
+        </xsl:if>
+        
         <xsl:choose>
             <xsl:when test="ancestor::list">
                 <xsl:choose>
@@ -261,7 +265,7 @@
                         <xsl:text>\listsubhead[]{</xsl:text>
                     </xsl:when>
                 </xsl:choose>
-            </xsl:when>
+            </xsl:when>                   
             <xsl:otherwise>
                 <xsl:text>\subject[]{</xsl:text>
                 <xsl:apply-templates/>
@@ -271,7 +275,7 @@
     </xsl:template>
 
 
-    <xsl:template match="p">
+    <xsl:template match="p"><!-- ok -->
         <xsl:if test="parent::*/child::*[1] = .">
             <xsl:text>\noindentation </xsl:text>
         </xsl:if>
@@ -282,7 +286,7 @@
     </xsl:template>
     
     
-    <xsl:template match="p[@rend = 'margin-vertical']">
+    <xsl:template match="p[@rend = 'margin-vertical']"> <!-- ok -->
         <xsl:text>\blank[big]</xsl:text>
         <xsl:text>\noindentation </xsl:text>
         <xsl:apply-templates/>
@@ -576,7 +580,7 @@
                 
                 <xsl:variable name="rdgs" select="descendant::rdg[@type = 'pp' or @type = 'pt' or @type = 'v']"/>
                 <xsl:for-each select="$rdgs">
-                    <xsl:apply-templates select="."/>
+                    <xsl:apply-templates select="." mode="footnote"/>
                 </xsl:for-each>
             </xsl:when>
             <xsl:otherwise>
