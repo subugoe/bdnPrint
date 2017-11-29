@@ -542,7 +542,7 @@
 
     <xsl:template match="pb"><!-- ok -->
         <xsl:choose>
-            <xsl:when test="parent::rdg[@type = 'v' or @type = 'pp' or @type = 'pt']">
+            <xsl:when test="ancestor::rdg[@type = 'v' or @type = 'pp' or @type = 'pt']">
                 <xsl:text>{\vl}</xsl:text>
                 <xsl:call-template name="make-pb-content">
                     <xsl:with-param name="pb" select="."/>
@@ -576,17 +576,17 @@
     <xsl:template match="note[@type = 'authorial' and ancestor::group]">
         <xsl:choose>
             <xsl:when test="@place = 'bottom'">
-                <!--<xsl:text>{\startbottomnote</xsl:text>
+                <xsl:text>{\startbottomnote</xsl:text>
                 <xsl:apply-templates/>
-                <xsl:text>\stopbottomnote}</xsl:text>-->
-                <xsl:text>\footnote{</xsl:text>
+                <xsl:text>\stopbottomnote}</xsl:text>
+                <!--<xsl:text>\footnote{</xsl:text>
                 <xsl:apply-templates/>
                 <xsl:text>}</xsl:text>
                 
                 <xsl:variable name="rdgs" select="descendant::rdg[@type = 'pp' or @type = 'pt' or @type = 'v']"/>
                 <xsl:for-each select="$rdgs">
                     <xsl:apply-templates select="." mode="footnote"/>
-                </xsl:for-each>
+                </xsl:for-each>-->
             </xsl:when>
             <xsl:otherwise>
                 <xsl:text>\startnote </xsl:text>  
