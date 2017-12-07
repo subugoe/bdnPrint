@@ -16,7 +16,7 @@
     
     <xsl:template match="body"><!-- ok -->
         <xsl:if test="ancestor::group">
-            <xsl:call-template name="new-page"/>
+            <xsl:text>\newPage</xsl:text>
             <xsl:text>\setupnotation[footnote][numbercommand=\gobbleoneargument, rule=off]</xsl:text>
             <xsl:text>\setupnote[footnote][textcommand=\gobbleoneargument, rule=off]</xsl:text>
         </xsl:if>
@@ -64,8 +64,7 @@
     
     <!-- outside edition text -->
     <xsl:template match="div[@type = 'preface' and not(parent::front)]"><!-- ok -->
-        <xsl:text>\page[yes,left,empty]</xsl:text>
-        <xsl:text>\noheaderandfooterlines </xsl:text>
+        <xsl:text>\newPage</xsl:text>
         
         <xsl:apply-templates/>
     </xsl:template>
@@ -127,8 +126,7 @@
     <!-- within critical text -->   
     <xsl:template match="div[@type = 'contents' and not(@subtype = 'print')]"><!-- ok -->     
         <xsl:text>\marking[oddHeader]{Inhalt}</xsl:text>
-        <xsl:text>\page[right]</xsl:text>
-        <xsl:text>\noheaderandfooterlines </xsl:text>
+        <xsl:text>\newPage</xsl:text>
         <xsl:apply-templates/>
     </xsl:template>
     
@@ -146,7 +144,7 @@
     
     <xsl:template match="div[@type = 'part']"><!-- ok -->
         <xsl:if test="not(preceding::div[1][@type = 'titlePage'])">
-            <xsl:call-template name="new-page"/>
+            <xsl:text>\newPage</xsl:text>
         </xsl:if>    
 
         <xsl:apply-templates/>  
@@ -154,7 +152,7 @@
     
     
     <xsl:template match="div[@type = 'chapter']"><!-- ok -->
-        <xsl:call-template name="new-page"/>
+        <xsl:text>\newPage</xsl:text>
         <xsl:apply-templates/>
     </xsl:template>
     
@@ -162,7 +160,7 @@
     <!-- within critical text -->
     <xsl:template match="div[@type = 'introduction' and ancestor::group]"><!-- ok -->
         <xsl:if test="not(preceding-sibling::*[1][descendant::div[@type = 'titlePage']])">
-            <xsl:text>\page[right,empty]</xsl:text>
+            <xsl:text>\newPage</xsl:text>
         </xsl:if>
         <xsl:text>\noheaderandfooterlines </xsl:text>
         <xsl:apply-templates/>
@@ -610,7 +608,7 @@
  
  
     <xsl:template match="index[@indexName = 'classical-authors']"><!-- ok -->
-        <xsl:text>\classical-authorsIndex{</xsl:text>
+        <xsl:text>\classicalauthorsIndex{</xsl:text>
         <xsl:value-of select="persName"/>
         
         <!-- Achtung: auch Fälle mit zwei term-Elementen!! -->
@@ -1164,12 +1162,6 @@
         <xsl:if test="@type = 'sp'">
             <xsl:text>]</xsl:text>
         </xsl:if>
-    </xsl:template>
-    
-    
-    <xsl:template name="new-page"><!-- ok -->
-        <xsl:text>\page[right,empty]</xsl:text>
-        <xsl:text>\noheaderandfooterlines </xsl:text>
     </xsl:template>
     
     
