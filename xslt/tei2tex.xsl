@@ -25,7 +25,9 @@
  
  
     <!-- when edition text starts, page numbering in Arabic letters 
-        starts with 1 -->
+        starts with 1. On the left page (even numbers) a short bibliographic
+        info in the column title is displayed, on the right page (odd numbers)
+        the current chapter -->
     <xsl:template match="group">
         <xsl:text>\noheaderandfooterlines </xsl:text>          
         <xsl:text>\startbodymatter </xsl:text>
@@ -42,15 +44,12 @@
     <!-- within critical text -->
     <xsl:template match="front[ancestor::group]">
         <xsl:apply-templates/>
-        <!--<xsl:if test="ancestor::group/descendant::front[1] = .">
-            <xsl:text>\resetnumber[page]</xsl:text>
-            <xsl:text>\setuppagenumber[number=1]</xsl:text>
-        </xsl:if>-->
     </xsl:template>
     
     
     <!-- within modern editorial text -->
-    <xsl:template match="front[not(ancestor::group)]">        
+    <xsl:template match="front[not(ancestor::group)]">  
+        <!-- frontmatter necessary for Roman page numbering (specified in header.tex) -->
         <xsl:text>\startfrontmatter </xsl:text>
         <xsl:apply-templates/>
         <xsl:text>\stopfrontmatter </xsl:text>
@@ -64,14 +63,15 @@
     
     <!-- outside edition text -->
     <xsl:template match="div[@type = 'preface' and not(parent::front)]">
-        <xsl:text>\newPage</xsl:text>
-        
+        <xsl:text>\newPage</xsl:text>       
         <xsl:apply-templates/>
     </xsl:template>
     
     
-    <!-- inside edition text -->
+    <!-- within modern editorial text -->
     <xsl:template match="div[@type = 'preface' and parent::front]">
+        <!-- according to publisher guidelines the first page has to be 'V' when there 
+            is no dedication -->
         <xsl:text>\setuppagenumber[number=5]</xsl:text>       
         <xsl:call-template name="make-both-columns">
             <xsl:with-param name="contents" select="head"/>
@@ -81,6 +81,7 @@
     
     
     <xsl:template match="titlePage">
+        <!-- TODO: adjust -->
         <xsl:if test="ancestor::lem">
             <xsl:text>\marking[oddHeader]{Vorreden}</xsl:text>
             <xsl:text>\writetolist[part]{}{Vorreden}</xsl:text>
@@ -122,7 +123,8 @@
         </xsl:call-template>
         <xsl:apply-templates/>
     </xsl:template>
-    
+ 
+ 
     <!-- within critical text -->   
     <xsl:template match="div[@type = 'contents' and not(@subtype = 'print')]">     
         <xsl:text>\marking[oddHeader]{Inhalt}</xsl:text>
@@ -247,7 +249,7 @@
             <xsl:apply-templates select="descendant::seg[@type='toc-item']"/>
         </xsl:if>
         
-        <xsl:choose>
+        <xsl:choose><!-- adjust -->
             <xsl:when test="ancestor::list">
                 <xsl:choose>
                     <xsl:when test="ancestor::rdg and (@type = 'main' or not(@type))">
@@ -296,7 +298,7 @@
     </xsl:template>
 
 
-    <xsl:template match="hi"><!--ok -->
+    <xsl:template match="hi">
         <xsl:choose>
             <xsl:when test="not(@rend)">
                 <xsl:text>\italic{</xsl:text>
