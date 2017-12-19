@@ -141,8 +141,12 @@
 %   [after=\hrule]
 
 \definehead[notTOCsection][section]
+\definehead[subtitle][section]
+\definehead[corrigendaheading][section]
+\definehead[corrigendaheadingrdg][section]
 
 \definehead[mytitle][title]
+\definehead[firstpreface][title]
 
 \definehead[rdgsubject][subject]
 
@@ -152,25 +156,37 @@
 \definehead[listsubheadrdg][subject]
 
 \definehead[tablemainhead][subject]
-\definehead[tablemainheadrdg][subject]
+\definehead[tablesectionhead][subject]
+\definehead[tablefirstsectionhead][subject]
 \definehead[tablesubhead][subject]
+\definehead[tablemainheadrdg][subject]
 \definehead[tablesubheadrdg][subject]
 \definehead[tablehead][subject]
 \definehead[tableheadrdg][subject]
 
 \setuphead[title]
   [number=no,
-  header=high,
+  header=empty,
+  before={\starteffect[hidden] . \stopeffect\blank[60pt]},
   after={\blank[24pt]},
   style={\switchtobodyfont[14pt]},
   interlinespace=16pt]
   
 \setuphead[mytitle]
   [number=no,
-  header=high,
-  after={\blank[0pt]},
+  header=empty,
+  before={\starteffect[hidden] . \stopeffect\blank[60pt]},
+  after={\blank[10pt]},
   style={\switchtobodyfont[14pt]},
   interlinespace=16pt]
+  
+\setuphead[firstpreface]
+  [number=no,
+  header=empty,
+  before={\starteffect[hidden] . \stopeffect\blank[60pt]},
+  after={\blank[10pt]},
+  style={\switchtobodyfont[14pt]},
+  interlinespace=16pt] 
   
 \setuphead[section]
   [number=no,
@@ -180,9 +196,37 @@
   interlinespace=14pt,
   align=middle]
   
+\setuphead[corrigendaheading]
+  [number=no,
+  header=high,
+  before={\blank[24pt]},
+  after={\blank[6pt]},
+  style={\switchtobodyfont[10pt]},
+  interlinespace=14pt,
+  align=middle]  
+  
+\setuphead[corrigendaheadingrdg]
+  [number=no,
+  header=high,
+  before={\blank[12pt]},
+  after={\blank[6pt]},
+  style={\switchtobodyfont[8.5pt]},
+  interlinespace=14pt,
+  align=middle]    
+  
 \setuphead[notTOCsection]
   [number=no,
   header=high,
+  before={\blank[24pt]},
+  after={\blank[12pt]},
+  style={\switchtobodyfont[12pt]},
+  interlinespace=14pt,
+  align=middle] 
+
+ \setuphead[subtitle]
+  [number=no,
+  header=high,
+  before={\blank[0pt]},
   after={\blank[12pt]},
   style={\switchtobodyfont[12pt]},
   interlinespace=14pt,
@@ -194,7 +238,8 @@
 %   after={\blank[12pt]}]
   [number=no,
   header=high,
-  after={\blank[12pt]},
+  before={\blank[12pt]},
+  after={\blank[6pt]},
   style={\switchtobodyfont[10.5pt]},
   interlinespace=14pt,
   align=middle]
@@ -231,10 +276,36 @@
   [number=no,
   header=high,
   before={\blank[none]},
-  after={\blank[none]},
+  after={\blank[0pt]},
   style={\switchtobodyfont[10.5pt]},
   interlinespace=14pt,
   align=middle]
+  
+\setuphead[tablefirstsectionhead]  
+  [number=no,
+  header=high,
+  before={\blank[10pt]},
+  after={\blank[12pt]},
+  style={\switchtobodyfont[10.5pt]},
+  interlinespace=14pt,
+  align=middle]
+  
+\setuphead[tablesectionhead]  
+  [number=no,
+  header=high,
+  before={\blank[24pt]},
+  after={\blank[6pt]},
+  style={\switchtobodyfont[10.5pt]},
+  interlinespace=14pt,
+  align=middle] 
+  
+\setuphead[tablesubhead]  
+  [number=no,
+  before={\blank[-24pt]},
+  after={\blank[12pt]},
+  style={\switchtobodyfont[10.5pt]},
+  interlinespace=14pt,
+  align=middle]  
   
 \setuphead[tablemainheadrdg]  
   [number=no,
@@ -243,16 +314,7 @@
   after={\blank[none]},
   style={\switchtobodyfont[8.5pt]},
   interlinespace=14pt,
-  align=middle]  
-  
-\setuphead[tablesubhead]  
-  [number=no,
-  header=high,
-  before={\blank[none]},
-  after={\blank[none]},
-  style={\switchtobodyfont[10.5pt]},
-  interlinespace=14pt,
-  align=middle]  
+  align=middle]   
   
 \setuphead[tablesubheadrdg]  
   [number=no,
@@ -342,8 +404,18 @@
 \definehspace[threeem][3em]
 \definehspace[twoem][2em]
 
-\def\emptyEvenPage{%
-  \ifodd\pagenumber\page[empty]\fi%
+ \def\emptyEvenPage{%
+   \ifodd\pagenumber\page[empty]\fi%
+ }
+
+\def\newPage{%
+  \ifodd\pagenumber%
+    \page[empty]%
+    \noheaderandfooterlines%
+    \else%
+    \page%
+    \noheaderandfooterlines%
+  \fi%
 }
 
 \def\justifiedPageBreak{%
@@ -367,11 +439,11 @@
 
 \setuphead[part]
   %[before={\blank[10mm, force]},
-   [after={\blank[6pt]},
+   [after={\blank[0pt]},
    align=middle,
-  % header=empty,
+   %header=empty,
    number=no,
-   placehead=yes,
+   placehead=no,
    style=\tfa]
    
 \setuphead[chapter]
@@ -389,12 +461,12 @@
 %   align=middle,
 %   style=\tfa]
    
-\setuphead[subject]
-  [before={\blank[8pt]},
-   after={\blank[4pt]},
-   align=middle,
-   %style=\tfa,
-   header=high]  
+% \setuphead[subject]
+%   [before={\blank[8pt]},
+%    after={\blank[4pt]},
+%    align=middle,
+%    %style=\tfa,
+%    header=high]  
    
 \setuphead[rdgsubject]
   [before={\blank[8pt]},
@@ -429,34 +501,30 @@
   [footnote]
   [alternative=left,
    hang=1,
-   numbercommand=\hskip0.4cm]  
+   numbercommand=\hskip0.4cm\high]  
   
 \setupfootnotes
   [conversion=none, 
   %way=bypage]
   way=bysection,
   split=tolerant]
-
-  % doesn't work properly yet
-\setupnote[footnote]
-  [conversion=none]
   
 
- \definenote[bottomnote]
-   [before={\blank[4mm]},
-    paragraph=yes,
-    rule=off,
-    interlinespace=12.25pt]
- 
-  \setupnotation[bottomnote]
-   [alternative=serried,
-    numbercommand=\tf\bf,
-    style={\switchtobodyfont[8.5pt]},
-    way=bysection, % bypage does not work properly at the moment
-    width=broad,
-    split=tolerant,
-    interlinespace=12.25pt,
-    color=red]
+  \definenote[bottomnote]
+    [before={\blank[4mm]},
+     paragraph=yes,
+     rule=off,
+     interlinespace=12.25pt]
+  
+   \setupnotation[bottomnote]
+    [alternative=serried,
+     numbercommand=\gobbleoneargument,
+     style={\switchtobodyfont[8.5pt]},
+     way=bysection, % bypage does not work properly at the moment
+     width=broad,
+     split=tolerant,
+     interlinespace=12.25pt,
+     color=red]
 
 
 \setuplanguage[de]
@@ -474,12 +542,12 @@
 \definedelimitedtext[rdg]
 \setupdelimitedtext
         [rdg]
-        [before={\blank[medium]
+        [before={\blank[6pt]
         \crlf
         \noindentation
         \switchtobodyfont[8.5pt]},
         after={\removeunwantedspaces
-        \blank[medium]
+        \blank[6pt]
         \noindentation
         \switchtobodyfont[default]},
         leftmargin=0pt, rightmargin=0mm]
@@ -487,8 +555,8 @@
 \definedelimitedtext[narrow]
 \setupdelimitedtext
         [narrow]
-        [before={\blank[medium]\noindentation\switchtobodyfont[8.5pt]},
-after={\removeunwantedspaces\blank[medium]\noindentation
+        [before={\blank[6pt]\noindentation\switchtobodyfont[8.5pt]},
+after={\removeunwantedspaces\blank[6pt]\noindentation
 \switchtobodyfont[default]},
 leftmargin=4mm, rightmargin=0mm]
 
@@ -496,27 +564,26 @@ leftmargin=4mm, rightmargin=0mm]
 \definedelimitedtext[note]
 \setupdelimitedtext
         [note]
-        [before={\blank[medium]
+        [before={\blank[6pt]
         \noindentation
         \switchtobodyfont[8.5pt]},
 	after={\removeunwantedspaces
-	\blank[medium]
+	\blank[6pt]
 	\noindentation
 	\switchtobodyfont[default]},
 	leftmargin=4mm, rightmargin=0mm]
-
 	
-% \definedelimitedtext[bottomnote]
-% \setupdelimitedtext
-%         [bottomnote]
-%         [before={\blank[medium]
-%         \noindentation
-%         \switchtobodyfont[8.5pt]},
-% 	after={\removeunwantedspaces
-% 	\blank[medium]
-% 	\noindentation
-% 	\switchtobodyfont[default]},
-% 	leftmargin=4mm, rightmargin=0mm, color=blue, location=text]	
+	
+%   \definedelimitedtext[bottomnote][location=bottom]
+%   \setupdelimitedtext
+%           [bottomnote]
+%           [before={\blank[medium]
+%           \noindentation
+%           \switchtobodyfont[8pt]},
+%   	after={\blank[medium]
+%   	\noindentation
+%   	\switchtobodyfont[default]},
+%   	leftmargin=4mm, rightmargin=0mm, color=blue, location=text]	
 
 % TODO: optimize inter word spacing
 \setuptolerance
@@ -570,8 +637,8 @@ leftmargin=4mm, rightmargin=0mm]
    pagestyle=\tf,
    n=1]
    
-\defineregister[classical-authors]
-\setupregister[classical-authors]
+\defineregister[classicalauthorsIndex]
+\setupregister[classicalauthorsIndex]
   [compress=yes,
    indicator=no,
    pagestyle=\tf,
@@ -580,24 +647,25 @@ leftmargin=4mm, rightmargin=0mm]
 \defineregister[bibelIndex]
 \setupregister[bibelIndex]
   [compress=yes,
-   indicator=no,
-   pagestyle=\tf,
-   n=1,
-   before=\blank]
+  indicator=yes,
+  pagestyle=\tf,
+  location=middle]
 
 \defineregister[persIndex]
 \setupregister[persIndex]
   [compress=yes,
    indicator=no,
    pagestyle=\tf,
-   n=1]
+   n=1,
+   method={zc}]
    
 \defineregister[personsIndex]
 \setupregister[personsIndex]
   [compress=yes,
    indicator=no,
    pagestyle=\tf,
-   n=1]
+   n=1,
+   method={zc}]
 
 \defineregister[subjectsIndex]
 \setupregister[subjectsIndex]
@@ -605,7 +673,8 @@ leftmargin=4mm, rightmargin=0mm]
    indicator=no,
    pagestyle=\tf,
    n=1,
-   method={zc,mm,uc}]   
+   %method={zc,mm,uc}]   
+   method={zc}]   
    
 \defineregister[sachIndex]
 \setupregister[sachIndex]
@@ -613,7 +682,8 @@ leftmargin=4mm, rightmargin=0mm]
    indicator=no,
    pagestyle=\tf,
    n=1,
-   method={zc,mm,uc}]
+   %method={zc,mm,uc}]
+   method={zc}]   
    
 \defineconversion[s][,,,]
 
@@ -634,7 +704,7 @@ leftmargin=4mm, rightmargin=0mm]
     \typo_injectors_mark_register}
  \protect
 
-\hyphenation{Er-zie-hungs-we-sens Schul-schrif-ten Ab-sicht The-o-phrast's Wis-sen-schaf-ten Er-läu-ter-ungs-schrif-ten Kir-chen-ge-schich-te ge-nomm-ne An-drer wo-rü-ber Mit-thei-lung noth-wen-dig noth-wen-di-ge noth-wen-di-ges noth-wen-di-gen Noth-wen-dig-keit Noth-wen-dig-kei-ten Ein-thei-lung be-ur-theilt Be-ur-thei-lung nach-thei-lig Vor-ur-theil se-ue-ra Ur-thei-le wo-raus groß-en-theils Irr-thum Irr-thü-mer Ra-ti-o-nal-er-kennt-niß Wolf-schen ein-thei-len Haupt\-, mit-thei-len Wa-cker-barth be-ur-thei-len ei-gen-thüm-li-chen Chris-ten-thums un-grie-chisch-e vor-tref-li-ches Pro-fan-scri-ben-ten mit-theilt Ue-ber-ei-lun-gen Ver-mu-thun-gen Prü-fe-stein ver-thei-di-gen un-par-they-isch-e Vor-theil Un-thä-ti-gkeit größ-ten-theils Ver-stan-de Vor-ur-thei-le Lieg-nitz vie-ler-ley Ver-muth-ung der-sel-ben ge-mein-schaft-li-cher letzt-er-wähn-ten Er-kennt-niß-quel-le Re-li-gions-par-they-en un-par-they-isch-en (1725–-1791) die-ie-ni-ge Ver-mu-thung-en Nach-theil Be-ur-theil-ung wohl-thä-tigs-ten ur-theil-en an-ti-qui Be-stand-thei-le}
+\hyphenation{Er-zie-hungs-we-sens Schul-schrif-ten Ab-sicht The-o-phrast's Wis-sen-schaf-ten Er-läu-ter-ungs-schrif-ten Kir-chen-ge-schich-te ge-nomm-ne An-drer wo-rü-ber Mit-thei-lung noth-wen-dig noth-wen-di-ge noth-wen-di-ges noth-wen-di-gen Noth-wen-dig-keit Noth-wen-dig-kei-ten Ein-thei-lung be-ur-theilt Be-ur-thei-lung nach-thei-lig Vor-ur-theil se-ue-ra Ur-thei-le wo-raus groß-en-theils Irr-thum Irr-thü-mer Ra-ti-o-nal-er-kennt-niß Wolf-schen ein-thei-len Haupt\-, mit-thei-len Wa-cker-barth be-ur-thei-len ei-gen-thüm-li-chen Chris-ten-thums un-grie-chisch-e vor-tref-li-ches Pro-fan-scri-ben-ten mit-theilt Ue-ber-ei-lun-gen Ver-mu-thun-gen Prü-fe-stein ver-thei-di-gen un-par-they-isch-e Vor-theil Un-thä-ti-gkeit größ-ten-theils Ver-stan-de Vor-ur-thei-le Lieg-nitz vie-ler-ley Ver-muth-ung der-sel-ben ge-mein-schaft-li-cher letzt-er-wähn-ten Er-kennt-niß-quel-le Re-li-gions-par-they-en un-par-they-isch-en (1725–-1791) die-ie-ni-ge Ver-mu-thung-en Nach-theil Be-ur-theil-ung wohl-thä-tigs-ten ur-theil-en an-ti-qui Be-stand-thei-le Be-ur-thei-lung ur-thei-len ad-iun-xit meis-ten-theils Schul-en-cy-klo-pä-die ver-thei-len}
 
 
 % lua

@@ -28,12 +28,21 @@ for (my $i = 0; $i < @idFile; $i++) {
 
   if ($id and $note) {
   	# temporary solution for merging note indicators
-  	$tmp1 =~ s/E(,\sE)/E/g;
+  	$tmp1 =~ s/E,\sE/E/g;
+	$tmp1 =~ s/E(,\s.{2,4})+,\sE/E$1/g;
+	$tmp1 =~ s/E(,\s\/a\\textbackslash)+,\sE/E$1/g;
+	$tmp1 =~ s/E(,\s\/c\\textbackslash)+,\sE/E$1/g;
+  	
+  	$tmp1 =~ s/\\margin\{\}\{e\}\{\}\{\\hbox\{\}\}\{E\}\\pagereference\[(.{7})\]Es war keinesweges/Es\\margin\{\}\{e\}\{\}\{\\hbox\{\}\}\{E\}\\pagereference\[$1\] war keinesweges/g;
   
     $tmp1 =~ s/(\\margin\{$id\}\{.*?\}\{.*?\}\{.*?\}\{.*?\})/$1\\margindata\[inouter\]\{$note\}/g;
     
+    $tmp1 =~ s/\\margindata\[inouter\]\{, /\\margindata\[inouter\]\{/g;
+    
     $tmp1 =~ s/;,/;/g;
   }
+  print STDERR "NOTE: " . $note . "\n";
 }
 
 print $tmp1;
+
