@@ -682,7 +682,7 @@
                     </xsl:otherwise>
                 </xsl:choose>
 
-                <xsl:apply-templates select="."/>
+                <xsl:value-of select="."/>
                 <xsl:text>]{</xsl:text>
 
                 <xsl:choose>
@@ -798,6 +798,12 @@
     <xsl:template match="foreign[@xml:lang = 'gr']">
         <!-- ebFont has to be taken away, otherwise diacritica are displayed wrongly -->
         <!--<xsl:text>{\ebFont </xsl:text>-->
+        <xsl:if test="preceding-sibling::*[1][self::app]/lem[child::*[last()][self::foreign] 
+            and following-sibling::rdg[@type = 'v']]
+            and preceding-sibling::node()[1][not(matches(., '\S'))]">
+            <xsl:text>asdfghjklö</xsl:text>
+        </xsl:if>
+        
         <xsl:apply-templates/>
         <!--<xsl:text>}</xsl:text>-->
 
@@ -997,7 +1003,8 @@
     </xsl:template>
 
     <xsl:template match="bibl[@type = 'biblical-reference']">
-        <xsl:if test="preceding::*[1][self::foreign] and not(preceding::node()[1][matches(., '\w')])">
+        <xsl:if test="preceding::*[1][self::foreign] and not(preceding::node()[1][matches(., '\w')]) 
+            or preceding-sibling::*[1][self::app]/rdg/descendant::*[last()][self::foreign]">
             <xsl:text> </xsl:text>
         </xsl:if>
         <xsl:text>\bibelIndex{</xsl:text>
@@ -2134,6 +2141,9 @@
         <xsl:if test="ancestor::rdg">
             <xsl:text>\blank[6pt]</xsl:text>
         </xsl:if>
+        <xsl:if test="parent::lem or not(ancestor::app)">
+            <xsl:text>\blank[60pt]</xsl:text>
+        </xsl:if>
 
         <xsl:text>{\startalignment[center]</xsl:text>
         <xsl:apply-templates/>
@@ -2215,14 +2225,23 @@
             <xsl:value-of select="head"/>
             <xsl:text>}</xsl:text>
         </xsl:if>
+
+        <xsl:if test="not(parent::front)">
+            <!--<xsl:text>\page </xsl:text>-->
+            <!--<xsl:text>\noheaderandfooterlines</xsl:text>-->
+            <xsl:choose>
+                <xsl:when test="ancestor::text[1]/descendant::div[@type = 'preface'][1] = . 
+                    and ancestor::group">
+                    <xsl:text>\newPage </xsl:text>
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:text>\page </xsl:text>
+                </xsl:otherwise>
+            </xsl:choose>     
+        </xsl:if>
         
         <xsl:if test="ancestor::text[1][parent::group]/descendant::div[@type = 'preface'][1] = .">
             <xsl:text>\writetolist[chapter]{}{Vorreden}</xsl:text>
-        </xsl:if>
-
-        <xsl:if test="not(parent::front)">
-            <xsl:text>\page </xsl:text>
-            <xsl:text>\noheaderandfooterlines</xsl:text>
         </xsl:if>
 
         <!--<xsl:text>\page[right,empty]</xsl:text>
@@ -2290,6 +2309,7 @@
         <xsl:apply-templates
             select="//teiHeader//title[@level = 'a']/title[@type = 'condensed']"/>
         <xsl:text>}}</xsl:text>
+        <xsl:text>\newPage </xsl:text>
         <xsl:apply-templates/>
         <!--<xsl:text>\page[right,empty]</xsl:text>
         <xsl:text>\noheaderandfooterlines</xsl:text>-->
@@ -2303,12 +2323,11 @@
 
         <xsl:apply-templates/>
         <!--<xsl:text>\page[empty,right]</xsl:text>-->
-        <xsl:text> \newPage</xsl:text>
-        <xsl:if test="ancestor::group/descendant::front[1] = .">
+        <!--<xsl:if test="ancestor::group/descendant::front[1] = .">
             <xsl:text>
                 \resetnumber[page]
                 \setuppagenumber[number=1]</xsl:text>
-        </xsl:if>
+        </xsl:if>-->
         <xsl:if test="not(ancestor::group)">
             <xsl:text>\stopfrontmatter </xsl:text>
         </xsl:if>
@@ -2656,6 +2675,16 @@
         <xsl:text>
             \noheaderandfooterlines
         </xsl:text>
+        <xsl:apply-templates/>
+    </xsl:template>
+    
+    <xsl:template match="div[@type = 'titlePage']">
+        <xsl:if test="ancestor::body[1]/descendant::div[@type = 'titlePage'][1] = .
+            and not(parent::rdg/preceding-sibling::lem/text())">
+            <xsl:text>\starteffect[hidden] . \stopeffect</xsl:text>
+            <xsl:text>\blank[60pt]</xsl:text>
+        </xsl:if>
+        
         <xsl:apply-templates/>
     </xsl:template>
 
