@@ -183,7 +183,7 @@
 \setuphead[firstpreface]
   [number=no,
   header=empty,
-  before={\starteffect[hidden] . \stopeffect\blank[60pt]},
+  before={\noheaderandfooterlines\starteffect[hidden] . \stopeffect\blank[60pt]},
   after={\blank[10pt]},
   style={\switchtobodyfont[14pt]},
   interlinespace=16pt] 
@@ -408,7 +408,17 @@
    \ifodd\pagenumber\page[empty]\fi%
  }
 
-\def\newPage{%
+% \def\newPage{%
+%   \ifodd\pagenumber%
+%     \page[empty]%
+%     \noheaderandfooterlines%
+%     \else%
+%     \page%
+%     \noheaderandfooterlines%
+%   \fi%
+% }
+
+\def\newOddPage{%
   \ifodd\pagenumber%
     \page[empty]%
     \noheaderandfooterlines%
@@ -416,6 +426,11 @@
     \page%
     \noheaderandfooterlines%
   \fi%
+}
+
+\def\newPage{%
+    \page%
+    \noheaderandfooterlines%
 }
 
 \def\justifiedPageBreak{%
@@ -542,12 +557,12 @@
 \definedelimitedtext[rdg]
 \setupdelimitedtext
         [rdg]
-        [before={\blank[6pt]
+        [before={\blank[10pt]
         \crlf
         \noindentation
         \switchtobodyfont[8.5pt]},
         after={\removeunwantedspaces
-        \blank[6pt]
+        \blank[10pt]
         \noindentation
         \switchtobodyfont[default]},
         leftmargin=0pt, rightmargin=0mm]
@@ -555,20 +570,20 @@
 \definedelimitedtext[narrow]
 \setupdelimitedtext
         [narrow]
-        [before={\blank[6pt]\noindentation\switchtobodyfont[8.5pt]},
-after={\removeunwantedspaces\blank[6pt]\noindentation
+        [before={\blank[10pt]\noindentation\switchtobodyfont[8.5pt]},
+after={\removeunwantedspaces\blank[10pt]\noindentation
 \switchtobodyfont[default]},
 leftmargin=4mm, rightmargin=0mm]
 
 
-\definedelimitedtext[note]
+\definedelimitedtext[authornote]
 \setupdelimitedtext
-        [note]
-        [before={\blank[6pt]
+        [authornote]
+        [before={\blank[10pt]
         \noindentation
         \switchtobodyfont[8.5pt]},
 	after={\removeunwantedspaces
-	\blank[6pt]
+	\blank[10pt]
 	\noindentation
 	\switchtobodyfont[default]},
 	leftmargin=4mm, rightmargin=0mm]
@@ -748,16 +763,20 @@ processMargins = function(head)
   for line in node.traverse_id(node.id("hlist"), head) do -- getting all lines of a paragraph and traversing them
     local lineKeys = {}
     local lineNote = ""
+    print("\n\n\n line: ")
+    print(line)
 
     for item in node.traverse(line.list) do
       local itemKey = node.has_attribute(item, 1)
+      print("item: ")
+      print(item)
+      print("itemKey: ")
+      print(itemKey)
+      print("notesitemKey: ")
+      print(notes[itemKey])
 
       if itemKey and notes[itemKey] then
         lineKeys[#lineKeys + 1] = itemKey
-        print("notes[itemKey]: ")
-        print(notes[itemKey])
-        print("itemKey: ")
-        print(itemKey)
       end
     end
 
@@ -773,6 +792,8 @@ processMargins = function(head)
 
     table.sort(res)
     lineKeys = res
+    print("lineKeys: ")
+    print(lineKeys)
 
     if lineKeys[1] then
       idFile:write(notes[lineKeys[1]]["id"])
@@ -783,6 +804,8 @@ processMargins = function(head)
     for _, k1 in ipairs(lineKeys) do
       local v1 = notes[k1]
       local backslash = false
+      print("v1: ")
+      print(v1)
 
       if v1["type"] == "omOpen" then
         for _, k2 in ipairs(lineKeys) do
@@ -817,8 +840,12 @@ processMargins = function(head)
       if k1 ~= lineKeys[1] then
         lineNote = lineNote .. ", "
       end
+      print("k1: ")
+      print(k1)
 
       lineNote = lineNote .. v1["note"]
+      print("lineNote: ")
+      print(lineNote)
 
       if backslash then
         lineNote = lineNote .. "\\textbackslash"

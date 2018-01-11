@@ -4,7 +4,7 @@
     
     <xsl:strip-space elements="*"/>
     <xsl:preserve-space elements="abbr byline corr docImprint edition head hi
-        item label lem note p persName rdg ref sic term titlePart"/>
+        item label lem note p persName rdg sic term titlePart"/>
     
     <xsl:template match="TEI">
         <xsl:apply-templates/>
@@ -16,7 +16,7 @@
     
     <xsl:template match="body">
         <xsl:if test="ancestor::group">
-            <xsl:text>\newPage</xsl:text>
+            <xsl:text>\newOddPage</xsl:text>
             <xsl:text>\setupnotation[footnote][numbercommand=\gobbleoneargument, rule=off]</xsl:text>
             <xsl:text>\setupnote[footnote][textcommand=\gobbleoneargument, rule=off]</xsl:text>
         </xsl:if>
@@ -33,7 +33,7 @@
         <xsl:text>\startbodymatter </xsl:text>
         <xsl:text>\setuppagenumber[number=1]</xsl:text>
         <xsl:text>\marking[evHeader]{{\tfx\it </xsl:text>
-        <xsl:apply-templates select="//teiHeader//title[@level = 'a']/title[@type = 'condensed']"/>
+        <xsl:apply-templates select="//teiHeader//title[@type = 'condensed'][1]"/>
         <xsl:text>}}</xsl:text>
   
         <xsl:apply-templates/>
@@ -62,21 +62,30 @@
     
     
     <!-- outside edition text -->
-    <xsl:template match="div[@type = 'preface' and not(parent::front)]">
-        <xsl:text>\newPage</xsl:text>       
+    <xsl:template match="div[@type = 'preface' and ancestor::group]">    
+        <xsl:choose>
+            <xsl:when test="ancestor::front/descendant::div[@type = 'preface'][1] = .">
+                <xsl:text>\newOddPage</xsl:text>
+            </xsl:when>
+            <!-- only first preface has to be on an odd page -->
+            <xsl:otherwise>
+                <xsl:text>\newPage</xsl:text>
+            </xsl:otherwise>
+        </xsl:choose>
         <xsl:apply-templates/>
     </xsl:template>
     
     
     <!-- within modern editorial text -->
-    <xsl:template match="div[@type = 'preface' and parent::front]">
+    <xsl:template match="div[@type = 'preface' and not(ancestor::group)]">
         <!-- according to publisher guidelines the first page has to be 'V' when there 
             is no dedication -->
         <xsl:text>\setuppagenumber[number=5]</xsl:text>       
         <xsl:call-template name="make-both-columns">
             <xsl:with-param name="contents" select="head"/>
-        </xsl:call-template>       
+        </xsl:call-template>  
         <xsl:apply-templates/>
+        <xsl:text>\newOddPage</xsl:text>
     </xsl:template>
     
     
@@ -128,7 +137,15 @@
     <!-- within critical text -->   
     <xsl:template match="div[@type = 'contents' and not(@subtype = 'print')]">     
         <xsl:text>\marking[oddHeader]{Inhalt}</xsl:text>
-        <xsl:text>\newPage</xsl:text>
+        <xsl:choose>
+            <xsl:when test="ancestor::front/descendant::div[@type = 'contents'][1] = .">
+                <xsl:text>\newOddPage</xsl:text>
+            </xsl:when>
+            <!-- only first toc has to be on an odd page -->
+            <xsl:otherwise>
+                <xsl:text>\newPage</xsl:text>
+            </xsl:otherwise>
+        </xsl:choose>
         <xsl:apply-templates/>
     </xsl:template>
     
@@ -136,6 +153,7 @@
     <!-- within modern editorial text -->
     <xsl:template match="div[@type = 'contents' and @subtype = 'print']">
         <xsl:apply-templates select="descendant::divGen[@type = 'Inhalt']"/>
+        <xsl:text>\newOddPage</xsl:text>
     </xsl:template>
     
     
@@ -146,7 +164,7 @@
     
     <xsl:template match="div[@type = 'part']">
         <xsl:if test="not(preceding::div[1][@type = 'titlePage'])">
-            <xsl:text>\newPage</xsl:text>
+            <xsl:text>\newOddPage</xsl:text>
         </xsl:if>    
 
         <xsl:apply-templates/>  
@@ -154,7 +172,7 @@
     
     
     <xsl:template match="div[@type = 'chapter']">
-        <xsl:text>\newPage</xsl:text>
+        <xsl:text>\newOddPage</xsl:text>
         <xsl:apply-templates/>
     </xsl:template>
     
@@ -162,7 +180,7 @@
     <!-- within critical text -->
     <xsl:template match="div[@type = 'introduction' and ancestor::group]">
         <xsl:if test="not(preceding-sibling::*[1][descendant::div[@type = 'titlePage']])">
-            <xsl:text>\newPage</xsl:text>
+            <xsl:text>\newOddPage</xsl:text>
         </xsl:if>
         <xsl:text>\noheaderandfooterlines </xsl:text>
         <xsl:apply-templates/>
@@ -176,6 +194,7 @@
             <xsl:with-param name="contents" select="head[1]"/>
         </xsl:call-template>        
         <xsl:apply-templates/>
+        <xsl:text>\newOddPage</xsl:text>
     </xsl:template>
     
     
@@ -185,9 +204,9 @@
     
     
     <xsl:template match="div[@type = 'section']">
-        <xsl:apply-templates/>
+        <xsl:apply-templates/>        
         <xsl:if test="not(head)">
-            <xsl:text>\blank[8pt] </xsl:text>
+            <xsl:text>\blank[10pt] </xsl:text>
         </xsl:if>
     </xsl:template>
     
@@ -198,6 +217,7 @@
             <xsl:with-param name="contents" select="head[1]"/>
         </xsl:call-template>        
         <xsl:apply-templates/>
+        <xsl:text>\newOddPage</xsl:text>
     </xsl:template>
     
     
@@ -230,23 +250,31 @@
     <xsl:template match="head[not(ancestor::group)]">
         <xsl:choose>
             <xsl:when test="parent::div[@type]">
+                <xsl:text>\title[]{</xsl:text> 
+                <xsl:apply-templates/>
+                <xsl:text>}</xsl:text>
+                
                 <xsl:text>\writetolist[part]{}{</xsl:text>
                 <xsl:apply-templates/>
                 <xsl:text>}</xsl:text>
-                <xsl:text>\title[]{</xsl:text>
             </xsl:when>
+            <xsl:when test="ancestor::div[@type = 'index']"/>
             <xsl:otherwise>
                 <xsl:text>\notTOCsection[]{</xsl:text>
+                <xsl:apply-templates/>
+                <xsl:text>}</xsl:text>                
             </xsl:otherwise>
         </xsl:choose>
-        <xsl:apply-templates/>
-        <xsl:text>}</xsl:text>
     </xsl:template>
     
     
     <xsl:template match="head">
-        <xsl:if test="parent::div[@type = 'introduction' or @type = 'part' or @type = 'chapter']">
+        <!--<xsl:if test="parent::div[@type = 'introduction' or @type = 'part' or @type = 'chapter']">-->
+        <xsl:if test="descendant::seg[@type='toc-item']">
             <xsl:apply-templates select="descendant::seg[@type='toc-item']"/>
+        </xsl:if>
+        <xsl:if test="descendant::seg[@type='condensed']">
+            <xsl:apply-templates select="descendant::seg[@type='condensed']"/>
         </xsl:if>
         
         <xsl:choose><!-- adjust -->
@@ -443,12 +471,28 @@
         <xsl:if test="not(preceding-sibling::rdg[@type = 'pp' or @type = 'pt'])">
             <xsl:text>{\dvl}</xsl:text>
         </xsl:if>
-        <xsl:apply-templates select="." mode="footnote"/>
+        <xsl:choose>
+            <xsl:when test="ancestor::note[@place = 'bottom']">
+                <xsl:apply-templates select="." mode="in-footnote"/>
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:apply-templates select="." mode="normal-note"/>
+            </xsl:otherwise>
+        </xsl:choose>
+        <!--<xsl:apply-templates select="." mode="footnote"/>-->
     </xsl:template>
     
     
     <xsl:template match="rdg[@type = 'v']">
-        <xsl:apply-templates select="." mode="footnote"/>
+        <xsl:choose>
+            <xsl:when test="ancestor::note[@place = 'bottom']">
+                <xsl:apply-templates select="." mode="in-footnote"/>
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:apply-templates select="." mode="normal-note"/>
+            </xsl:otherwise>
+        </xsl:choose>
+        <!--<xsl:apply-templates select="." mode="footnote"/>-->
     </xsl:template>
     
     
@@ -460,6 +504,28 @@
         <xsl:text>Note{</xsl:text>
         <xsl:apply-templates/>
         <xsl:text>}</xsl:text>       
+    </xsl:template>
+    
+    
+    <xsl:template match="rdg" mode="normal-note">
+        <xsl:variable name="wit" select="replace(@wit, '[# ]+', '')"/>
+        
+        <xsl:text>\</xsl:text>
+        <xsl:value-of select="$wit"/>
+        <xsl:text>Note{</xsl:text>
+        <xsl:apply-templates/>
+        <xsl:text>}</xsl:text>       
+    </xsl:template>
+    
+    
+    <xsl:template match="rdg" mode="in-footnote">
+        <xsl:variable name="wit" select="replace(@wit, '[# ]+', '')"/>
+        
+        <xsl:text>\note[</xsl:text>
+        <xsl:value-of select="$wit"/>
+        <xsl:text>Note][</xsl:text>
+        <xsl:value-of select="@id"/>
+        <xsl:text>]</xsl:text>       
     </xsl:template>
  
  
@@ -576,22 +642,29 @@
     <xsl:template match="note[@type = 'authorial' and ancestor::group]">
         <xsl:choose>
             <xsl:when test="@place = 'bottom'">
-                <xsl:text>{\startbottomnote</xsl:text>
+                <!--<xsl:text>{\startbottomnote</xsl:text>
                 <xsl:apply-templates/>
-                <xsl:text>\stopbottomnote}</xsl:text>
-                <!--<xsl:text>\footnote{</xsl:text>
+                <xsl:text>\stopbottomnote}</xsl:text>-->
+                <xsl:text>\footnote{</xsl:text>
                 <xsl:apply-templates/>
                 <xsl:text>}</xsl:text>
                 
-                <xsl:variable name="rdgs" select="descendant::rdg[@type = 'pp' or @type = 'pt' or @type = 'v']"/>
+                <xsl:variable name="rdgs" select="descendant::rdg[@type = 'v' or @type = 'pp' or @type = 'pt']"/>
                 <xsl:for-each select="$rdgs">
-                    <xsl:apply-templates select="." mode="footnote"/>
-                </xsl:for-each>-->
+                    <xsl:variable name="wit" select="replace(./@wit, '[# ]+', '')"/>
+                    <xsl:text>\setnotetext[</xsl:text>
+                    <xsl:value-of select="$wit"/>
+                    <xsl:text>Note][</xsl:text>
+                    <xsl:value-of select="@id"/>
+                    <xsl:text>]{</xsl:text>
+                    <xsl:apply-templates/>
+                    <xsl:text>}</xsl:text>
+                </xsl:for-each>
             </xsl:when>
             <xsl:otherwise>
-                <xsl:text>\startnote </xsl:text>  
+                <xsl:text>\startauthornote </xsl:text>  
                 <xsl:apply-templates/>
-                <xsl:text>\stopnote </xsl:text>  
+                <xsl:text>\stopauthornote </xsl:text>  
                 <xsl:text>\noindentation </xsl:text>  
             </xsl:otherwise>
         </xsl:choose>
@@ -791,7 +864,8 @@
                 and preceding-sibling::node() and not(preceding-sibling::pb)">
                 <xsl:text>\crlf </xsl:text>
                 <xsl:choose>
-                    <xsl:when test="@unit = 'p' and (not(preceding-sibling::*[1][self::list]) and not(preceding-sibling::*[1][self::seg][child::*[last()][self::list]]))">
+                    <xsl:when test="@unit = 'p' and (not(preceding-sibling::*[1][self::list]) 
+                        and not(preceding-sibling::*[1][self::seg][child::*[last()][self::list]]))">
                         <xsl:call-template name="paragraph-indent"/>
                     </xsl:when>                   
                     <xsl:when test="@unit = 'p' and (preceding-sibling::*[1][self::list] or preceding-sibling::*[1][self::seg][child::*[last()][self::list]])">
@@ -916,6 +990,10 @@
                     <xsl:when test="ancestor::titlePart[@type = 'volume']">
                         <xsl:text>part</xsl:text>
                     </xsl:when>
+                    <!-- for Griesbach -->
+                    <xsl:when test="ancestor::div[@type = 'section']">
+                        <xsl:text>part</xsl:text>
+                    </xsl:when>
                     <xsl:when test="ancestor::div[@type = 'chapter']">
                         <xsl:text>section</xsl:text>
                     </xsl:when>
@@ -966,6 +1044,9 @@
     
     
     <xsl:template match="back">
+        <!--<xsl:if test="not(ancestor::group)">
+            <xsl:text>\newOddPage</xsl:text> 
+        </xsl:if>-->
         <xsl:apply-templates/>
     </xsl:template>
     
@@ -1013,6 +1094,7 @@
         </xsl:for-each>
         <xsl:text>\stoptabulate </xsl:text>
         <xsl:text>\stoppart </xsl:text>
+        <xsl:text>\newOddPage </xsl:text>
     </xsl:template>
 
 
