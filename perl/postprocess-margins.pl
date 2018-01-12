@@ -25,6 +25,7 @@ for (my $i = 0; $i < @idFile; $i++) {
   my $note = $notes[$i];
   chomp($note);
 
+
   if ($id and $note) {
   	# temporary solution for merging note indicators
   	$tmp1 =~ s/E,\sE/E/g;
@@ -36,7 +37,7 @@ for (my $i = 0; $i < @idFile; $i++) {
   
 	$tmp1 =~ s/(\\margin\{$id\}\{.*?\}\{.*?\}\{.*?\}\{.*?\})/$1\\margindata\[inouter\]\{$note\}/g;
     
-   	$tmp1 =~ s/\\margindata\[inouter\]\{, /\\margindata\[inouter\]\{/g;
+   	#$tmp1 =~ s/\\margindata\[inouter\]\{, /\\margindata\[inouter\]\{/g;
     	$tmp1 =~ s/([\w]{1}[\[]{0,1}[0-9IVX]{1,3}[\]]{0,1}), ([\w]{1}[\[]{0,1}[0-9IVX]{1,3}[\]]{0,1})/$1; $2/g;     
 
     	$tmp1 =~ s/;,/;/g;
@@ -65,6 +66,41 @@ for (my $i = 0; $i < @idFile; $i++) {
 				$tmp1 =~ s/\\margin\{[\w]{8}\}\{pb\}\{\}\{\\hbox\{\}\}\{$pb\}//g;
 			}
 		}
+	}
+
+	# collapse equal markers into one
+	if($note =~ m/\/[\w]{1,9}, [\w]{1,9}\\textbackslash/) {
+		my @markers = split(', ', $note);
+		for(my $j = 0; $j < @markers - 1; $j++) {
+			my $marker = $markers[$j];
+			my $nextMarker = $markers[$j + 1];
+
+			if($marker =~ m/\/[\w]{1,9}/ 
+			and $nextMarker =~ m/[\w]{1,9}\\textbackslash/) {
+				$marker =~ s/\/([\w]{1,9})/$1/g;
+				$nextMarker =~ s/([\w]{1,9})\\textbackslash/$1/g;
+
+				if($marker = $nextMarker) {
+					$tmp1 =~ s/\/$marker, $nextMarker\\textbackslash/\/$marker\\textbackslash/g;
+					$note =~ s/\/$marker, $nextMarker\\textbackslash/\/$marker\\textbackslash/g;
+				}
+			}
+		}
+	}
+
+
+	if($note =~ m/\/[\w]{1,9}\\textbackslash, \/[\w]{1,9}\\textbackslash/) {
+		my @markers = split(', ', $note);
+		my $lastEntry = $markers[@markers - 1];
+
+		print STDERR $note . "\n";
+		print STDERR $lastEntry . "\n";
+		print STDERR $i . "\n";
+		for(my $j = $i; $j < @notes; $j++) {
+		#	if(@markers - $j == 1) {
+		#		print STDERR $markers[$j] . "\n";
+		#	}
+		}	
 	}
   }
 }
