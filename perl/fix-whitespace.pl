@@ -9,7 +9,7 @@ use File::Slurp;
 
 my $head = "";
 
-my $tail = read_file("tmp/tmp-1.tex");
+my $tail = read_file("tmp/" . $ARGV[0] . "_tmp-1.tex");
 
 
 $tail =~ s/\s+/ /g;
@@ -40,13 +40,16 @@ $tail =~ s/} \\italic\{,/}\\italic\{,/g;
 $tail =~ s/} :/}:/g;
 $tail =~ s/} \\italic\{:/}\\italic\{:/g;
 $tail =~ s/\\tfx\\high\{\/a}} \{\\tfx\\high\{\/c}/\\tfx\\high\{\/a}}\{\\tfx\\high\{\/c}/g;
+$tail =~ s/\{\/a} \{\\tfx\\high\{\/c}/\{\/a}\{\\tfx\\high\{\/c}/g;
 $tail =~ s/\\margindata\[inouter\]\{\/a} \{\\tfx\\high\{\/c}}/\\margindata\[inouter\]\{\/a}\{\\tfx\\high\{\/c}}/g;
-$tail =~ s/ “/“/g;
-$tail =~ s/ "/"/g;
-$tail =~ s/ ˮ/ˮ/g;
-
-# German quotation marks
-$tail =~ s/„(.+?)“/\\quotation\{$1}/g;
+$tail =~ s/\s\x{201C}/\x{201C}/g;
+$tail =~ s/ \x{0022}/\x{0022}/g;
+$tail =~ s/ \x{00AB}/\x{00AB}/g;
+$tail =~ s/ \x{02BA}/\x{02BA}/g;
+$tail =~ s/ \x{02DD}/\x{02DD}/g;
+$tail =~ s/ \x{02EE}/\x{02EE}/g;
+$tail =~ s/ \x{201C}/\x{201C}/g;
+$tail =~ s/ \x{030E}/\x{059E}/g;
 
 
 # fixing §.... to §. ...
@@ -57,7 +60,9 @@ $tail =~ s/c119}\\italic\{Pfaff,/c119} \\italic\{Pfaff,/g;
 $tail =~ s/\\italic\{Weisman,}\\/\\italic\{Weisman,} \\/g;
 $tail =~ s/c16} 12/c16}12/g;
 $tail =~ s/b51} 38/b51}38/g;
-
+$tail =~ s/ \{\\startalignment/\{\\startalignment/g;
+$tail =~ s/a595, b17, c16} /a595, b17, c16}/g;
+$tail =~ s/\\stopalignment} \\margin/\\stopalignment}\\margin/g;
 
 # remove vertical whitespace before headings, might need further improvement
 for (my $i=0; $i <= 9; $i++) {

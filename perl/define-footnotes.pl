@@ -7,7 +7,8 @@ use warnings;
 
 use List::MoreUtils qw(uniq);
 
-open(FILE, "<2501b.2.xml") or die "$!\n";
+open(FILE, "<input/" . $ARGV[0] .".xml") or die "$!\n";
+
 my @lines = <FILE>;
 close(FILE);
 
@@ -39,7 +40,8 @@ print "
    after={\\blank[-8mm]},
    textcommand=\\my$app,
    paragraph=yes,
-   rule=off]
+   rule=off,
+interlinespace=12.25pt]
 
 \\setupnotation[${app}Note]
   [alternative=serried,
@@ -47,7 +49,9 @@ print "
    numbercommand=\\tf\\bf,
    style={\\switchtobodyfont[8.5pt]},
    way=bysection, % bypage does not work properly at the moment
-   width=broad]
+   width=broad,
+   split=tolerant,
+interlinespace=12.25pt]
 "
 }
 }

@@ -9,7 +9,7 @@ use open ":std", ":utf8";
 
 use File::Slurp;
 
-my $tmp1 = read_file("tmp/tmp-1.tex", binmode => ":utf8");
+my $tmp1 = read_file("tmp/" . $ARGV[0] . "_tmp-1.tex", binmode => ":utf8");
 
 $tmp1 =~ s/\x{2192}/{\\ra}/g;
 

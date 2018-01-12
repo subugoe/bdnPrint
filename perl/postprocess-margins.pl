@@ -15,7 +15,7 @@ open(FILE, "<tmp/notes.txt") or die "$!\n";
 my @notes = <FILE>;
 close(FILE);
 
-my $tmp1 = read_file("tmp/tmp-1.tex");
+my $tmp1 = read_file("tmp/" . $ARGV[0] . "_tmp-1.tex");
 
 
 for (my $i = 0; $i < @idFile; $i++) {
@@ -55,7 +55,7 @@ for (my $i = 0; $i < @idFile; $i++) {
 			$tmp1 =~ s/\[([0-9XIV]*?)\]/!$1!/g;
 			$pb =~ s/\[([0-9XIV]*?)\]/!$1!/g;
 
-			# when several pagebreaks in margin belong to the same marker im main text, set comma			
+			# when several pagebreaks in margin belong to the same marker in main text, set comma			
 			if($tmp1 =~ m/\\margin\{[\w]{8}\}\{pb\}\{\}\{\\hbox\{\}\}\{$pb\}/) {
 				my ($edition) = $pb =~ /([\w])/;
 				my ($page) = $pb =~ /([!]{0,1}[0-9XVI]{1,4}[!]{0,1})/;

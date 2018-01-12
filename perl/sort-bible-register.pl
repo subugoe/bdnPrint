@@ -10,7 +10,7 @@ use open ":std", ":utf8";
 use File::Slurp;
 
 my $head = "";
-my $tail = read_file("tmp/tmp-1.tex", binmode => ":utf8");
+my $tail = read_file("tmp/" . $ARGV[0] . "_tmp-1.tex", binmode => ":utf8");
 my %sortingMap = (
   "Gen"    => "\x{61}",
   "Ex"     => "\x{62}",
@@ -74,21 +74,22 @@ my %sortingMap = (
   "Eph"    => "\x{2A8}",
   "Phil"   => "\x{2AB}",
   "Kol"    => "\x{2AC}",
-  "1Thess" => "‎\x{E02}",
-  "2Thess" => "\x{E03}‎",
-  "1Tim"   => "\x{E04}",
-  "2Tim"   => "\x{E05}",
-  "Tit"    => "\x{E06}",
-  "Phlm"   => "\x{E07}",
-  "1Petr"  => "\x{E08}",
-  "2Petr"  => "\x{E09}",
-  "1Joh"   => "\x{E0A}",
-  "2Joh"   => "\x{E0B}",
-  "3Joh"   => "\x{E0C}",
-  "Hebr"   => "\x{E0D}",
-  "Jak"    => "\x{E0E}",
-  "Jud"    => "\x{E0F}",
-  "Offb"   => "\x{E11}"
+  
+  "1Thess" => "‎\x{E01}",
+  "2Thess" => "\x{E45}‎",
+  "1Tim"   => "\x{E46}",
+  "2Tim"   => "\x{E47}",
+  "Tit"    => "\x{E48}",
+  "Phlm"   => "\x{E49}",
+  "1Petr"  => "\x{E4A}",
+  "2Petr"  => "\x{E4B}",
+  "1Joh"   => "\x{E4C}",
+  "2Joh"   => "\x{E4D}",
+  "3Joh"   => "\x{E4E}",
+  "Hebr"   => "\x{E4F}",
+  "Jak"    => "\x{E50}",
+  "Jud"    => "\x{E51}",
+  "Offb"   => "\x{E52}"
 );
 
 

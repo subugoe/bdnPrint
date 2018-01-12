@@ -8,7 +8,7 @@ use warnings;
 use File::Slurp;
 use List::MoreUtils qw(uniq);
 
-my $tmp1 = read_file("tmp/tmp-1.tex");
+my $tmp1 = read_file("tmp/" . $ARGV[0] . "_tmp-1.tex");
 
 while ($tmp1 =~ /(\\high\{\/[a-i]{0,8}\}[^~ ]*\\high\{\/[a-i]{0,8}\})/g) {
   my $search = $1;

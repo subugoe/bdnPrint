@@ -9,7 +9,7 @@ use File::Slurp;
 use String::Random;
 
 my $head = "";
-my $tail = read_file("tmp/tmp-1.tex");
+my $tail = read_file("tmp/" . $ARGV[0] . "_tmp-1.tex");
 my $random = new String::Random;
 
 my @idArray = ();
@@ -29,6 +29,7 @@ while ($tail =~ /\\margin\{}/) {
   my $id = generateID();
 
   $move =~ s/(.*?\\margin)\{\}.*/$1\{$id\}/;
+  #$move =~ s/(.*?\\margin)\{\}.*/$1\{\}/;
 
   $tail = substr($tail, length($move) - 8);
   $head = $head . $move;
