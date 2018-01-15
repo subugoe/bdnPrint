@@ -551,6 +551,7 @@
             <xsl:when test="@type = 'ptl' or (@type = 'ppl' and @context = 'rdg')">
                 <xsl:if test="@mark = 'open'">
                     <xsl:text>\margin{}{plOpen}{</xsl:text>
+                    <xsl:value-of select="@ref"/>
                     <xsl:text>}{\tfx\high{</xsl:text>
                     <xsl:value-of select="$wit"/>
                     <xsl:text>}}{</xsl:text>
@@ -559,6 +560,7 @@
                 </xsl:if>
                 <xsl:if test="@mark = 'close'">
                     <xsl:text>\margin{}{plClose}{</xsl:text>
+                    <xsl:value-of select="@ref"/>
                     <xsl:text>}{\tfx\high{</xsl:text>
                     <xsl:value-of select="$wit"/>
                     <xsl:text>}}{</xsl:text>
@@ -569,6 +571,7 @@
             <xsl:when test="@type = 'om'">
                 <xsl:if test="@mark = 'open'">
                     <xsl:text>\margin{}{omOpen}{</xsl:text>
+                    <xsl:value-of select="@ref"/>
                     <xsl:text>}{\tfx\high{/</xsl:text>
                     <xsl:value-of select="$wit"/>
                     <xsl:text>}}{/</xsl:text>
@@ -577,6 +580,7 @@
                 </xsl:if>
                 <xsl:if test="@mark = 'close'">
                     <xsl:text>\margin{}{omClose}{</xsl:text>
+                    <xsl:value-of select="@ref"/>
                     <xsl:text>}{\tfx\high{</xsl:text>
                     <xsl:value-of select="$wit"/>
                     <xsl:text>\textbackslash}}{</xsl:text>

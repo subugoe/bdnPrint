@@ -56,7 +56,7 @@
                 and not(lem/child::*[1][self::app[@type = 'structural-variance']]/lem[child::*[1][self::note]])">
             <xsl:for-each select="rdg[@type = 'om']">
                 <xsl:text>\margin{}{omOpen}{</xsl:text>
-                <!--<xsl:value-of select="generate-id()"/>-->
+                <xsl:value-of select="generate-id()"/>
                 <xsl:text>}{\tfx\high{/</xsl:text>
                 <xsl:value-of select="replace(@wit, '[#\s]', '')"/>
                 <xsl:text>}}{/</xsl:text>
@@ -92,7 +92,7 @@
                 and not(lem/child::*[last()][self::app][rdg[@type = 'var-structure'] and lem/child::*[last()][self::note]])">
             <xsl:for-each select="rdg[@type = 'om']">
                 <xsl:text>\margin{}{omClose}{</xsl:text>
-                <!--<xsl:value-of select="generate-id()"/>-->
+                <xsl:value-of select="generate-id()"/>
                 <xsl:text>}{\tfx\high{</xsl:text>
                 <xsl:value-of select="replace(@wit, '[#\s]', '')"/>
                 <xsl:text>\textbackslash}}{</xsl:text>
@@ -244,7 +244,7 @@
                     <xsl:for-each
                         select="ancestor::lem[1]/following-sibling::rdg[@type = 'om']">
                         <xsl:text>\margin{}{omClose}{</xsl:text>
-                        <!--<xsl:value-of select="generate-id()"/>-->
+                        <xsl:value-of select="generate-id()"/>
                         <xsl:text>}{ \tfx\high{</xsl:text>
                         <xsl:value-of select="replace(@wit, '[#\s]', '')"/>
                         <xsl:text>\textbackslash}}{</xsl:text>
@@ -262,7 +262,7 @@
                     <xsl:for-each
                         select="ancestor::lem[2]/following-sibling::rdg[@type = 'om']">
                         <xsl:text>\margin{}{omClose}{</xsl:text>
-                        <!--<xsl:value-of select="generate-id()"/>-->
+                        <xsl:value-of select="generate-id()"/>
                         <xsl:text>}{ \tfx\high{</xsl:text>
                         <xsl:value-of select="replace(@wit, '[#\s]', '')"/>
                         <xsl:text>\textbackslash}}{</xsl:text>
@@ -710,7 +710,7 @@
                         <!-- check -->
                         <xsl:for-each select="ancestor::rdg[@type = 'om']">
                             <xsl:text>\margin{}{omOpen}{</xsl:text>
-                            <!--<xsl:value-of select="generate-id()"/>-->
+                            <xsl:value-of select="generate-id()"/>
                             <xsl:text>}{\tfx\high{/</xsl:text>
                             <xsl:value-of select="replace(@wit, '[#\s]', '')"/>
                             <xsl:text>}}{/</xsl:text>
@@ -741,7 +741,7 @@
                             <xsl:for-each
                                 select="ancestor::lem/following-sibling::rdg[@type = 'om']">
                                 <xsl:text>\margin{}{omOpen}{</xsl:text>
-                                <!--<xsl:value-of select="generate-id()"/>-->
+                                <xsl:value-of select="generate-id()"/>
                                 <xsl:text>}{\tfx\high{/</xsl:text>
                                 <xsl:text/>
                                 <xsl:value-of
@@ -883,7 +883,7 @@
                             and ancestor::lem[1]/following-sibling::rdg[@type = 'om']">
                         <xsl:text>~</xsl:text>
                         <xsl:text>\margin{}{omClose}{</xsl:text>
-                        <!--<xsl:value-of select="generate-id()"/>-->
+                        <xsl:value-of select="generate-id()"/>
                         <xsl:text>}{\tfx\high{</xsl:text>
                         <xsl:value-of
                             select="replace(ancestor::lem/following-sibling::rdg[@type = 'om']/@wit, '[#\s]', '')"/>
@@ -1201,7 +1201,7 @@
                         and ancestor::app[1] = ancestor::lem[2]/child::*[1]
                         and ancestor::lem[2]/following-sibling::rdg[@type = 'om']">
                     <xsl:text>\margin{}{omOpen}{</xsl:text>
-                    <!--<xsl:value-of select="generate-id()"/>-->
+                    <xsl:value-of select="generate-id()"/>
                     <xsl:text>}{\tfx\high{/</xsl:text>
                     <xsl:value-of
                         select="replace(ancestor::lem[2]/following-sibling::rdg[@type = 'om']/@wit, '[#\s]', '')"/>
@@ -1256,7 +1256,7 @@
                         or descendant::hi[@rend = 'right-aligned'][not(following-sibling::*)]
                         or ancestor::app[1]/following-sibling::*)">
                     <xsl:text>\margin{}{omClose}{</xsl:text>
-                    <!--<xsl:value-of select="generate-id()"/>-->
+                    <xsl:value-of select="generate-id()"/>
                     <xsl:text>}{\tfx\high{</xsl:text>
                     <xsl:value-of
                         select="replace(ancestor::div[1]/parent::lem/following-sibling::rdg[@type = 'om']/@wit, '[#\s]', '')"/>
@@ -1316,7 +1316,7 @@
                 and parent::lem/child::*[1] = .
                 and not(child::*[1][self::list])">
             <xsl:text>\margin{}{omOpen}{</xsl:text>
-            <!--<xsl:value-of select="generate-id()"/>-->
+            <xsl:value-of select="generate-id()"/>
             <xsl:text>}{\tfx\high{/</xsl:text>
             <xsl:value-of select="$omWit"/>
             <xsl:text>}}{/</xsl:text>
@@ -1334,7 +1334,7 @@
                 and not(child::*[last()][self::list]
                 or descendant::hi[@rend = 'right-aligned'][not(following-sibling::* or following-sibling::node()[matches(., '\w')])])">
             <xsl:text>\margin{}{omClose}{</xsl:text>
-            <!--<xsl:value-of select="generate-id()"/>-->
+            <xsl:value-of select="generate-id()"/>
             <xsl:text>}{\tfx\high{</xsl:text>
             <xsl:value-of select="$omWit"/>
             <xsl:text>\textbackslash}}{</xsl:text>
@@ -1408,7 +1408,7 @@
             test="
                 ancestor::lem[2][following-sibling::rdg[@type = 'om']]/(descendant::node()[matches(., '\w')])[1] = ./ancestor::*">
             <xsl:text>\margin{}{omOpen}{</xsl:text>
-            <!--<xsl:value-of select="generate-id()"/>-->
+            <xsl:value-of select="generate-id()"/>
             <xsl:text>}{\tfx\high{/</xsl:text>
             <xsl:for-each
                 select="ancestor::lem[2]/following-sibling::rdg[@type = 'om']">
@@ -1427,7 +1427,7 @@
                 (parent::lem/following-sibling::rdg[@type = 'om']
                 and parent::lem/child::*[1] = .)">
             <xsl:text>\margin{}{omOpen}{</xsl:text>
-            <!--<xsl:value-of select="generate-id()"/>-->
+            <xsl:value-of select="generate-id()"/>
             <xsl:text>}{\tfx\high{/</xsl:text>
             <xsl:for-each
                 select="parent::lem/following-sibling::rdg[@type = 'om']">
@@ -1493,7 +1493,7 @@
                 <xsl:variable name="omWit"
                     select="preceding-sibling::*[1][self::app]/child::rdg[@type = 'om']/@wit"/>
                 <xsl:text>\margin{}{omClose}{</xsl:text>
-                <!--<xsl:value-of select="generate-id()"/>-->
+                <xsl:value-of select="generate-id()"/>
                 <xsl:text>}{\tfx\high{</xsl:text>
                 <xsl:value-of select="replace($omWit, '#', '')"/>
                 <xsl:text>\textbackslash}}{</xsl:text>
@@ -1514,7 +1514,7 @@
             <xsl:variable name="omWit"
                 select="parent::lem[1]/following-sibling::rdg[@type = 'om']/@wit"/>
             <xsl:text>\margin{}{omClose}{</xsl:text>
-            <!--<xsl:value-of select="generate-id()"/>-->
+            <xsl:value-of select="generate-id()"/>
             <xsl:text>}{\tfx\high{</xsl:text>
             <xsl:value-of select="replace($omWit, '#', '')"/>
             <xsl:text>\textbackslash}}{</xsl:text>
@@ -1531,7 +1531,7 @@
             <xsl:for-each
                 select="parent::div/parent::lem/following-sibling::rdg[@type = 'om']">
                 <xsl:text>\margin{}{omClose}{</xsl:text>
-                <!--<xsl:value-of select="generate-id()"/>-->
+                <xsl:value-of select="generate-id()"/>
                 <xsl:text>}{\tfx\high{</xsl:text>
                 <xsl:value-of select="replace(@wit, '#', '')"/>
                 <xsl:text>\textbackslash}}{</xsl:text>
@@ -1946,7 +1946,7 @@
                     <xsl:for-each
                         select="ancestor::note/parent::lem/following-sibling::rdg[@type = 'om']">
                         <xsl:text>\margin{}{omOpen}{</xsl:text>
-                        <!--<xsl:value-of select="generate-id()"/>-->
+                        <xsl:value-of select="generate-id()"/>
                         <xsl:text>}{\tfx\high{/</xsl:text>
                         <xsl:value-of select="replace(@wit, '[#\s]', '')"/>
                         <xsl:text>}}{/</xsl:text>
@@ -1962,7 +1962,7 @@
                     <xsl:for-each
                         select="parent::list/parent::lem/following-sibling::rdg[@type = 'om']">
                         <xsl:text>\margin{}{omOpen}{</xsl:text>
-                        <!--<xsl:value-of select="generate-id()"/>-->
+                        <xsl:value-of select="generate-id()"/>
                         <xsl:text>}{\tfx\high{/</xsl:text>
                         <xsl:value-of select="replace(@wit, '[#\s]', '')"/>
                         <xsl:text>}}{/</xsl:text>
@@ -2014,7 +2014,7 @@
                     <xsl:for-each
                         select="ancestor::lem[1]/following-sibling::rdg[@type = 'om']">
                         <xsl:text>\margin{}{omClose}{</xsl:text>
-                        <!--<xsl:value-of select="generate-id()"/>-->
+                        <xsl:value-of select="generate-id()"/>
                         <xsl:text>}{\tfx\high{</xsl:text>
                         <xsl:value-of select="replace(@wit, '[#\s]', '')"/>
                         <xsl:text>\textbackslash}}{</xsl:text>
@@ -2051,7 +2051,7 @@
                     <xsl:for-each
                         select="ancestor::rdg[@type = 'ptl']/ancestor::lem[1][following-sibling::rdg[@type = 'var-structure']]/ancestor::lem[1]/following-sibling::rdg[@type = 'om']">
                         <xsl:text>\margin{}{omClose}{</xsl:text>
-                        <!--<xsl:value-of select="generate-id()"/>-->
+                        <xsl:value-of select="generate-id()"/>
                         <xsl:text>}{\tfx\high{</xsl:text>
                         <xsl:value-of select="replace(@wit, '[#\s]', '')"/>
                         <xsl:text>\textbackslash}}{</xsl:text>
@@ -2084,7 +2084,7 @@
                     <xsl:for-each
                         select="ancestor::div[@type = 'contents']/ancestor::lem/following-sibling::rdg[@type = 'om']">
                         <xsl:text>\margin{}{omClose}{</xsl:text>
-                        <!--<xsl:value-of select="generate-id()"/>-->
+                        <xsl:value-of select="generate-id()"/>
                         <xsl:text>}{\tfx\high{</xsl:text>
                         <xsl:value-of select="replace(@wit, '[#\s]', '')"/>
                         <xsl:text>\textbackslash}}{</xsl:text>
@@ -2124,7 +2124,7 @@
                     <xsl:for-each
                         select="ancestor::div[@type = 'section'][1]/parent::lem/following-sibling::rdg[@type = 'om']">
                         <xsl:text>\margin{}{omClose}{</xsl:text>
-                        <!--<xsl:value-of select="generate-id()"/>-->
+                        <xsl:value-of select="generate-id()"/>
                         <xsl:text>}{\tfx\high{</xsl:text>
                         <xsl:value-of select="replace(@wit, '[#\s]', '')"/>
                         <xsl:text>\textbackslash}}{</xsl:text>
