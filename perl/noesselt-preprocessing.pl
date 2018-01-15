@@ -63,7 +63,6 @@ $tail =~ s/cNote\{bei\}\\bibelIndex/cNote\{bei\} \\bibelIndex/g;
 $tail =~ s/Kol\. 3, 5\./Kol\. 3, 5\. /g;
 $tail =~ s/\\bibelIndex\{R(..)m\+\}\\bibelIndex\{R(..)m\+6,6\}/ \\bibelIndex\{R$1m\+\}\\bibelIndex\{R$2m\+6,6\}/g;
 
-
 $tail =~ s/dazu eignete.\\par \\starteffect\[hidden\]\. \\stopeffect \\hspace\[p\]/dazu eignete.\\par /g;
 $tail =~ s/zu lassen\?\\par \\starteffect\[hidden\]\. \\stopeffect \\hspace\[p\]/zu lassen\?\\par /g;
 $tail =~ s/schuldig.\\par \\starteffect\[hidden\]\. \\stopeffect \\hspace\[p\]/schuldig.\\par /g;
@@ -88,11 +87,13 @@ $tail =~ s/\\margin\{\}\{omClose\}\{\}\{\\tfx\\high\{a\\textbackslash\}\}\{a\\te
 $tail =~ s/derselben\\margin\{.{8}\}\{omClose\}\{.{8}\}\{\\tfx\\high\{c\\textbackslash\}\}\{c\\textbackslash\} besonders studieren/derselben\\margin\{\}\{omClose\}\{\}\{\\tfx\\high\{c\\textbackslash\}\}\{c\\textbackslash\} besonders studieren/g;
 $tail =~ s/Halle 1804\.\\margin\{\}\{plClose\}\{\}\{\\tfx\\high\{c\}\}\{c\}\~\{\\tfx\\high\{a\\textbackslash\}\}\\stopitemize \\stoprdg\}\} \\stopnarrow\} \\blank\[2pt\] \\blank\[2pt\]\{\\tfx\\high\{a\\textbackslash\}\}/Halle 1804\.\\margin\{\}\{plClose\}\{\}\{\\tfx\\high\{c\}\}\{c\}\~\{\\tfx\\high\{a\\textbackslash\}\}\\stopitemize \\stoprdg\}\} \\stopnarrow\} \\blank\[2pt\] \\blank\[2pt\]/g;
 $tail =~ s/ndern\. \\crlf \\rightaligned\{A\. d\. H\.\\margin\{\}\{plClose\}\{\}\{\\tfx\\high\{c\}\}\{c\} \{\\tfx\\high\{a\\textbackslash\}\}\}\\stopnarrow\}\\blank\[2pt\]\{\\tfx\\high\{a\\textbackslash\}\} /ndern\. \\crlf \\rightaligned\{A\. d\. H\.\\margin\{\}\{plClose\}\{\}\{\\tfx\\high\{c\}\}\{c\} \{\\tfx\\high\{a\\textbackslash\}\}\}\\stopnarrow\}\\blank\[2pt\] /g;
+
 #$tail =~ s/sicht nehmen\. \\crlf \\rightaligned\{A\. d\. H\.\\margin\{\}\{plClose\}\{\}\{\\tfx\\high\{c\}\}\{c\} \{\\tfx\\high\{a\\textbackslash\}\}\}\\stopnarrow\}\\blank\[2pt\]\{\\tfx\\high\{a\\textbackslash\}\}/sicht nehmen\. \\crlf \\rightaligned\{A\. d\. H\.\\margin\{\}\{plClose\}\{\}\{\\tfx\\high\{c\}\}\{c\} \{\\tfx\\high\{a\\textbackslash\}\}\}\\stopnarrow\}\\blank\[2pt\]/g;
 $tail =~ s/\\margin\{\}\{omClose\}\{\}\{\\tfx\\high\{a\\textbackslash\}\}\{a\\textbackslash\}\\subject\[241243\.\]/\\subject\[241243\.\]/g;
 $tail =~ s/\\margin\{\}\{omClose\}\{\}\{\\tfx\\high\{c\\textbackslash\}\}\{c\\textbackslash\}\\subject\[ 261263260/\\subject\[ 261263260/g;
 $tail =~ s/\\margin\{\}\{omOpen\}\{\}\{\\tfx\\high\{\/a\}\}\{\/a}\\writetolist\[section\]\{\}\{Vierter /\\writetolist\[section\]\{\}\{Vierter /g;
 $tail =~ s/ne Wissenschaften\.\}\}\\blank\[2pt\]\\margin\{\}\{omClose\}\{\}\{\\tfx\\high\{a\\textbackslash\}\}\{a\\textbackslash\}/ne Wissenschaften\.\\margin\{\}\{omClose\}\{\}\{\\tfx\\high\{a\\textbackslash\}\}\{a\\textbackslash\}\}\}\\blank\[2pt\]/g;
+
 #$tail =~ s/\{\[\\\}\]\}\\margin\{\}\{plClose\}\{\}\{\\tfx\\high\{c\}\}\{c\}\}\\par /\{\[\\\}\]\}\}\\margin\{\}\{plClose\}\{\}\{\\tfx\\high\{c\}\}\{c\}/g;
 $tail =~ s/A\. d\. H\.\\margin\{\}\{plClose\}\{\}\{\\tfx\\high\{c\}\}\{c\} \{\\tfx\\high\{a\\textbackslash\}\}\}/A\. d\. H\.\\margin\{\}\{plClose\}\{\}\{\\tfx\\high\{c\}\}\{c\}\}\~\{\\tfx\\high\{a\\textbackslash\}\}/g;
 #$tail =~ s/nne\.\\blank\[2pt\]\\stoprdg\}\}\\subject\[§\. 211214\.\]/nne\.\\margin\{\}\{plClose\}\{\}\{\\tfx\\high\{a\}\}\{a\}\\stoprdg\}\}\\subject\[§\. 211214\.\]/g;
@@ -110,6 +111,7 @@ $tail =~ s/\\rightaligned\{A\. d\. H\.\\margin\{\}\{plClose\}\{\}\{\\tfx\\high\{
 $tail =~ s/der Vernunft hinneigen mag\./der Vernunft hinneigen mag\.\\margin\{\}\{plClose\}\{\}\{\\tfx\\high\{c\}\}\{c\}/g;
 $tail =~ s/\\rightaligned\{A\. d\. H\.\\margin\{\}\{plClose\}\{\}\{\\tfx\\high\{c\}\}\{c\} \{\\tfx\\high\{a\\textbackslash\}\}\}\\stopnarrow\}\\blank\[2pt\]\{\\tfx\\high\{a\\textbackslash\}\}/\\rightaligned\{A\. d\. H\.\\margin\{\}\{plClose\}\{\}\{\\tfx\\high\{c\}\}\{c\} \{\\tfx\\high\{a\\textbackslash\}\}\}\\stopnarrow\}\\blank\[2pt\]/g;
 $tail =~ s/nne\.\\blank\[2pt\]\\stoprdg\}\}/nne\.\\margin\{\}\{plClose\}\{\}\{\\tfx\\high\{a\}\}\{a\}\\blank\[2pt\]\\stoprdg\}\}/g;
+
 
 
 # paragraphs
@@ -136,12 +138,14 @@ $tail =~ s/Gleichwohl hat man/\\starteffect\[hidden\]\. \\stopeffect \\hspace\[p
 $tail =~ s/Man that/\\starteffect\[hidden\]\. \\stopeffect \\hspace\[p\]Man that/g;
 $tail =~ s/ssig seyn\.\\par/ssig seyn\.\\par\\starteffect\[hidden\]\. \\stopeffect \\hspace\[p\]Man that/g;
 $tail =~ s/des Werks zusammen\. /des Werks zusammen\. \\blank\[2pt\]/g;
+
 $tail =~ s/Ansichten des Verfassers des Werks zusammen\. \\blank\[2pt\]/Ansichten des Verfassers des Werks zusammen\. \\blank\[4pt\]/g;
 $tail =~ s/ndet\.\\par \\blank\[2pt\] \{\\switchtobodyfont\[8\.5pt\] \\startnarrow \{\\dvl\}/ndet\. \\noindentation \\blank\[2pt\] \{\\switchtobodyfont\[8\.5pt\] \\startnarrow \{\\dvl\}/g;
 $tail =~ s/Isidorus\. Halle 1778\.\\sym\{\}/Isidorus\. Halle 1778\.\\\\\\sym\{\}/g;
 $tail =~ s/\{\\tfx\\high\{\/ac\}\}\s{0,1}\\blank\[60pt\]/\\blank\[60pt\]\{\\tfx\\high\{\/ac\}\}/g;
 $tail =~ s/\\margin\{\}\{plOpen\}\{\}\{\\tfx\\high\{([a-z]{1})\}\}\{([a-z]{1})\}\s{0,}\\blank\[60pt\]/\\blank\[60pt\]\\margin\{\}\{plOpen\}\{\}\{\\tfx\\high\{$1\}\}\{$2\}/g;
 $tail =~ s/\{\\tfx\\high\{([a-z]{1})\}\}\{([a-z]{1})\}\s{0,}\\blank\[60pt\]/\\blank\[60pt\]\{\\tfx\\high\{$1\}\}\{$2\}/g;
+
 
 
 # errors dealing with the commentary + margins
@@ -178,6 +182,7 @@ $tail =~ s/ V\. des neuen Testaments waren/V\. des neuen Testaments waren/g;
 
 $tail =~ s/\\margin\{\}\{e\}\{\}\{\\hbox\{\}\}\{E\}\\pagereference\[d1e8437\]//g;
 $tail =~ s/Aber das \{\\tfx\\high\{\/c\}\}/Aber\\margin\{\}\{e\}\{\}\{\\hbox\{\}\}\{E\}\\pagereference\[d1e8437\] das \{\\tfx\\high\{\/c\}\}/g;
+
 
 
 

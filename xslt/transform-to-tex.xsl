@@ -56,7 +56,7 @@
                 and not(lem/child::*[1][self::app[@type = 'structural-variance']]/lem[child::*[1][self::note]])">
             <xsl:for-each select="rdg[@type = 'om']">
                 <xsl:text>\margin{}{omOpen}{</xsl:text>
-                <xsl:value-of select="generate-id()"/>
+                <!--<xsl:value-of select="generate-id()"/>-->
                 <xsl:text>}{\tfx\high{/</xsl:text>
                 <xsl:value-of select="replace(@wit, '[#\s]', '')"/>
                 <xsl:text>}}{/</xsl:text>
@@ -92,7 +92,7 @@
                 and not(lem/child::*[last()][self::app][rdg[@type = 'var-structure'] and lem/child::*[last()][self::note]])">
             <xsl:for-each select="rdg[@type = 'om']">
                 <xsl:text>\margin{}{omClose}{</xsl:text>
-                <xsl:value-of select="generate-id()"/>
+                <!--<xsl:value-of select="generate-id()"/>-->
                 <xsl:text>}{\tfx\high{</xsl:text>
                 <xsl:value-of select="replace(@wit, '[#\s]', '')"/>
                 <xsl:text>\textbackslash}}{</xsl:text>
@@ -137,7 +137,6 @@
         </xsl:if>
 
         <xsl:if test="rdg[@type = 'ppl' or @type = 'ptl']">
-
             <xsl:for-each select="rdg[@type = 'ppl' or @type = 'ptl']">
                 <xsl:if
                     test="parent::app/child::rdg[@type = 'ppl' or @type = 'ptl'][1] = .">
@@ -151,7 +150,6 @@
                         <xsl:text>\blank[2pt]</xsl:text>
                     </xsl:otherwise>
                 </xsl:choose>-->
-
                 <!-- <xsl:text>
                     \start
                     \switchtobodyfont[8.5pt]</xsl:text>-->
@@ -179,7 +177,6 @@
                         </xsl:if>
                     </xsl:otherwise>
                 </xsl:choose>
-
 
                 <!--<xsl:if test="not(child::*[1][self::p or self::note[child::*[1][self::p]]])">
                     <xsl:text>\noindentation</xsl:text>
@@ -244,7 +241,7 @@
                     <xsl:for-each
                         select="ancestor::lem[1]/following-sibling::rdg[@type = 'om']">
                         <xsl:text>\margin{}{omClose}{</xsl:text>
-                        <xsl:value-of select="generate-id()"/>
+                        <!--<xsl:value-of select="generate-id()"/>-->
                         <xsl:text>}{ \tfx\high{</xsl:text>
                         <xsl:value-of select="replace(@wit, '[#\s]', '')"/>
                         <xsl:text>\textbackslash}}{</xsl:text>
@@ -262,7 +259,7 @@
                     <xsl:for-each
                         select="ancestor::lem[2]/following-sibling::rdg[@type = 'om']">
                         <xsl:text>\margin{}{omClose}{</xsl:text>
-                        <xsl:value-of select="generate-id()"/>
+                        <!--<xsl:value-of select="generate-id()"/>-->
                         <xsl:text>}{ \tfx\high{</xsl:text>
                         <xsl:value-of select="replace(@wit, '[#\s]', '')"/>
                         <xsl:text>\textbackslash}}{</xsl:text>
@@ -681,7 +678,6 @@
                         <xsl:text>\subject[</xsl:text>
                     </xsl:otherwise>
                 </xsl:choose>
-
                 <xsl:value-of select="."/>
                 <xsl:text>]{</xsl:text>
 
@@ -710,7 +706,7 @@
                         <!-- check -->
                         <xsl:for-each select="ancestor::rdg[@type = 'om']">
                             <xsl:text>\margin{}{omOpen}{</xsl:text>
-                            <xsl:value-of select="generate-id()"/>
+                            <!--<xsl:value-of select="generate-id()"/>-->
                             <xsl:text>}{\tfx\high{/</xsl:text>
                             <xsl:value-of select="replace(@wit, '[#\s]', '')"/>
                             <xsl:text>}}{/</xsl:text>
@@ -720,7 +716,6 @@
                         <xsl:text>}</xsl:text>
                         <xsl:text>{\switchtobodyfont[8pt]</xsl:text>
                     </xsl:when>
-
                     <xsl:when
                         test="ancestor::lem and ancestor::lem/following-sibling::rdg[@type = 'om' or @type = 'ppl'] and ancestor::lem/descendant::head[1] = .">
                         <!--<xsl:text>{\switchtobodyfont[9.5pt]</xsl:text>-->
@@ -741,7 +736,7 @@
                             <xsl:for-each
                                 select="ancestor::lem/following-sibling::rdg[@type = 'om']">
                                 <xsl:text>\margin{}{omOpen}{</xsl:text>
-                                <xsl:value-of select="generate-id()"/>
+                                <!--<xsl:value-of select="generate-id()"/>-->
                                 <xsl:text>}{\tfx\high{/</xsl:text>
                                 <xsl:text/>
                                 <xsl:value-of
@@ -883,7 +878,7 @@
                             and ancestor::lem[1]/following-sibling::rdg[@type = 'om']">
                         <xsl:text>~</xsl:text>
                         <xsl:text>\margin{}{omClose}{</xsl:text>
-                        <xsl:value-of select="generate-id()"/>
+                        <!--<xsl:value-of select="generate-id()"/>-->
                         <xsl:text>}{\tfx\high{</xsl:text>
                         <xsl:value-of
                             select="replace(ancestor::lem/following-sibling::rdg[@type = 'om']/@wit, '[#\s]', '')"/>
@@ -968,7 +963,6 @@
                 <xsl:apply-templates/>
                 <xsl:text>}}</xsl:text>
             </xsl:when>
-
             <xsl:when test="@rend = 'overline'">
                 <xsl:text>\overbar{</xsl:text>
                 <xsl:apply-templates/>
@@ -1201,7 +1195,7 @@
                         and ancestor::app[1] = ancestor::lem[2]/child::*[1]
                         and ancestor::lem[2]/following-sibling::rdg[@type = 'om']">
                     <xsl:text>\margin{}{omOpen}{</xsl:text>
-                    <xsl:value-of select="generate-id()"/>
+                    <!--<xsl:value-of select="generate-id()"/>-->
                     <xsl:text>}{\tfx\high{/</xsl:text>
                     <xsl:value-of
                         select="replace(ancestor::lem[2]/following-sibling::rdg[@type = 'om']/@wit, '[#\s]', '')"/>
@@ -1256,7 +1250,7 @@
                         or descendant::hi[@rend = 'right-aligned'][not(following-sibling::*)]
                         or ancestor::app[1]/following-sibling::*)">
                     <xsl:text>\margin{}{omClose}{</xsl:text>
-                    <xsl:value-of select="generate-id()"/>
+                    <!--<xsl:value-of select="generate-id()"/>-->
                     <xsl:text>}{\tfx\high{</xsl:text>
                     <xsl:value-of
                         select="replace(ancestor::div[1]/parent::lem/following-sibling::rdg[@type = 'om']/@wit, '[#\s]', '')"/>
@@ -1275,7 +1269,6 @@
                 \blank[2pt]
                 
                 </xsl:text>
-
                 <!--<xsl:text>
                          \noindent
                     </xsl:text>-->
@@ -1316,7 +1309,7 @@
                 and parent::lem/child::*[1] = .
                 and not(child::*[1][self::list])">
             <xsl:text>\margin{}{omOpen}{</xsl:text>
-            <xsl:value-of select="generate-id()"/>
+            <!--<xsl:value-of select="generate-id()"/>-->
             <xsl:text>}{\tfx\high{/</xsl:text>
             <xsl:value-of select="$omWit"/>
             <xsl:text>}}{/</xsl:text>
@@ -1334,7 +1327,7 @@
                 and not(child::*[last()][self::list]
                 or descendant::hi[@rend = 'right-aligned'][not(following-sibling::* or following-sibling::node()[matches(., '\w')])])">
             <xsl:text>\margin{}{omClose}{</xsl:text>
-            <xsl:value-of select="generate-id()"/>
+            <!--<xsl:value-of select="generate-id()"/>-->
             <xsl:text>}{\tfx\high{</xsl:text>
             <xsl:value-of select="$omWit"/>
             <xsl:text>\textbackslash}}{</xsl:text>
@@ -1358,6 +1351,7 @@
             \stopnarrow}
         </xsl:text>
         <!--  \blank[2pt]-->
+
         <!--<xsl:text>
             \noindent
         </xsl:text>-->
@@ -1369,7 +1363,7 @@
     </xsl:template>-->
 
     <xsl:template match="note[@type = 'editorial' and @place = 'bottom']">
-        <xsl:text>\editor{</xsl:text>f <xsl:apply-templates/>
+        <xsl:text>\editor{</xsl:text> <xsl:apply-templates/>
         <xsl:text>}</xsl:text>
     </xsl:template>
 
@@ -1408,7 +1402,7 @@
             test="
                 ancestor::lem[2][following-sibling::rdg[@type = 'om']]/(descendant::node()[matches(., '\w')])[1] = ./ancestor::*">
             <xsl:text>\margin{}{omOpen}{</xsl:text>
-            <xsl:value-of select="generate-id()"/>
+            <!--<xsl:value-of select="generate-id()"/>-->
             <xsl:text>}{\tfx\high{/</xsl:text>
             <xsl:for-each
                 select="ancestor::lem[2]/following-sibling::rdg[@type = 'om']">
@@ -1427,7 +1421,7 @@
                 (parent::lem/following-sibling::rdg[@type = 'om']
                 and parent::lem/child::*[1] = .)">
             <xsl:text>\margin{}{omOpen}{</xsl:text>
-            <xsl:value-of select="generate-id()"/>
+            <!--<xsl:value-of select="generate-id()"/>-->
             <xsl:text>}{\tfx\high{/</xsl:text>
             <xsl:for-each
                 select="parent::lem/following-sibling::rdg[@type = 'om']">
@@ -1493,7 +1487,7 @@
                 <xsl:variable name="omWit"
                     select="preceding-sibling::*[1][self::app]/child::rdg[@type = 'om']/@wit"/>
                 <xsl:text>\margin{}{omClose}{</xsl:text>
-                <xsl:value-of select="generate-id()"/>
+                <!--<xsl:value-of select="generate-id()"/>-->
                 <xsl:text>}{\tfx\high{</xsl:text>
                 <xsl:value-of select="replace($omWit, '#', '')"/>
                 <xsl:text>\textbackslash}}{</xsl:text>
@@ -1514,7 +1508,7 @@
             <xsl:variable name="omWit"
                 select="parent::lem[1]/following-sibling::rdg[@type = 'om']/@wit"/>
             <xsl:text>\margin{}{omClose}{</xsl:text>
-            <xsl:value-of select="generate-id()"/>
+            <!--<xsl:value-of select="generate-id()"/>-->
             <xsl:text>}{\tfx\high{</xsl:text>
             <xsl:value-of select="replace($omWit, '#', '')"/>
             <xsl:text>\textbackslash}}{</xsl:text>
@@ -1531,7 +1525,7 @@
             <xsl:for-each
                 select="parent::div/parent::lem/following-sibling::rdg[@type = 'om']">
                 <xsl:text>\margin{}{omClose}{</xsl:text>
-                <xsl:value-of select="generate-id()"/>
+                <!--<xsl:value-of select="generate-id()"/>-->
                 <xsl:text>}{\tfx\high{</xsl:text>
                 <xsl:value-of select="replace(@wit, '#', '')"/>
                 <xsl:text>\textbackslash}}{</xsl:text>
@@ -1762,6 +1756,7 @@
                     \par
                 </xsl:text>
                 <!--\blank[6pt]-->
+
                 <!--<xsl:text>
                     \noindent
                 </xsl:text>-->
@@ -1865,6 +1860,7 @@
 
             <xsl:when
                 test="(ancestor::div[@type = 'contents'] or descendant::list) and not(ancestor::list)">
+
                 <xsl:if test="not(item[1]/child::*[1][self::list])">
                     <xsl:text>
                     \setupindenting[yes,medium]
@@ -1892,7 +1888,6 @@
                     test="ancestor::div[@type = 'contents']/child::list[1]/child::item/descendant::list[1] = .">
                     <xsl:text>, inmargin</xsl:text>
                 </xsl:if>
-
                 <xsl:text>]</xsl:text>
                 <xsl:apply-templates/>
                 <xsl:text>\stopitemize </xsl:text>
@@ -1902,6 +1897,7 @@
 
     <xsl:template
         match="list[ancestor::div[@subtype = 'print' and @type = 'editorial'] and descendant::label]">
+
         <!--<xsl:text>\starttabulate[|l|p|] </xsl:text>
         <xsl:apply-templates/>
         <xsl:text>\stoptabulate </xsl:text>-->
@@ -1946,7 +1942,7 @@
                     <xsl:for-each
                         select="ancestor::note/parent::lem/following-sibling::rdg[@type = 'om']">
                         <xsl:text>\margin{}{omOpen}{</xsl:text>
-                        <xsl:value-of select="generate-id()"/>
+                        <!--<xsl:value-of select="generate-id()"/>-->
                         <xsl:text>}{\tfx\high{/</xsl:text>
                         <xsl:value-of select="replace(@wit, '[#\s]', '')"/>
                         <xsl:text>}}{/</xsl:text>
@@ -1962,7 +1958,7 @@
                     <xsl:for-each
                         select="parent::list/parent::lem/following-sibling::rdg[@type = 'om']">
                         <xsl:text>\margin{}{omOpen}{</xsl:text>
-                        <xsl:value-of select="generate-id()"/>
+                        <!--<xsl:value-of select="generate-id()"/>-->
                         <xsl:text>}{\tfx\high{/</xsl:text>
                         <xsl:value-of select="replace(@wit, '[#\s]', '')"/>
                         <xsl:text>}}{/</xsl:text>
@@ -2014,7 +2010,7 @@
                     <xsl:for-each
                         select="ancestor::lem[1]/following-sibling::rdg[@type = 'om']">
                         <xsl:text>\margin{}{omClose}{</xsl:text>
-                        <xsl:value-of select="generate-id()"/>
+                        <!--<xsl:value-of select="generate-id()"/>-->
                         <xsl:text>}{\tfx\high{</xsl:text>
                         <xsl:value-of select="replace(@wit, '[#\s]', '')"/>
                         <xsl:text>\textbackslash}}{</xsl:text>
@@ -2051,7 +2047,7 @@
                     <xsl:for-each
                         select="ancestor::rdg[@type = 'ptl']/ancestor::lem[1][following-sibling::rdg[@type = 'var-structure']]/ancestor::lem[1]/following-sibling::rdg[@type = 'om']">
                         <xsl:text>\margin{}{omClose}{</xsl:text>
-                        <xsl:value-of select="generate-id()"/>
+                        <!--<xsl:value-of select="generate-id()"/>-->
                         <xsl:text>}{\tfx\high{</xsl:text>
                         <xsl:value-of select="replace(@wit, '[#\s]', '')"/>
                         <xsl:text>\textbackslash}}{</xsl:text>
@@ -2084,7 +2080,7 @@
                     <xsl:for-each
                         select="ancestor::div[@type = 'contents']/ancestor::lem/following-sibling::rdg[@type = 'om']">
                         <xsl:text>\margin{}{omClose}{</xsl:text>
-                        <xsl:value-of select="generate-id()"/>
+                        <!--<xsl:value-of select="generate-id()"/>-->
                         <xsl:text>}{\tfx\high{</xsl:text>
                         <xsl:value-of select="replace(@wit, '[#\s]', '')"/>
                         <xsl:text>\textbackslash}}{</xsl:text>
@@ -2124,7 +2120,7 @@
                     <xsl:for-each
                         select="ancestor::div[@type = 'section'][1]/parent::lem/following-sibling::rdg[@type = 'om']">
                         <xsl:text>\margin{}{omClose}{</xsl:text>
-                        <xsl:value-of select="generate-id()"/>
+                        <!--<xsl:value-of select="generate-id()"/>-->
                         <xsl:text>}{\tfx\high{</xsl:text>
                         <xsl:value-of select="replace(@wit, '[#\s]', '')"/>
                         <xsl:text>\textbackslash}}{</xsl:text>
@@ -2227,6 +2223,7 @@
         </xsl:if>
 
         <xsl:if test="not(parent::front)">
+
             <!--<xsl:text>\page </xsl:text>-->
             <!--<xsl:text>\noheaderandfooterlines</xsl:text>-->
             <xsl:choose>
@@ -2329,7 +2326,9 @@
                 \setuppagenumber[number=1]</xsl:text>
         </xsl:if>-->
         <xsl:if test="not(ancestor::group)">
-            <xsl:text>\stopfrontmatter </xsl:text>
+            <xsl:text>
+                \page[empty]
+                \stopfrontmatter </xsl:text>
         </xsl:if>
     </xsl:template>
 
@@ -2558,6 +2557,10 @@
             </xsl:otherwise>
         </xsl:choose>
     </xsl:template>
+    
+    <xsl:template match="row[@rend = 'line']">
+        <xsl:text>\HL </xsl:text>
+    </xsl:template>
 
     <xsl:template match="row[@rend = 'line']">
         <xsl:text>\ML </xsl:text>
@@ -2657,6 +2660,7 @@
         </xsl:if>
         <!--<xsl:text>\setupheader[empty]</xsl:text>-->
         <xsl:apply-templates/>
+
     </xsl:template>
 
     <xsl:template match="div[@type = 'chapter']">

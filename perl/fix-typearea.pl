@@ -13,6 +13,8 @@ my $tail = read_file("tmp/" . $ARGV[0] . "_tmp-1.tex");
 
 #$tail =~ s/\x{E2}/--/g;
 
+#$tail =~ s/\x{E2}/--/g;
+
 
 # fixing type area for Noesselt
 $tail =~ s/mathematischen \{\\tfx\\high\{\/c}}Wissenschaften/mathematischen \{\\tfx\\high\{\/c}}Wissen- schaften/g;
