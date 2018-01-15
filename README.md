@@ -10,7 +10,7 @@ Feel free to build on the code in this repository!
 ## Prerequisits
 
 * Bash
-* Saxon
+* Saxon9HE
 * Perl
     * File::Slurp
     * List::MoreUtils
@@ -30,30 +30,28 @@ in `context/header.tex` to an already installed font.
 
 All you should need to do is run 
 
-	compile.sh 
+	compile.sh author
 	
 Nevertheless, here is an overview of the different files in the repository:
 
 `context/`:
 
-* `header.tex`: contains all ConTeXt code, including the LuaTeX code to extract margin notes
-* `footer.tex`: generates indexes and closes the ConTeXt code
+* `header.tex`: contains all ConTeXt code for the layout of the page, including the LuaTeX code to extract margin notes
+* `footer.tex`: closes the ConTeXt code
 
 `perl/`:
 
 * `define-footnotes.pl`: defines footnotes for the different combinations of text witnesses
 * `fix-whitespace.pl`: fixes whitespace problems before headings, after footnote markers and in general
-* `generate-code-points.pl`: generates a list with the unicode code points for decomposed lower case letters
 * `merge-markers.pl`: merges omission markers that are not separated by a whitespace character
 * `postprocess-margins.pl`: assigns IDs to all information that shall appear in a margin note
 * `preprocess-margin.pl`: inserts margin notes in the right places of the ConTeXt code
-* `replace-characters.pl`: replaces some UTF-8 characters with their TeX commands
 * `sort-bible-register.pl`: assigns special sortkeys to referenced bible passages. This script will probably be deprecated soon, since we are testing a different way of encoding biblical references.
 
 `xslt/`:
 
-* `list-mixed.xsl`: lists all TEI/XML elements with mixed content
 * `transform-to-tex.xsl`: generates ConTeXt code from TEI/XML
+* 
 
 
 
