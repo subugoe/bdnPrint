@@ -816,11 +816,6 @@ processMargins = function(head)
             backslash = true
 	    --print("backslash true")
           end
-          
-          if v2["type"] == "omOpen" then 
-	      backslash = false
-	      --print("backslash true")
-	  end
         end
       end
 
@@ -828,9 +823,9 @@ processMargins = function(head)
         for _, k2 in ipairs(lineKeys) do
           local v2 = notes[k2]
 
-          --if v2["type"] == "omOpen" and v1["ref"] == v2["ref"] then
-            --goto continue
-          --end
+          if v2["type"] == "omOpen" and v1["ref"] == v2["ref"] then
+            goto continue
+          end
         end
       end
 
