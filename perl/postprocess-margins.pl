@@ -68,40 +68,72 @@ for (my $i = 0; $i < @idFile; $i++) {
 		}
 	}
 
-	# collapse equal markers into one
-	if($note =~ m/\/[\w]{1,9}, [\w]{1,9}\\textbackslash/) {
-		my @markers = split(', ', $note);
-		for(my $j = 0; $j < @markers - 1; $j++) {
-			my $marker = $markers[$j];
-			my $nextMarker = $markers[$j + 1];
+	# collapse equal markers into one (/ab, ab\ --> /ab\)
+#	if($note =~ m/\/[\w]{1,9}, [\w]{1,9}\\textbackslash/) {
+#		my @markers = split(', ', $note);
+#		for(my $j = 0; $j < @markers - 1; $j++) {
+#			my $marker = $markers[$j];
+#			my $nextMarker = $markers[$j + 1];
+#
+#			if($marker =~ m/\/[\w]{1,9}/ 
+#			and $nextMarker =~ m/[\w]{1,9}\\textbackslash/) {
+#				$marker =~ s/\/([\w]{1,9})/$1/g;
+#				$nextMarker =~ s/([\w]{1,9})\\textbackslash/$1/g;
+#
+#				if($marker = $nextMarker) {
+#					$tmp1 =~ s/\/$marker, $nextMarker\\textbackslash/\/$marker\\textbackslash/g;
+#					$note =~ s/\/$marker, $nextMarker\\textbackslash/\/$marker\\textbackslash/g;
+#				}
+#			}
+#		}
+#	}
 
-			if($marker =~ m/\/[\w]{1,9}/ 
-			and $nextMarker =~ m/[\w]{1,9}\\textbackslash/) {
-				$marker =~ s/\/([\w]{1,9})/$1/g;
-				$nextMarker =~ s/([\w]{1,9})\\textbackslash/$1/g;
+	# collapse equal markers into one (/ab\, ab\ --> /ab\)
+	#if($note =~ m/\/[\w]{1,9}\\textbackslash, .*?, [\w]{1,9}\\textbackslash/) {
+	#	my @markers = split(', ', $note);
+	#	for(my $j = 0; $j < @markers - 1; $j++) {
+	#		my $marker = $markers[$j];
+			#my $isMarkerOpen = false;
+			#if($marker = m/\// and $marker != m/\\textbackslash/) {
+			#	$isMarkerOpen = true;
+			#}
+	
+			#for(my $k = $j; $k < @markers; $k++) {
+			#	my $secondMarker = $markers[$k];
+			#	if($secondMarker = m//) {
+			#	}
+			#}
 
-				if($marker = $nextMarker) {
-					$tmp1 =~ s/\/$marker, $nextMarker\\textbackslash/\/$marker\\textbackslash/g;
-					$note =~ s/\/$marker, $nextMarker\\textbackslash/\/$marker\\textbackslash/g;
-				}
-			}
-		}
-	}
+
+	#		my $nextMarker = $markers[$j + 1];
+#
+#			if($marker =~ m/\/[\w]{1,9}\\textbackslash/ 
+#			and $nextMarker =~ m/[\w]{1,9}\\textbackslash/) {
+#				$marker =~ s/\/([\w]{1,9})\\textbackslash/$1/g;
+#				$nextMarker =~ s/([\w]{1,9})\\textbackslash/$1/g;
+#
+#				if($marker = $nextMarker) {
+#					$tmp1 =~ s/\/$marker\\textbackslash, $nextMarker\\textbackslash/\/$marker\\textbackslash/g;
+#					$note =~ s/\/$marker\\textbackslash, $nextMarker\\textbackslash/\/$marker\\textbackslash/g;
+#				}
+#			}
+#		}
+#	}
 
 
-	if($note =~ m/\/[\w]{1,9}\\textbackslash, \/[\w]{1,9}\\textbackslash/) {
-		my @markers = split(', ', $note);
-		my $lastEntry = $markers[@markers - 1];
+#	if($note =~ m/\/[\w]{1,9}\\textbackslash, \/[\w]{1,9}\\textbackslash/) {
+#		my @markers = split(', ', $note);
+#		my $lastEntry = $markers[@markers - 1];
 
-		print STDERR $note . "\n";
-		print STDERR $lastEntry . "\n";
-		print STDERR $i . "\n";
-		for(my $j = $i; $j < @notes; $j++) {
+		#print STDERR $note . "\n";
+		#print STDERR $lastEntry . "\n";
+		#print STDERR $i . "\n";
+#		for(my $j = $i; $j < @notes; $j++) {
 		#	if(@markers - $j == 1) {
 		#		print STDERR $markers[$j] . "\n";
 		#	}
-		}	
-	}
+#		}	
+#	}
   }
 }
 
