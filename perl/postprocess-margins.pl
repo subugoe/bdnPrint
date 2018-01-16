@@ -42,7 +42,7 @@ for (my $i = 0; $i < @idFile; $i++) {
 	if($moveIntoNextMargindata =~ m/[\w]/) {
 		print STDERR $moveIntoNextMargindata . "\n";
 		# remove pb from original \margindata[inouter]...
-		$tmp1 =~ s/$moveIntoNextMargindata/\}/g;
+		$tmp1 =~ s/([\,\;]{1}) $moveIntoNextMargindata\}/$1\}/g;
 		# ... to the current one
 		$tmp1 =~ s/(\\margin\{$id\}\{.*?\}\{.*?\}\{.*?\}\{)/$1$moveIntoNextMargindata, /g;
 		$tmp1 =~ s/(\\margin\{$id\}\{.*?\}\{.*?\}\{.*?\}\{.*?\})/$1\\margindata\[inouter\]\{$moveIntoNextMargindata\], $note\}/g;
