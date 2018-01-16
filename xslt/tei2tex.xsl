@@ -258,7 +258,6 @@
                 <xsl:apply-templates/>
                 <xsl:text>}</xsl:text>
             </xsl:when>
-            <xsl:when test="ancestor::div[@type = 'index']"/>
             <xsl:otherwise>
                 <xsl:text>\notTOCsection[]{</xsl:text>
                 <xsl:apply-templates/>
