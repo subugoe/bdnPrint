@@ -886,13 +886,13 @@
     </xsl:template>
     
     
-    <xsl:template match="milestone[@type = 'fn-break']">
+    <xsl:template match="milestone[@unit = 'fn-break']">
         <xsl:variable name="edt" select="replace(replace(@edRef, '#', ''), ' ', '')"/>
         <xsl:variable name="n" select="@n"/>
         
-        <xsl:text>|</xsl:text>
+        <xsl:text>{\vl}</xsl:text>
         <xsl:value-of select="concat($edt, $n)"/>
-        <xsl:text>|</xsl:text>
+        <xsl:text>{\vl}</xsl:text>
     </xsl:template>
     
     
