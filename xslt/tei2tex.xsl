@@ -68,7 +68,7 @@
             </xsl:when>
             <!-- only first preface has to be on an odd page -->
             <xsl:otherwise>
-                <xsl:text>\newPage</xsl:text>
+                <xsl:text>\page</xsl:text>
             </xsl:otherwise>
         </xsl:choose>
         <xsl:apply-templates/>
