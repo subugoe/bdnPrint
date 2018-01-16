@@ -26,10 +26,8 @@ fi
 perl perl/fix-whitespace.pl $1 > tmp/$1_tmp-2.tex
 mv tmp/$1_tmp-2.tex tmp/$1_tmp-1.tex
 
-if [ $1 == 'noesselt' ]; then
-	perl perl/$1-preprocessing.pl > tmp/$1_tmp-2.tex
-	mv tmp/$1_tmp-2.tex tmp/$1_tmp-1.tex
-fi
+perl perl/$1-preprocessing.pl > tmp/$1_tmp-2.tex
+mv tmp/$1_tmp-2.tex tmp/$1_tmp-1.tex
 
 perl perl/replace-characters.pl $1 > tmp/$1_tmp-2.tex
 mv tmp/$1_tmp-2.tex tmp/$1_tmp-1.tex
