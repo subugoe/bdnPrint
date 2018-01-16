@@ -59,8 +59,8 @@ for (my $i = 0; $i < @idFile; $i++) {
 			# when several pagebreaks in margin belong to the same marker in main text, set comma			
 			if($tmp1 =~ m/\\margin\{[\w]{8}\}\{pb\}\{\}\{\\hbox\{\}\}\{$pb\}/) {
 				my ($edition) = $pb =~ /([\w])/;
-				my ($page) = $pb =~ /([!]{0,1}[0-9XVI]{1,4}[!]{0,1})/;
-				# markes : is needed, otherwise , will be substituted by ; in for loop
+				my ($page) = $pb =~ /([!]{0,1}[0-9XVI]{1,5}[!]{0,1})/;
+				# ":" is needed, otherwise "," will be substituted by ";" in for loop
 				$tmp1 =~ s/; $pb/, $edition:$page/g;
 				# remove superfluous \margin
 				$tmp1 =~ s/\\margin\{[\w]{8}\}\{pb\}\{\}\{\\hbox\{\}\}\{$pb\}//g;
