@@ -16,7 +16,6 @@
     
     <xsl:template match="body">
         <xsl:if test="ancestor::group">
-            <xsl:text>\newOddPage</xsl:text>
             <xsl:text>\setupnotation[footnote][numbercommand=\gobbleoneargument, rule=off]</xsl:text>
             <xsl:text>\setupnote[footnote][textcommand=\gobbleoneargument, rule=off]</xsl:text>
         </xsl:if>
