@@ -42,7 +42,7 @@ for (my $i = 0; $i < @idFile; $i++) {
 	if($moveIntoNextMargindata =~ m/[\w]/) {
 		print STDERR $moveIntoNextMargindata . "\n";
 		# remove pb from original \margindata[inouter]...
-		$tmp1 =~ s/, $moveIntoNextMargindata\}/\}/g;
+		$tmp1 =~ s/$moveIntoNextMargindata/\}/g;
 		# ... to the current one
 		$tmp1 =~ s/(\\margin\{$id\}\{.*?\}\{.*?\}\{.*?\}\{)/$1$moveIntoNextMargindata, /g;
 		$tmp1 =~ s/(\\margin\{$id\}\{.*?\}\{.*?\}\{.*?\}\{.*?\})/$1\\margindata\[inouter\]\{$moveIntoNextMargindata\], $note\}/g;
@@ -51,7 +51,7 @@ for (my $i = 0; $i < @idFile; $i++) {
 	else {
 		$tmp1 =~ s/(\\margin\{$id\}\{.*?\}\{.*?\}\{.*?\}\{.*?\})/$1\\margindata\[inouter\]\{$note\}/g;
 	}
-    	$tmp1 =~ s/([\w]{1}[\[]{0,1}[0-9IVX]{1,3}[\]]{0,1}), ([\w]{1}[\[]{0,1}[0-9IVX]{1,3}[\]]{0,1})/$1; $2/g;     
+    	$tmp1 =~ s/([\w]{1}[!]{0,1}[0-9IVX]{1,3}[!]{0,1}), ([\w]{1}[!]{0,1}[0-9IVX]{1,3}[!]{0,1})/$1; $2/g;     
 	
 
 	# in the cases where there are several pagebreaks in one margin line, try to find out if markers in margin belong to the same
