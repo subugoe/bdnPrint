@@ -57,10 +57,9 @@ cd ..
 perl perl/define-footnotes.pl $1 > tmp/$1_tmp-2.tex
 cat context/header.tex >> tmp/$1_tmp-2.tex
 
-perl perl/postprocess-margins.pl $1 >> tmp/$1_tmp-2.tex
-cat context/footer.tex >> tmp/$1_tmp-2.tex
-
+perl perl/postprocess-margins.pl $1 > tmp/$1_tmp-3.tex
 perl perl/remove-moved-elements.pl $1 >> tmp/$1_tmp-2.tex
+cat context/footer.tex >> tmp/$1_tmp-2.tex
 
 notify-send "Entering second stage"
 

@@ -15,35 +15,38 @@ open(FILE, "<tmp/notes.txt") or die "$!\n";
 my @notes = <FILE>;
 close(FILE);
 
+my $file_location = "tmp/moved_elements.txt";
+open(my $file, ">", $file_location) or die $!;
+
+
 my $tmp1 = read_file("tmp/" . $ARGV[0] . "_tmp-1.tex");
 
-# workaround, otherwise [ and ] are treated as part of regex
-$tmp1 =~ s/\[([0-9XIV]*?)\]/!$1!/g;
 my $moveIntoNextMargindata = "";
 
 
 for (my $i = 0; $i < @idFile; $i++) {
+	# workaround, otherwise [ and ] are treated as part of regex
+	$tmp1 =~ s/\[([0-9XIV]*?)\]/!$1!/g;
   my $id = $idFile[$i];
   chomp($id);
 
   my $note = $notes[$i];
   chomp($note);
 
-
   if ($id and $note) {
-  	# temporary solution for merging note indicators. @TODO improve
-  	$tmp1 =~ s/E,\sE/E/g;
+		if($note =~ m/\[[\dXVI]+?\]/) {
+			$note =~ s/\[([\dXVI]+?)\]/!$1!/g;
+		}
+	# temporary solution for merging note indicators. @TODO improve
+ 	$tmp1 =~ s/E,\sE/E/g;
 	$tmp1 =~ s/E(,\s.{2,4})+,\sE/E$1/g;
 	$tmp1 =~ s/E(,\s\/a\\textbackslash)+,\sE/E$1/g;
 	$tmp1 =~ s/E(,\s\/c\\textbackslash)+,\sE/E$1/g;
   	
-  	$tmp1 =~ s/\\margin\{\}\{e\}\{\}\{\\hbox\{\}\}\{E\}\\pagereference\[(.{7})\]Es war keinesweges/Es\\margin\{\}\{e\}\{\}\{\\hbox\{\}\}\{E\}\\pagereference\[$1\] war keinesweges/g;
+	$tmp1 =~ s/\\margin\{\}\{e\}\{\}\{\\hbox\{\}\}\{E\}\\pagereference\[(.{7})\]Es war keinesweges/Es\\margin\{\}\{e\}\{\}\{\\hbox\{\}\}\{E\}\\pagereference\[$1\] war keinesweges/g;
  
 	if($moveIntoNextMargindata =~ m/[\w]/) {
-		print STDERR $moveIntoNextMargindata . "\n";
-		# remove pb from original \margindata[inouter]...
-		$tmp1 =~ s/([\,\;]{1}) $moveIntoNextMargindata\}/$1\}/g;
-		# ... to the current one
+		# remove pb from original \margindata[inouter] to the current one
 		$tmp1 =~ s/(\\margin\{$id\}\{.*?\}\{.*?\}\{.*?\}\{)/$1$moveIntoNextMargindata, /g;
 		$tmp1 =~ s/(\\margin\{$id\}\{.*?\}\{.*?\}\{.*?\}\{.*?\})/$1\\margindata\[inouter\]\{$moveIntoNextMargindata\], $note\}/g;
 		$moveIntoNextMargindata = "";
@@ -51,13 +54,13 @@ for (my $i = 0; $i < @idFile; $i++) {
 	else {
 		$tmp1 =~ s/(\\margin\{$id\}\{.*?\}\{.*?\}\{.*?\}\{.*?\})/$1\\margindata\[inouter\]\{$note\}/g;
 	}
-    	$tmp1 =~ s/([\w]{1}[!]{0,1}[0-9IVX]{1,3}[!]{0,1}), ([\w]{1}[!]{0,1}[0-9IVX]{1,3}[!]{0,1})/$1; $2/g;     
+	$tmp1 =~ s/([\w]{1}[!]{0,1}[0-9IVX]{1,3}[!]{0,1}), ([\w]{1}[!]{0,1}[0-9IVX]{1,3}[!]{0,1})/$1; $2/g;     
 	
 
 	# in the cases where there are several pagebreaks in one margin line, try to find out if markers in margin belong to the same
 	# pagebreak or not. when several pagebreaks collide into one \vl, the hidden pagebreaks have an \hbox as 4th argument of \margin.
 	# in these cases, the pagebreak markers in the margin should be seperated by a comma, otherwise by a semicolon.
-	if($note =~ m/([\w]{1}[\[]{0,1}[0-9XVI]{1,4}[\]]{0,1}), ([\w]{1}[\[]{0,1}[0-9XVI]{1,4}[\]]{0,1})/) {
+	if($note =~ m/([\w]{1}[!]{0,1}[0-9XVI]{1,4}[!]{0,1}), ([\w]{1}[!]{0,1}[0-9XVI]{1,4}[!]{0,1})/) {
 		my @pbNotes = split(', ', $note);
 		
 		# prepare analyzation of notelength
@@ -79,8 +82,6 @@ for (my $i = 0; $i < @idFile; $i++) {
 				my ($page) = $pb =~ /([!]{0,1}[0-9XVI]{1,5}[!]{0,1})/;
 				# ":" is needed, otherwise "," will be substituted by ";" in for loop
 				$tmp1 =~ s/; $pb/, $edition:$page/g;
-				# remove superfluous \margin
-				$tmp1 =~ s/\\margin\{[\w]{8}\}\{pb\}\{\}\{\\hbox\{\}\}\{$pb\}//g;
 			}
 
 			#@TODO documentation! may also occur in margin notes, where last pb is the only one (isn't considered at the moment
@@ -90,16 +91,19 @@ for (my $i = 0; $i < @idFile; $i++) {
 			# has to be adjusted: only 7 for large entries before. has to be larger for small entries.
 			and $sizeBeforeLastPb >= 7) {
 				$moveIntoNextMargindata = $pb;
+				print $file $pb . "\n";
 			}
 		}
 	}
   }
 }
 
+close $file;
+
 # remove marker
 $tmp1 =~ s/, ([\w]):([!]{0,1}[0-9XVI]{1,4}[!]{0,1})/, $1$2/g;
-# replace !...! with [...]
-$tmp1 =~ s/!([0-9XIV]*?)!/\[$1\]/g;
+# remove superfluous \margin
+$tmp1 =~ s/\\margin\{[\w]{8}\}\{pb\}\{\}\{\\hbox\{\}\}\{.*?\}//g;
 
 print $tmp1;
 
