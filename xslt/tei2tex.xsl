@@ -1212,7 +1212,7 @@
         <xsl:text>\stopsetups</xsl:text>
         <xsl:text>{\startcolumns</xsl:text>
         <xsl:text>\place</xsl:text>
-        <xsl:value-of select="$type"/>
+        <xsl:value-of select="replace($type, '-', '')"/>
         <xsl:text>Index</xsl:text>
         <xsl:text>\stopcolumns}</xsl:text>
     </xsl:template>

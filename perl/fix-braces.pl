@@ -15,7 +15,7 @@ my $tail = read_file("input/" . $ARGV[0] . ".xml");
 # handling curly braces (otherwise they are interpreted as TeX command)
 $tail =~ s/\{/\\\{/g;
 $tail =~ s/\}/\\\}/g;
-$tail =~ s/a\\</a\\textbackslash </g;
+$tail =~ s/([a-z])\\</$1\\textbackslash </g;
 $tail =~ s/\|/\\|/g;
 
 $head = $head . $tail;
