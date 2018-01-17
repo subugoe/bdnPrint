@@ -12,6 +12,10 @@ if [[ ! -d output ]]; then
 	mkdir output
 fi
 
+if [[ ! -d output/$1_archive ]]; then 
+	mkdir output/$1_archive
+fi
+
 perl perl/fix-braces.pl $1 > $1_tmp.xml
 
 # chance according to XSLT processor
@@ -50,15 +54,15 @@ cd tmp
 context $1_tmp-2.tex > ../log/log_$(datestamp).txt
 cd ..
 
-notify-send "Entering second stage"
-
-
 perl perl/define-footnotes.pl $1 > tmp/$1_tmp-2.tex
 cat context/header.tex >> tmp/$1_tmp-2.tex
 
 perl perl/postprocess-margins.pl $1 >> tmp/$1_tmp-2.tex
 cat context/footer.tex >> tmp/$1_tmp-2.tex
 
+perl perl/remove-moved-elements.pl $1 >> tmp/$1_tmp-2.tex
+
+notify-send "Entering second stage"
 
 cd tmp
 context $1_tmp-2.tex >> ../log/log_$(datestamp).txt
@@ -67,5 +71,14 @@ cd ..
 pdftk tmp/$1_tmp-2.pdf cat output $1_$(datestamp).pdf
 rm $1_tmp.xml
 mv $1_$(datestamp).pdf output
+
+# tidy up output directory: out-of-date PDFs are stored in archive
+cd output
+pattern="./$1_$(datestamp).pdf"
+for file in ./$1_*.pdf; do
+	if ! [ $file == $pattern ]; then
+		mv $file $1_archive
+	fi
+done
 
 notify-send "Compilation finished"
