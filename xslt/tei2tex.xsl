@@ -338,35 +338,6 @@
                 <xsl:text>}</xsl:text>
             </xsl:when>
             
-            <xsl:when test="@rend = 'right-aligned'">
-                <xsl:choose>
-                    <xsl:when test="ancestor::rdg[@type = 'pp' or @type = 'pt']">
-                        <xsl:apply-templates/>
-                    </xsl:when>
-                    <xsl:otherwise>
-                        <xsl:text>\crlf </xsl:text>
-                        <xsl:text>\rightaligned{</xsl:text>
-                        <xsl:apply-templates/>
-                        <xsl:text>}</xsl:text>
-                    </xsl:otherwise>
-                </xsl:choose>
-            </xsl:when>
-            
-            <xsl:when test="@rend = 'center-aligned'">
-                <xsl:choose>
-                    <xsl:when test="child::lb">
-                        <xsl:text>\startalignment[center]</xsl:text>
-                        <xsl:apply-templates/>
-                        <xsl:text>\stopalignment</xsl:text>
-                    </xsl:when>
-                    <xsl:otherwise>
-                        <xsl:text>\midaligned{</xsl:text>
-                        <xsl:apply-templates/>
-                        <xsl:text>}</xsl:text>
-                    </xsl:otherwise>
-                </xsl:choose>
-            </xsl:when>
-            
             <xsl:when test="@rend = 'small-caps'">
                 <xsl:text>{\sc </xsl:text>
                 <xsl:apply-templates/>
@@ -409,6 +380,39 @@
                 <xsl:text>}</xsl:text>
             </xsl:when>
         </xsl:choose>
+    </xsl:template>
+    
+    <xsl:template match="aligned">
+        <xsl:choose>
+            <xsl:when test="@rend = 'right-aligned'">
+                <xsl:choose>
+                    <xsl:when test="ancestor::rdg[@type = 'pp' or @type = 'pt']">
+                        <xsl:apply-templates/>
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <xsl:text>\crlf </xsl:text>
+                        <xsl:text>\rightaligned{</xsl:text>
+                        <xsl:apply-templates/>
+                        <xsl:text>}</xsl:text>
+                    </xsl:otherwise>
+                </xsl:choose>
+            </xsl:when>
+            
+            <xsl:when test="@rend = 'center-aligned'">
+                <xsl:choose>
+                    <xsl:when test="child::lb">
+                        <xsl:text>\startalignment[center]</xsl:text>
+                        <xsl:apply-templates/>
+                        <xsl:text>\stopalignment</xsl:text>
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <xsl:text>\midaligned{</xsl:text>
+                        <xsl:apply-templates/>
+                        <xsl:text>}</xsl:text>
+                    </xsl:otherwise>
+                </xsl:choose>
+            </xsl:when> 
+        </xsl:choose>       
     </xsl:template>
  
  
