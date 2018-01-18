@@ -77,10 +77,10 @@ $tail =~ s/ +/ /g;
 
 # for each footnote in the critical apparatus...
 
-while ($tail =~ /\\[a-i]{0,8}Note/) {
+while ($tail =~ /\\[a-z]{0,8}Note/) {
   my $move = $tail;
 
-  $move =~ s/(.*?\\[a-i]{0,8}Note).*/$1/;
+  $move =~ s/(.*?\\[a-z]{0,8}Note).*/$1/;
 
   $tail = substr($tail, length($move));
   $head = $head . $move;
