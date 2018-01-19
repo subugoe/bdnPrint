@@ -7,14 +7,7 @@ datestamp() {
 
 [[ -d tmp ]] && rm -rf tmp; mkdir tmp
 [[ -d log ]] && rm -rf log; mkdir log
-
-if [[ ! -d output ]]; then 
-	mkdir output
-fi
-
-if [[ ! -d output/$1_archive ]]; then 
-	mkdir output/$1_archive
-fi
+[[ ! -d output/$1_archive ]] && mkdir -p output
 
 perl perl/fix-braces.pl $1 > $1_tmp.xml
 
