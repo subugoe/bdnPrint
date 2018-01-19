@@ -54,7 +54,7 @@ for (my $i = 0; $i < @idFile; $i++) {
 		else {
 			$tmp1 =~ s/(\\margin\{$id\}\{.*?\}\{.*?\}\{.*?\}\{.*?\})/$1\\margindata\[inouter\]\{$note\}/g;
 		}
-		$tmp1 =~ s/([\w]{1}[!]{0,1}[0-9IVX]{1,7}[!]{0,1}), ([\w]{1}[!]{0,1}[0-9IVX]{1,7}[!]{0,1})/$1; $2/g;     
+		$tmp1 =~ s/([\w]{1}[!]{0,1}[0-9IVX]{1,7}[!]{0,1}), ([\w]{1}[!]{0,1}[0-9IVX]{1,7}[!]{0,1})/$1; $2/g;       
 
 		# prepare analyzation of notelength
 		$note =~ s/\\textbackslash/\\#/g;
@@ -62,6 +62,8 @@ for (my $i = 0; $i < @idFile; $i++) {
 
 		my $noOfElements = @marginElements;
 		my $marginSize = length($note);
+
+		$note =~ s/([\w]{1}[!]{0,1}[0-9IVX]{1,7}[!]{0,1}), ([\w]{1}[!]{0,1}[0-9IVX]{1,7}[!]{0,1})/$1; $2/g;
 
 		# look at all margin elements in $note
 		for(my $j = 0; $j < @marginElements; $j++) {
@@ -75,7 +77,8 @@ for (my $i = 0; $i < @idFile; $i++) {
 					my ($edition) = $element =~ /([\w])/;
 					my ($page) = $element =~ /([!]{0,1}[0-9XVI]{1,7}[!]{0,1})/;
 					# ":" is needed, otherwise "," will be substituted by ";" in for loop
-					$tmp1 =~ s/[\,\;] $element/, $edition:$page/g;			
+					$tmp1 =~ s/[\,\;] $element/, $edition:$page/g;
+					$note =~ s/[\,\;] $element/, $edition:$page/g;
 			}
 
 			#@TODO documentation! may also occur in margin notes, where last pb is the only one (isn't considered at the moment
@@ -85,8 +88,9 @@ for (my $i = 0; $i < @idFile; $i++) {
 			# assure that the following line has content in margin, too
 			and $notes[$i+1] =~ m/[\w]/
 			# experience shows that removal is only necessary when we have >= 2 pagebreaks
-			and $note =~ m/[a-z][!]{0,1}[0-9XVI]{1,7}[!]{0,1}.*?[a-z]{1}[!]{0,1}[0-9XVI]{1,7}[!]{0,1}/) {
+			and $note =~ m/[a-z][!]{0,1}[0-9XVI]{1,7}[!]{0,1}.*?[a-z]{1}[:]{0,1}[!]{0,1}[0-9XVI]{1,7}[!]{0,1}/) {
 				$note =~ s/\\#/\\textbackslash/g;
+				$note =~ s/://g;
 				$element =~ s/\\#/\\textbackslash/g;
 				$moveIntoNextMargindata = $element;
 				print $file $note . "\n";

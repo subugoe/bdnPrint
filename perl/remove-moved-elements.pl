@@ -18,20 +18,13 @@ for (my $i = 0; $i < @notes; $i++) {
   chomp($note);
 
 	my @elements = split(', ', $note);
-	my $context = join ', ', @elements[0 .. $#elements-1];
 	my $element = $elements[-1];
+	my ($context) = $note =~ /(.*) $element/;
+	# has to escaped because of regex
+	$note =~ s/([\/\\])/\\$1/g;
 
-	print STDERR $note . "\n";
-	print STDERR $element . "\n";	
-	print STDERR $context . "\n";
-
-	my ($edition) = $element =~ /([a-z])/;
-	my ($page) = $element =~ /([\dXVI]+)/; 
-
-	# note has to be used as pattern BUT: we have /a\textbackslash etc --> slashes are interpreted as part of regex! @TODO
-	my $patternTmp = " " . $element . "\}";
-
-	#$tmp =~ s/$pattern/\}/g;
+	my $pattern = $note . "\}";
+	$tmp =~ s/$pattern/$context\}/g;
 }
 
 # replace !...! with [...]
