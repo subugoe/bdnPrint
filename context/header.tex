@@ -757,9 +757,6 @@ leftmargin=4mm, rightmargin=0mm]
 key = 1
 notes = {}
 
---print("notes: ")
---print(notes)
-
 os.remove("id-file.txt")
 os.remove("notes.txt")
 
@@ -770,8 +767,6 @@ processMargins = function(head)
   for line in node.traverse_id(node.id("hlist"), head) do -- getting all lines of a paragraph and traversing them
     local lineKeys = {}
     local lineNote = ""
-    --print("\n\n\n line: ")
-    --print(line)
 
     for item in node.traverse(line.list) do
       local itemKey = node.has_attribute(item, 1)
@@ -803,12 +798,6 @@ processMargins = function(head)
     for _, k1 in ipairs(lineKeys) do
       local v1 = notes[k1]
       local backslash = false
-      --print("k1: ")
-      --print(k1)
-      --print("v1: ")
-      --print(v1["type"])
-      --print(v1["ref"])
-
       
       if v1["type"] == "omOpen" then
         for _, k2 in ipairs(lineKeys) do
@@ -848,12 +837,8 @@ processMargins = function(head)
       if k1 ~= lineKeys[1] then
         lineNote = lineNote .. ", "
       end
-      --print("k1: ")
-      --print(k1)
 
       lineNote = lineNote .. v1["note"]
-      --print("lineNote: ")
-      --print(lineNote)
 
       if backslash then
         lineNote = lineNote .. "\\textbackslash"
@@ -861,9 +846,6 @@ processMargins = function(head)
 
       ::continue::
     end
-    
-    --print("ENDElineNote: ")
-    --print(lineNote)
       
     notesFile:write(lineNote .. "\n")
   end
