@@ -9,7 +9,7 @@ datestamp() {
 [[ -d log ]] && rm -rf log; mkdir log
 [[ ! -d output/$1_archive ]] && mkdir -p output
 
-perl perl/fix-braces.pl $1 > $1_tmp.xml
+perl perl/core/fix-braces.pl $1 > $1_tmp.xml
 
 # chance according to XSLT processor
 processorlocation="$(locate saxon9he.jar)"
@@ -20,25 +20,25 @@ else
 	java -cp $processorlocation net.sf.saxon.Transform -o:tmp/$1_tmp-1.tex $1_tmp.xml xslt/tei2tex.xsl
 fi
 
-perl perl/fix-whitespace.pl $1 > tmp/$1_tmp-2.tex
+perl perl/core/fix-whitespace.pl $1 > tmp/$1_tmp-2.tex
 mv tmp/$1_tmp-2.tex tmp/$1_tmp-1.tex
 
-perl perl/$1-preprocessing.pl > tmp/$1_tmp-2.tex
+perl perl/authors/$1-preprocessing.pl > tmp/$1_tmp-2.tex
 mv tmp/$1_tmp-2.tex tmp/$1_tmp-1.tex
 
-perl perl/replace-characters.pl $1 > tmp/$1_tmp-2.tex
+perl perl/core/replace-characters.pl $1 > tmp/$1_tmp-2.tex
 mv tmp/$1_tmp-2.tex tmp/$1_tmp-1.tex
 
-perl perl/sort-bible-register.pl $1 > tmp/$1_tmp-2.tex
+perl perl/core/sort-bible-register.pl $1 > tmp/$1_tmp-2.tex
 mv tmp/$1_tmp-2.tex tmp/$1_tmp-1.tex
 
-perl perl/preprocess-margins.pl $1 > tmp/$1_tmp-2.tex
+perl perl/core/preprocess-margins.pl $1 > tmp/$1_tmp-2.tex
 mv tmp/$1_tmp-2.tex tmp/$1_tmp-1.tex
 
-perl perl/fix-typearea.pl $1 > tmp/$1_tmp-2.tex
+perl perl/core/fix-typearea.pl $1 > tmp/$1_tmp-2.tex
 mv tmp/$1_tmp-2.tex tmp/$1_tmp-1.tex
 
-perl perl/define-footnotes.pl $1 > tmp/$1_tmp-2.tex
+perl perl/core/define-footnotes.pl $1 > tmp/$1_tmp-2.tex
 cat context/header.tex >> tmp/$1_tmp-2.tex
 cat tmp/$1_tmp-1.tex >> tmp/$1_tmp-2.tex
 cat context/footer.tex >> tmp/$1_tmp-2.tex
@@ -47,11 +47,11 @@ cd tmp
 context $1_tmp-2.tex > ../log/log_$(datestamp).txt
 cd ..
 
-perl perl/define-footnotes.pl $1 > tmp/$1_tmp-2.tex
+perl perl/core/define-footnotes.pl $1 > tmp/$1_tmp-2.tex
 cat context/header.tex >> tmp/$1_tmp-2.tex
 
-perl perl/postprocess-margins.pl $1 > tmp/$1_tmp-3.tex
-perl perl/remove-moved-elements.pl $1 >> tmp/$1_tmp-2.tex
+perl perl/core/postprocess-margins.pl $1 > tmp/$1_tmp-3.tex
+perl perl/core/remove-moved-elements.pl $1 >> tmp/$1_tmp-2.tex
 cat context/footer.tex >> tmp/$1_tmp-2.tex
 
 notify-send "Entering second stage"
