@@ -1118,6 +1118,10 @@
         <xsl:for-each select="//choice[child::sic and child::corr[@type = 'editorial']]">
             <xsl:text> \NC </xsl:text>
             <xsl:choose>
+                <xsl:when test="not(./ancestor::rdg) and ancestor::note[@place = 'bottom']">
+                    <xsl:value-of select="$base-text"/>
+                    <xsl:value-of select="./preceding::pb[matches(@edRef, $base-text)][1]/@n + 1"/>                   
+                </xsl:when>
                 <xsl:when test="not(./ancestor::rdg)">
                     <xsl:value-of select="$base-text"/>
                     <xsl:value-of select="./preceding::pb[matches(@edRef, $base-text)][1]/@n"/>
@@ -1284,8 +1288,19 @@
         
         <xsl:if test="$iii &lt;= $limit">
             <xsl:variable name="prev-pb" select="$context/preceding::pb[matches(@edRef, $wits[$iii])][1]"/>
-            <xsl:value-of select="$wits[$iii]"/>
-            <xsl:value-of select="$prev-pb/@n"/>
+            <xsl:variable name="prev-pb-no" select="$prev-pb/@n"/>
+            <xsl:variable name="fn-break" select="$context/preceding::milestone[@unit = 'fn-break'][matches(@edRef, $wits[$iii])][1]"/>
+            <xsl:variable name="fn-break-no" select="replace($fn-break/@n, '[^\d]', '')"/>
+            <xsl:choose>
+                <xsl:when test="$fn-break-no &gt; $prev-pb-no">
+                    <xsl:value-of select="$wits[$iii]"/>
+                    <xsl:value-of select="$fn-break-no"/>
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:value-of select="$wits[$iii]"/>
+                    <xsl:value-of select="$prev-pb/@n"/>                   
+                </xsl:otherwise>
+            </xsl:choose>
             <xsl:if test="$iii &lt; $limit">
                 <xsl:text>, </xsl:text>
             </xsl:if>
