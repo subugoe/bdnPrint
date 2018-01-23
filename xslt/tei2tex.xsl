@@ -1,4 +1,5 @@
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xpath-default-namespace="http://www.tei-c.org/ns/1.0" xmlns:math="http://exslt.org/math" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xpath-default-namespace="http://www.tei-c.org/ns/1.0" 
+    xmlns:math="http://exslt.org/math" version="2.0">
     
     <xsl:output method="text"/>
     
@@ -193,7 +194,7 @@
             <xsl:with-param name="contents" select="head[1]"/>
         </xsl:call-template>        
         <xsl:apply-templates/>
-        <xsl:text>\newOddPage</xsl:text>
+        <!--<xsl:text>\newOddPage</xsl:text>-->
     </xsl:template>
     
     
@@ -249,13 +250,25 @@
     <xsl:template match="head[not(ancestor::group)]">
         <xsl:choose>
             <xsl:when test="parent::div[@type]">
-                <xsl:text>\title[]{</xsl:text> 
+                <xsl:choose>
+                    <xsl:when test="parent::div[@type = 'editorial']">
+                        <xsl:text>\mytitle[]{</xsl:text>
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <xsl:text>\title[]{</xsl:text>
+                    </xsl:otherwise>
+                </xsl:choose> 
                 <xsl:apply-templates/>
                 <xsl:text>}</xsl:text>
                 
                 <xsl:text>\writetolist[part]{}{</xsl:text>
                 <xsl:apply-templates/>
                 <xsl:text>}</xsl:text>
+            </xsl:when>
+            <xsl:when test="parent::div[not(@type)]/preceding-sibling::*[1][self::head]">
+                <xsl:text>\subtitle[]{</xsl:text> 
+                <xsl:apply-templates/>
+                <xsl:text>}</xsl:text>               
             </xsl:when>
             <xsl:otherwise>
                 <xsl:text>\notTOCsection[]{</xsl:text>
@@ -291,6 +304,8 @@
                         <xsl:text>\listsubhead[]{</xsl:text>
                     </xsl:when>
                 </xsl:choose>
+                <xsl:apply-templates/>
+                <xsl:text>}</xsl:text>
             </xsl:when>   
             <xsl:when test="ancestor::rdg">
                 <xsl:text>\rdgsubject[]{</xsl:text>
@@ -813,9 +828,9 @@
         <xsl:text>\startitemize[packed, paragraph, joinedup</xsl:text>
         
         <!-- in a TOC the first level shouldn't be indented --> 
-        <!--<xsl:if test="ancestor::div[@type = 'contents']/descendant::list[1] = .">
+        <xsl:if test="ancestor::div[@type = 'contents']/descendant::list[1] = .">
             <xsl:text>, inmargin</xsl:text>
-        </xsl:if>       --> 
+        </xsl:if>       
         <xsl:text>]</xsl:text>
         <xsl:apply-templates/>
         <xsl:text>\stopitemize </xsl:text>       
@@ -874,7 +889,8 @@
                         and not(preceding-sibling::*[1][self::seg][child::*[last()][self::list]]))">
                         <xsl:call-template name="paragraph-indent"/>
                     </xsl:when>                   
-                    <xsl:when test="@unit = 'p' and (preceding-sibling::*[1][self::list] or preceding-sibling::*[1][self::seg][child::*[last()][self::list]])">
+                    <xsl:when test="@unit = 'p' and (preceding-sibling::*[1][self::list] 
+                        or preceding-sibling::*[1][self::seg][child::*[last()][self::list]])">
                         <xsl:text>\hspace[p] </xsl:text>
                     </xsl:when>
                 </xsl:choose>
@@ -1154,7 +1170,7 @@
         <xsl:call-template name="make-indices">
             <xsl:with-param name="divGen" select="."/>
         </xsl:call-template>
-    </xsl:template>    
+    </xsl:template>
  
  
     <!-- called templates -->
