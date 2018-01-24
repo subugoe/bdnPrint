@@ -61,6 +61,18 @@
     </xsl:template>
     
     
+    <xsl:template match="div[@type = 'epilog']">
+        <xsl:text>\newOddPage</xsl:text>
+        <xsl:apply-templates/>
+    </xsl:template>
+
+
+    <xsl:template match="div[@type = 'imprimatur']">
+        <xsl:text>\newOddPage</xsl:text>
+        <xsl:apply-templates/>
+    </xsl:template>
+
+    
     <!-- outside edition text -->
     <xsl:template match="div[@type = 'preface' and ancestor::group]">    
         <xsl:choose>
@@ -204,10 +216,12 @@
     
     
     <xsl:template match="div[@type = 'section']">
+        <xsl:text>\startdivsection </xsl:text>
         <xsl:apply-templates/>        
-        <xsl:if test="not(head)">
-            <xsl:text>\blank[10pt] </xsl:text>
-        </xsl:if>
+        <!--<xsl:if test="not(head)">
+            <xsl:text>\blank[12pt] </xsl:text>
+        </xsl:if>-->
+        <xsl:text>\stopdivsection </xsl:text>
     </xsl:template>
     
     
@@ -257,8 +271,9 @@
             </xsl:when>
             <xsl:when test="parent::div[@type]">
                 <xsl:choose>
-                    <xsl:when test="parent::div[@type = 'editorial']">
-                        <xsl:text>\mytitle[]{</xsl:text>
+                    <xsl:when test="parent::div[@type = 'editorial' 
+                        or @type ='introduction']">
+                        <xsl:text>\maintitle[]{</xsl:text>
                     </xsl:when>
                     <xsl:otherwise>
                         <xsl:text>\title[]{</xsl:text>
@@ -667,7 +682,8 @@
                 <!--<xsl:text>{\startbottomnote</xsl:text>
                 <xsl:apply-templates/>
                 <xsl:text>\stopbottomnote}</xsl:text>-->
-                <xsl:text>\footnote{</xsl:text>
+                <!--<xsl:text>\footnote{</xsl:text>-->
+                <xsl:text>\authorbottomnote{</xsl:text>
                 <xsl:apply-templates/>
                 <xsl:text>}</xsl:text>
                 

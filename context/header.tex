@@ -145,7 +145,7 @@
 \definehead[corrigendaheading][section]
 \definehead[corrigendaheadingrdg][section]
 
-\definehead[mytitle][title]
+\definehead[maintitle][title]
 \definehead[firstpreface][title]
 
 \definehead[rdgsubject][subject]
@@ -177,11 +177,11 @@
   style={\switchtobodyfont[14pt]},
   interlinespace=16pt]
   
-\setuphead[mytitle]
+\setuphead[maintitle]
   [number=no,
   header=empty,
-  before={\starteffect[hidden] . \stopeffect\blank[60pt]},
-  after={\blank[10pt]},
+  before={\starteffect[hidden] . \stopeffect\blank[36pt]},
+  after={\blank[12pt]},
   style={\switchtobodyfont[14pt]},
   interlinespace=16pt]
   
@@ -232,7 +232,7 @@
   [number=no,
   header=high,
   before={\blank[0pt]},
-  after={\blank[12pt]},
+  after={\blank[24pt]},
   style={\switchtobodyfont[12pt]},
   interlinespace=14pt,
   align=middle] 
@@ -522,7 +522,9 @@
   [footnote]
   [alternative=left,
    hang=1,
-   numbercommand=\hskip0.4cm\high]  
+   numbercommand=\hskip0.4cm\high,
+   style={\switchtobodyfont[8.5pt]},
+   interlinespace=10.5pt]  
   
 \setupfootnotes
   [conversion=none, 
@@ -530,7 +532,10 @@
   way=bysection,
   split=tolerant]
   
+\definenote[authorbottomnote][footnote]
 
+\setupnotation[authorbottomnote][]
+  
   \definenote[bottomnote]
     [before={\blank[4mm]},
      paragraph=yes,
@@ -563,15 +568,16 @@
 \definedelimitedtext[rdg]
 \setupdelimitedtext
         [rdg]
-        [before={\blank[10pt]
+        [before={\blank[6pt]
         \crlf
         \noindentation
         \switchtobodyfont[8.5pt]},
         after={\removeunwantedspaces
-        \blank[10pt]
+        \blank[6pt]
         \noindentation
         \switchtobodyfont[default]},
-        leftmargin=0pt, rightmargin=0mm]
+        leftmargin=0pt, rightmargin=0mm,
+        interlinespace=10.5]
 
 \definedelimitedtext[narrow]
 \setupdelimitedtext
@@ -594,7 +600,10 @@ leftmargin=4mm, rightmargin=0mm]
 	\switchtobodyfont[default]},
 	leftmargin=4mm, rightmargin=0mm]
 	
-	
+\definedelimitedtext[divsection]
+\setupdelimitedtext[divsection]
+  [after={\blank[12pt]}]
+
 %   \definedelimitedtext[bottomnote][location=bottom]
 %   \setupdelimitedtext
 %           [bottomnote]
@@ -668,7 +677,7 @@ leftmargin=4mm, rightmargin=0mm]
 \defineregister[bibelIndex]
 \setupregister[bibelIndex]
   [compress=yes,
-  indicator=yes,
+  indicator=no,
   pagestyle=\tf,
   location=middle]
 
@@ -802,14 +811,9 @@ processMargins = function(head)
       if v1["type"] == "omOpen" then
         for _, k2 in ipairs(lineKeys) do
           local v2 = notes[k2]
-          --print("v2: ")
-	  --print(v2["type"])
-	  --print("v1UNDv2: ")
-	  --print(v1["ref"] == v2["ref"])
           
           if v2["type"] == "omClose" and v1["ref"] == v2["ref"] then
             backslash = true
-	    --print("backslash true")
           end
         end
       end
