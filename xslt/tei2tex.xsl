@@ -249,6 +249,12 @@
  
     <xsl:template match="head[not(ancestor::group)]">
         <xsl:choose>
+            <xsl:when test="@type = 'sub'
+                or parent::div[not(@type)]/preceding-sibling::*[1][self::head]">
+                <xsl:text>\subtitle[]{</xsl:text> 
+                <xsl:apply-templates/>
+                <xsl:text>}</xsl:text>                 
+            </xsl:when>
             <xsl:when test="parent::div[@type]">
                 <xsl:choose>
                     <xsl:when test="parent::div[@type = 'editorial']">
@@ -264,11 +270,6 @@
                 <xsl:text>\writetolist[part]{}{</xsl:text>
                 <xsl:apply-templates/>
                 <xsl:text>}</xsl:text>
-            </xsl:when>
-            <xsl:when test="parent::div[not(@type)]/preceding-sibling::*[1][self::head]">
-                <xsl:text>\subtitle[]{</xsl:text> 
-                <xsl:apply-templates/>
-                <xsl:text>}</xsl:text>               
             </xsl:when>
             <xsl:otherwise>
                 <xsl:text>\notTOCsection[]{</xsl:text>
