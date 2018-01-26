@@ -9,7 +9,10 @@ timestamp() {
 }
 
 
-[[ -d tmp ]] && rm -rf tmp; mkdir tmp
+[[ ! -d tmp ]] && mkdir tmp
+cd tmp
+rm $1_*
+cd ..
 [[ -d log ]] && rm -rf log; mkdir log
 [[ ! -d output/$1_archive ]] && mkdir -p output
 
@@ -30,12 +33,12 @@ perl perl/core/fix-whitespace.pl $1 > tmp/$1_tmp-2.tex
 mv tmp/$1_tmp-2.tex tmp/$1_tmp-1.tex
 
 echo "$(timestamp) fix-whitespace finished" >> log/log_$(datestamp).txt
-#echo "$(timestamp) preprocessing begin" >> log/log_$(datestamp).txt
+echo "$(timestamp) preprocessing begin" >> log/log_$(datestamp).txt
 
-#perl perl/authors/$1-preprocessing.pl > tmp/$1_tmp-2.tex
-#mv tmp/$1_tmp-2.tex tmp/$1_tmp-1.tex
+perl perl/authors/$1-preprocessing.pl > tmp/$1_tmp-2.tex
+mv tmp/$1_tmp-2.tex tmp/$1_tmp-1.tex
 
-#echo "$(timestamp) preprocessing finished" >> log/log_$(datestamp).txt
+echo "$(timestamp) preprocessing finished" >> log/log_$(datestamp).txt
 echo "$(timestamp) replace characters begin" >> log/log_$(datestamp).txt
 
 perl perl/core/replace-characters.pl $1 > tmp/$1_tmp-2.tex
@@ -83,6 +86,7 @@ cat context/header.tex >> tmp/$1_tmp-2.tex
 echo "$(timestamp) define footnotes finished" >> log/log_$(datestamp).txt
 echo "$(timestamp) postprocess margins begin" >> log/log_$(datestamp).txt
 
+perl perl/core/switch-commentary-markers.pl $1 > tmp/$1_tmp_2.tex
 perl perl/core/postprocess-margins.pl $1 > tmp/$1_tmp-3.tex
 perl perl/core/remove-moved-elements.pl $1 >> tmp/$1_tmp-2.tex
 cat context/footer.tex >> tmp/$1_tmp-2.tex
@@ -90,7 +94,7 @@ cat context/footer.tex >> tmp/$1_tmp-2.tex
 echo "$(timestamp) postprocess margins finished" >> log/log_$(datestamp).txt
 echo "$(timestamp) compiling begin" >> log/log_$(datestamp).txt
 
-notify-send "Entering second stage"
+notify-send "Entering second stage of $1"
 
 cd tmp
 context $1_tmp-2.tex >> ../log/log_$(datestamp).txt
@@ -111,4 +115,4 @@ for file in ./$1_*.pdf; do
 	fi
 done
 
-notify-send "Compilation finished"
+notify-send "Compilation of $1 finished"
