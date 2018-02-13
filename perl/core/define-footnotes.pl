@@ -41,7 +41,7 @@ print "
    textcommand=\\my$app,
    paragraph=yes,
    rule=off,
-interlinespace=12.25pt]
+interlinespace=10.5pt]
 
 \\setupnotation[${app}Note]
   [alternative=serried,
@@ -51,7 +51,7 @@ interlinespace=12.25pt]
    way=bysection, % bypage does not work properly at the moment
    width=broad,
    split=tolerant,
-interlinespace=12.25pt]
+interlinespace=10.5pt]
 "
 }
 }
