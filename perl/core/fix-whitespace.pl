@@ -25,6 +25,12 @@ $tail =~ s/\s+}/}/g;
 # in this case we pretend that the closing abbreviation is part of the list
 $tail =~ s/\\stopitemize\\margin(.+?)\{plClose}\{d1e(.+?)}\{\\tfx\\high\{c}}\{c}/\\margin$1\{plClose}\{d1e$2}\{\\tfx\\high\{c}}\{c}\\stopitemize/g;
 
+$tail =~ s/(\\textbackslash\}\})(\\margin\{.*?\}\{pb)/$1 $2/g;
+
+# fixing rdgMarkers
+$tail =~ s/\} \\nobreak/\}\\nobreak/g;
+
+
 # fixing whitespaces before punctuation
 $tail =~ s/ ,/,/g;
 $tail =~ s/} ,/},/g;
@@ -76,45 +82,45 @@ $tail =~ s/ +/ /g;
 
 
 # for each footnote in the critical apparatus...
+# @TODO hängt sich bei Leß auf -- while terminiert nicht. Warum?
+#while ($tail =~ /\\[a-dz]{0,8}Note/) {
+#  my $move = $tail;
 
-while ($tail =~ /\\[a-z]{0,8}Note/) {
-  my $move = $tail;
+#  $move =~ s/(.*?\\[a-dz]{0,8}Note).*/$1/;
 
-  $move =~ s/(.*?\\[a-z]{0,8}Note).*/$1/;
+#  $tail = substr($tail, length($move));
+#  $head = $head . $move;
 
-  $tail = substr($tail, length($move));
-  $head = $head . $move;
+#  $move = $tail;
 
-  $move = $tail;
+#  $move =~ s/(.*?}).*/$1/;
 
-  $move =~ s/(.*?}).*/$1/;
+#  my $count1 = ($move =~ tr/{//);
+#  my $count2 = ($move =~ tr/}//);
 
-  my $count1 = ($move =~ tr/{//);
-  my $count2 = ($move =~ tr/}//);
+#  my $regex = ".*?}";
 
-  my $regex = ".*?}";
+#  while ($count1 != $count2) {
+#    $move = $tail;
 
-  while ($count1 != $count2) {
-    $move = $tail;
+#    $regex = $regex . ".*?}";
+#    $move =~ s/($regex).*/$1/;
 
-    $regex = $regex . ".*?}";
-    $move =~ s/($regex).*/$1/;
+#    $count1 = ($move =~ tr/{//);
+#    $count2 = ($move =~ tr/}//);
+#  }
 
-    $count1 = ($move =~ tr/{//);
-    $count2 = ($move =~ tr/}//);
-  }
-
-  $tail = substr($tail, length($move));
-  $head = $head . $move;
+#  $tail = substr($tail, length($move));
+#  $head = $head . $move;
 
 
   # ... find its end and add a non-breaking space if it is followed by a margin
   # or a high command
 
-  if ($tail =~ /^\\margin/ || $tail =~ /^{\\tfx\\high/) {
-    $head = $head . "~";
-  }
-}
+#  if ($tail =~ /^\\margin/ || $tail =~ /^{\\tfx\\high/) {
+#    $head = $head . "~";
+#  }
+#}
 
 $head = $head . $tail;
 print $head;
