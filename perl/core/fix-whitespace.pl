@@ -10,7 +10,7 @@ use File::Slurp;
 my $head = "";
 
 my $tail = read_file("tmp/" . $ARGV[0] . "_tmp-1.tex");
-
+#my $tail = read_file("test.tex");
 
 $tail =~ s/\s+/ /g;
 $tail =~ s/ +/ /g;
@@ -32,18 +32,21 @@ $tail =~ s/\} \\nobreak/\}\\nobreak/g;
 
 
 # fixing whitespaces before punctuation
-$tail =~ s/ ,/,/g;
-$tail =~ s/} ,/},/g;
+$tail =~ s/ ([,\.;\)\?}])/$1/g;
+$tail =~ s/} ([,\.;\):}])/}$1/g;
+
+#e2 80 9c: utf8 codepoint for LEFT DOUBLE QUOTATION MARK
+$tail =~ s/ \x{201C}/\x{201C}/g;
 $tail =~ s/ \./\./g;
-$tail =~ s/} \./}\./g;
-$tail =~ s/ ;/;/g;
-$tail =~ s/} ;/};/g;
-$tail =~ s/ \)/\)/g;
-$tail =~ s/} \)/}\)/g;
+#$tail =~ s/} \./}\./g;
+#$tail =~ s/ ;/;/g;
+#$tail =~ s/} ;/};/g;
+#$tail =~ s/ \)/\)/g;
+#$tail =~ s/} \)/}\)/g;
 $tail =~ s/\( \\/\(\\/g;
-$tail =~ s/ \?/\?/g;
+#$tail =~ s/ \?/\?/g;
 $tail =~ s/} \\italic\{,/}\\italic\{,/g;
-$tail =~ s/} :/}:/g;
+#$tail =~ s/} :/}:/g;
 $tail =~ s/} \\italic\{:/}\\italic\{:/g;
 $tail =~ s/\\tfx\\high\{\/a}} \{\\tfx\\high\{\/c}/\\tfx\\high\{\/a}}\{\\tfx\\high\{\/c}/g;
 $tail =~ s/\{\/a} \{\\tfx\\high\{\/c}/\{\/a}\{\\tfx\\high\{\/c}/g;
