@@ -1,8 +1,8 @@
 # bdnPrint
 
-> Generate printable PDFs from TEI/XML
+> Generate printable PDFs for the "Bibliothek der Neologie".
 
-bdnPrint is a collection of stylesheets and scripts to generate printable PDFs from TEI/XML. It was originally developed for the DFG-funded ["Bibliothek der Neologie"](http://www.bdn-edition.de) project and runs on the project's specific TEI/XML schema. The latter will be published in April 2017.
+bdnPrint is a collection of stylesheets and scripts to generate printable PDFs from TEI/XML. It was originally developed for the DFG-funded ["Bibliothek der Neologie"](http://www.bdn-edition.de) project and runs on an [intermediate format](https://github.com/arokis/bdnprint_if) that is based on the project's specific TEI/XML schema. 
 
 Feel free to build on the code in this repository!
 
@@ -19,74 +19,42 @@ Feel free to build on the code in this repository!
 * ConTeXt
 * PDFtk
 
-The font used in bdnPrint is currently [**EB Garamond**](http://www.georgduffner.at/ebgaramond/), which is a free Garamond typeface. Please make sure you have this font installed such that ConTeXt is able to find it. Of course you can use any other font you wish. Simply change the line
+The font used in bdnPrint is [**EB Garamond**](http://www.georgduffner.at/ebgaramond/), which is a free Garamond typeface. Please make sure you have this font installed such that ConTeXt is able to find it. Of course you can use any other font you wish. Simply change the line
 
 	 \setmainfont[ebgaramond]
 	 
 in `context/header.tex` to an already installed font.
 
 
-## What it does
+## Installing
 
-All you should need to do is run 
+Simply clone the repository, change into the respective directory and run
 
 	compile.sh author
 	
-Nevertheless, here is an overview of the different files in the repository:
+if you want to create the work of a single author or
 
-`context/`:
+	compile.sh all
 
-* `header.tex`: contains all ConTeXt code for the layout of the page, including the LuaTeX code to extract margin notes
-* `footer.tex`: closes the ConTeXt code
-
-`perl/`:
-
-* `define-footnotes.pl`: defines footnotes for the different combinations of text witnesses
-* `fix-whitespace.pl`: fixes whitespace problems before headings, after footnote markers and in general
-* `merge-markers.pl`: merges omission markers that are not separated by a whitespace character
-* `postprocess-margins.pl`: assigns IDs to all information that shall appear in a margin note
-* `preprocess-margin.pl`: inserts margin notes in the right places of the ConTeXt code
-* `sort-bible-register.pl`: assigns special sortkeys to referenced bible passages. This script will probably be deprecated soon, since we are testing a different way of encoding biblical references.
-
-`xslt/`:
-
-* `transform-to-tex.xsl`: generates ConTeXt code from TEI/XML
-* 
+which creates a PDF for all available XML files in `input/`.
 
 
 
-## Still to be done
+## Versioning
 
-* In the near future we will provide a mechanism which sees about historical hyphenation. Since the "Library of Neology" is a project which deals with German (and one Latin) text(s) of the 18th century, there are partially severe differences between the texts' and modern orthography. This currently causes wrong hyphenation behaviour that has to be corrected manually (which in part causes conflicts between ConTeXt's hyphenation command and the selected language package). 
-* Currently the scripts only work with the front element of the XML. An implementation for the table of contents and foreword is still missing.
-* XInclude remains to be considered in `transform-to-tex.xsl`.
-* To denote editorial notes, a scribal abbreviation (E) is inserted into the margin. For x notes, x abbreviations appear. This is currently suppressed by a regex in `postprocess-margins.pl` and needs a better solution.
+We use [SemVer](http://semver.org/) for versioning. 
 
 
+## Authors
+
+* **Hannes Riebl** - *2015* - [hriebl](https://github.com/hriebl)
+* **Michelle Rodzis** - *2015-2018* - [MRodz](https://github.com/MRodz)
+
+See also the list of [contributors](https://github.com/subugoe/bdnPrint/contributors) who participated in this project.
 
 
 ## License
 
-Original work Copyright (c) 2015 Hannes Riebl
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.txt) file for details
 
-Modified work Copyright (c) 2015 - 2016 Michelle Rodzis (on behalf of the
-DFG-funded project "Bibliothek der Neologie")
 
-Permission is hereby granted, free of charge, to any person obtaining a
-copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
-
-The above copyright notice and this permission notice shall be included
-in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
-CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
