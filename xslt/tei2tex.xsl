@@ -5,7 +5,7 @@
     
     <xsl:strip-space elements="*"/>
     <xsl:preserve-space elements="abbr byline corr docImprint edition head hi
-        item label lem note p persName rdg sic term titlePart"/>
+        item label lem note p pb persName rdg sic term titlePart titlePage"/>
     
     <xsl:template match="TEI">
         <xsl:apply-templates/>
@@ -128,12 +128,17 @@
     
     
     <xsl:template match="closer">
-        <xsl:text>\blank </xsl:text>
+        <xsl:text>\blank \noindentation </xsl:text>
         <xsl:apply-templates/>
     </xsl:template>
     
     
     <xsl:template match="div[@type = 'corrigenda']">
+        <xsl:apply-templates/>
+    </xsl:template>
+    
+    <xsl:template match="div[@type = 'index']">
+        @@@!@@@
         <xsl:apply-templates/>
     </xsl:template>
     
@@ -338,13 +343,19 @@
 
 
     <xsl:template match="p">
-        <xsl:if test="parent::*/child::*[1] = .">
+        <xsl:if test="ancestor::div/descendant::p[1] = .
+            or parent::note[@type='editorial']/descendant::p[1] = .">
             <xsl:text>\noindentation </xsl:text>
         </xsl:if>
-        <xsl:if test="preceding-sibling::p">
+        <xsl:if test="(preceding-sibling::p
+            or not(ancestor::div/descendant::p[1] = .))
+            and not(parent::note[@type='editorial'])">
             <xsl:text>\par </xsl:text>
         </xsl:if>
         <xsl:apply-templates/>
+        <xsl:if test="@break-after = 'yes'">
+            <xsl:text> </xsl:text>
+        </xsl:if>
     </xsl:template>
     
     
@@ -411,6 +422,10 @@
                 <xsl:text>}</xsl:text>
             </xsl:when>
         </xsl:choose>
+        
+        <xsl:if test="@break-after = 'yes'">
+            <xsl:text> </xsl:text>
+        </xsl:if>
     </xsl:template>
     
     <xsl:template match="aligned">
@@ -449,6 +464,9 @@
  
     <xsl:template match="choice">
         <xsl:apply-templates select="child::*[not(self::seg or self::sic or self::expan)]"/>
+        <xsl:if test="@break-after = 'yes'">
+            <xsl:text> </xsl:text>
+        </xsl:if>
     </xsl:template>
  
  
@@ -477,6 +495,10 @@
         <xsl:if test="not(lem[@type = 'missing-structure'])">
             <xsl:apply-templates/>
         </xsl:if>
+        
+        <xsl:if test="@break-after = 'yes'">
+            <xsl:text> </xsl:text>
+        </xsl:if>
     </xsl:template>
     
     
@@ -488,87 +510,79 @@
             <xsl:call-template name="paragraph-indent"/>
         </xsl:if>
         
-        <xsl:apply-templates/>
+        <xsl:choose>
+            <!-- special case: when a rdg[@type = 'ppl' or @type = 'ptl']
+            has only bottom notes as children then summarize these single notes
+            to one. this is done because otherwise these notes might be displayed
+            on seperate pages in the book (which is unwanted) -->
+            <xsl:when test="count(child::*[self::note[@place = 'bottom']]) > 1 
+                and not(child::*[not(self::note[@place = 'bottom'])])">
+                <xsl:text>\authorbottomnote{</xsl:text>
+                <xsl:apply-templates select="descendant::rdgMarker[@mark = 'open']"/>
+                <xsl:for-each select="child::note[@place = 'bottom']/text()">
+                    <xsl:apply-templates select="."/>
+                    <xsl:if test="not(ancestor::rdg[1]/child::note[@place = 'bottom'][last()] = .)">
+                        <xsl:text>\crlf </xsl:text>
+                    </xsl:if>
+                </xsl:for-each>
+                <xsl:apply-templates select="descendant::rdgMarker[@mark = 'close']"/>
+                <xsl:text>}</xsl:text>
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:apply-templates/>
+            </xsl:otherwise>
+        </xsl:choose>
         
-        <xsl:if test="position() != last()">
+        <xsl:if test="position() != last() and not(titlePage)">
             <xsl:text>\par </xsl:text>
         </xsl:if>
         <xsl:if test="not(child::*[1][self::note])">
             <xsl:text>\stoprdg </xsl:text>
         </xsl:if>
-        <xsl:text>\noindentation </xsl:text>
+        <xsl:if test="not(note[@place = 'bottom'])">
+            <xsl:text>\noindentation </xsl:text>
+        </xsl:if>
     </xsl:template>
     
     
     <xsl:template match="rdg[@type = 'pp' or @type = 'pt']">
         <xsl:if test="not(preceding-sibling::rdg[@type = 'pp' or @type = 'pt'])">
-            <xsl:text>{\dvl}</xsl:text>
+            <xsl:text>\hspace[insert]{\dvl}</xsl:text>
         </xsl:if>
-        <xsl:choose>
-            <xsl:when test="ancestor::note[@place = 'bottom']">
-                <xsl:apply-templates select="." mode="in-footnote"/>
-            </xsl:when>
-            <xsl:otherwise>
-                <xsl:apply-templates select="." mode="normal-note"/>
-            </xsl:otherwise>
-        </xsl:choose>
-        <!--<xsl:apply-templates select="." mode="footnote"/>-->
+        <xsl:call-template name="make-app-entry">
+            <xsl:with-param name="node" select="."/>
+            <xsl:with-param name="wit" select="replace(@wit, '[# ]+', '')"/>
+        </xsl:call-template>
     </xsl:template>
     
     
-    <xsl:template match="rdg[@type = 'v']">
-        <xsl:choose>
-            <xsl:when test="ancestor::note[@place = 'bottom']">
-                <xsl:apply-templates select="." mode="in-footnote"/>
-            </xsl:when>
-            <xsl:otherwise>
-                <xsl:apply-templates select="." mode="normal-note"/>
-            </xsl:otherwise>
-        </xsl:choose>
-        <!--<xsl:apply-templates select="." mode="footnote"/>-->
-    </xsl:template>
-    
-    
-    <xsl:template match="rdg" mode="footnote">
-        <xsl:variable name="wit" select="replace(@wit, '[# ]+', '')"/>
-        
-        <xsl:text>\</xsl:text>
-        <xsl:value-of select="$wit"/>
-        <xsl:text>Note{</xsl:text>
-        <xsl:apply-templates/>
-        <xsl:text>}</xsl:text>       
-    </xsl:template>
-    
-    
-    <xsl:template match="rdg" mode="normal-note">
-        <xsl:variable name="wit" select="replace(@wit, '[# ]+', '')"/>
-        
-        <xsl:text>\</xsl:text>
-        <xsl:value-of select="$wit"/>
-        <xsl:text>Note{</xsl:text>
-        <xsl:apply-templates/>
-        <xsl:text>}</xsl:text>       
-    </xsl:template>
-    
-    
-    <xsl:template match="rdg" mode="in-footnote">
-        <xsl:variable name="wit" select="replace(@wit, '[# ]+', '')"/>
-        
-        <xsl:text>\note[</xsl:text>
-        <xsl:value-of select="$wit"/>
-        <xsl:text>Note][</xsl:text>
-        <xsl:value-of select="@id"/>
-        <xsl:text>]</xsl:text>       
+    <xsl:template match="rdg[@type = 'v']" mode="default">
+        <xsl:call-template name="make-app-entry">
+            <xsl:with-param name="node" select="."/>
+            <xsl:with-param name="wit" select="replace(@wit, '[# ]+', '')"/>
+        </xsl:call-template>        
     </xsl:template>
  
- 
-    <xsl:template match="rdg[@type = 'om' or @type = 'typo_corr' or @type = 'var-structure']"/>
+    <xsl:template match="rdg[@type = 'om' or @type = 'typo_corr' or @type = 'var-structure' or @type = 'v']"/>
     
     
     <xsl:template match="rdgMarker">
         <xsl:variable name="wit" select="replace(@wit, ' ', '')"/>
         
         <xsl:choose>
+            <xsl:when test="@type = 'v' and @mark = 'close' 
+                and parent::lem">
+                <xsl:variable name="refs-array" select="tokenize(@ref, ' ')"/>
+                <!--<xsl:variable name="ref" select="./@ref"/>
+                <xsl:apply-templates select="//rdg[@id = $ref]" mode="default"/>  -->
+                
+                
+                <xsl:call-template name="set-all-variants">
+                    <xsl:with-param name="iii" select="1"/>
+                    <xsl:with-param name="limit" select="count($refs-array)"/>
+                    <xsl:with-param name="refs" select="$refs-array"/>
+                </xsl:call-template>
+            </xsl:when>
             <xsl:when test="(@type = 'ppl' or @type = 'pp') and @context = 'lem'">
                 <xsl:if test="@mark = 'open'">
                     <xsl:text>{\tfx\high{/</xsl:text>
@@ -632,6 +646,9 @@
     
     <xsl:template match="foreign[@xml:lang = 'gr']">
         <xsl:apply-templates/>
+        <xsl:if test="@break-after = 'yes'">
+            <xsl:text> </xsl:text>
+        </xsl:if>
     </xsl:template>
 
 
@@ -640,10 +657,18 @@
         <xsl:text>\ezraFont </xsl:text>
         <xsl:apply-templates/>
         <xsl:text>}</xsl:text>
+        <xsl:if test="@break-after = 'yes'">
+            <xsl:text> </xsl:text>
+        </xsl:if>
     </xsl:template>
 
 
     <xsl:template match="pb">
+        <xsl:if test="@break-before = 'yes'
+            and not(preceding-sibling::*[1][self::rdgMarker])">
+            <xsl:text> </xsl:text>
+        </xsl:if>
+        
         <xsl:choose>
             <xsl:when test="ancestor::rdg[@type = 'v' or @type = 'pp' or @type = 'pt']">
                 <xsl:text>{\vl}</xsl:text>
@@ -672,6 +697,10 @@
                 <xsl:text>}</xsl:text>
             </xsl:otherwise>
         </xsl:choose>
+        
+        <xsl:if test="@break-after = 'yes'">
+            <xsl:text> </xsl:text>
+        </xsl:if>
     </xsl:template>
  
  
@@ -684,7 +713,15 @@
                 <xsl:text>\stopbottomnote}</xsl:text>-->
                 <!--<xsl:text>\footnote{</xsl:text>-->
                 <xsl:text>\authorbottomnote{</xsl:text>
+                <xsl:if test="ancestor::rdg[@type = 'ppl' or @type = 'ptl']/descendant::note[@place = 'bottom'][1] = .">
+                    <xsl:apply-templates select="preceding::rdgMarker[1][@ref = ancestor::rdg[@type = 'ppl' 
+                        or @type = 'ptl']/@id and @mark = 'open']"/>
+                </xsl:if>
                 <xsl:apply-templates/>
+                <xsl:if test="ancestor::rdg[@type = 'ppl' or @type = 'ptl']/descendant::note[@place = 'bottom'][last()] = .">
+                    <xsl:apply-templates select="following::rdgMarker[1][@ref = ancestor::rdg[@type = 'ppl' 
+                        or @type = 'ptl']/@id and @mark = 'close']"/>                   
+                </xsl:if>
                 <xsl:text>}</xsl:text>
                 
                 <xsl:variable name="rdgs" select="descendant::rdg[@type = 'v' or @type = 'pp' or @type = 'pt']"/>
@@ -769,7 +806,7 @@
                         <xsl:text>\endash</xsl:text>
                         <xsl:value-of select="$to-passage"/>
                     </xsl:when>
-                    <!-- does the otherwise case ever occur? -->
+                    <!-- does the other case ever occur? -->
                     <xsl:otherwise/>
                 </xsl:choose>
                 <xsl:text>}</xsl:text>
@@ -799,6 +836,9 @@
             </xsl:when>
         </xsl:choose>       
         <xsl:apply-templates/>
+        <xsl:if test="@break-after = 'yes'">
+            <xsl:text> </xsl:text>
+        </xsl:if>
     </xsl:template>
  
  
@@ -933,6 +973,9 @@
     
     <xsl:template match="persName">
         <xsl:apply-templates/>
+        <xsl:if test="@break-after ='yes'">
+            <xsl:text> </xsl:text>
+        </xsl:if>       
     </xsl:template>
     
     
@@ -942,7 +985,9 @@
                 <xsl:text>[E] </xsl:text>
             </xsl:when>
             <xsl:otherwise>
-                <xsl:text>\margin{}{e}{}{\hbox{}}{E}</xsl:text>
+                <xsl:text>\margin{</xsl:text>
+                <xsl:value-of select="generate-id()"/>
+                <xsl:text>}{e}{}{\hbox{}}{E}</xsl:text>
             </xsl:otherwise>
         </xsl:choose>
         <xsl:text>\pagereference[</xsl:text>
@@ -953,6 +998,9 @@
     
     <xsl:template match="ref">
         <xsl:apply-templates/>
+        <xsl:if test="@break-after ='yes'">
+            <xsl:text> </xsl:text>
+        </xsl:if>
     </xsl:template>
     
     
@@ -1011,6 +1059,9 @@
     
     <xsl:template match="seg">
         <xsl:apply-templates/>
+        <xsl:if test="@break-after">
+            <xsl:text> </xsl:text>
+        </xsl:if>
     </xsl:template>
     
     
@@ -1083,9 +1134,6 @@
     
     
     <xsl:template match="back">
-        <!--<xsl:if test="not(ancestor::group)">
-            <xsl:text>\newOddPage</xsl:text> 
-        </xsl:if>-->
         <xsl:apply-templates/>
     </xsl:template>
     
@@ -1153,12 +1201,31 @@
             <xsl:choose>
                 <xsl:when test="not(./ancestor::rdg) and ancestor::note[@place = 'bottom']">
                     <xsl:value-of select="$base-text"/>
-                    <xsl:value-of select="./preceding::pb[matches(@edRef, $base-text)][1]/@n + 1"/>                   
+                    <xsl:choose>
+                        <xsl:when test="./preceding::pb[1][matches(@edRef, $base-text)]/@type = 'sp'">
+                            <xsl:text>[</xsl:text>
+                            <xsl:value-of select="./preceding::pb[1][matches(@edRef, $base-text)]/@n + 1"/>
+                            <xsl:text>]</xsl:text>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:value-of select="./preceding::pb[1][matches(@edRef, $base-text)]/@n + 1"/>
+                        </xsl:otherwise>
+                    </xsl:choose>                  
                 </xsl:when>
                 <xsl:when test="not(./ancestor::rdg)">
                     <xsl:value-of select="$base-text"/>
-                    <xsl:value-of select="./preceding::pb[matches(@edRef, $base-text)][1]/@n"/>
+                    <xsl:choose>
+                        <xsl:when test="./preceding::pb[matches(@edRef, $base-text)][1]/@type = 'sp'">
+                            <xsl:text>[</xsl:text>
+                            <xsl:value-of select="./preceding::pb[1][matches(@edRef, $base-text)]/@n"/>
+                            <xsl:text>]</xsl:text>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:value-of select="./preceding::pb[1][matches(@edRef, $base-text)]/@n"/>
+                        </xsl:otherwise>
+                    </xsl:choose>                     
                 </xsl:when>
+                <!-- b7 is here. why? -->
                 <xsl:otherwise>
                     <xsl:variable name="wits" select="replace(./ancestor::rdg[1]/@wit, '#', '')"/>
                     <xsl:variable name="wits-array" select="tokenize($wits, '\s')"/>
@@ -1197,6 +1264,34 @@
         <xsl:text>\subject[]{</xsl:text>
         <xsl:apply-templates select="$content"/>
         <xsl:text>}</xsl:text>
+    </xsl:template>
+    
+    
+    <xsl:template name="make-app-entry">
+        <xsl:param name="wit"/> 
+        <xsl:param name="node"/>
+        
+        <xsl:choose>
+            <xsl:when test="$node/ancestor::note[@place = 'bottom']">
+                <xsl:text>\note[</xsl:text>
+                <xsl:value-of select="$wit"/>
+                <xsl:text>Note][</xsl:text>
+                <xsl:value-of select="$node/@id"/>
+                <xsl:text>]</xsl:text> 
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:text>\</xsl:text>
+                <xsl:value-of select="$wit"/>
+                <xsl:text>Note{</xsl:text>
+                <xsl:apply-templates/>
+                <xsl:text>}</xsl:text> 
+            </xsl:otherwise>
+        </xsl:choose>
+        
+        <xsl:if test="following::node()[1][self::text()]
+            or not($node/@type = $node/preceding-sibling::rdg/@type)">
+            <xsl:text> </xsl:text>
+        </xsl:if>
     </xsl:template>
     
     
@@ -1320,7 +1415,7 @@
         <xsl:param name="wits"/>
         
         <xsl:if test="$iii &lt;= $limit">
-            <xsl:variable name="prev-pb" select="$context/preceding::pb[matches(@edRef, $wits[$iii])][1]"/>
+            <xsl:variable name="prev-pb" select="$context/preceding::pb[1][matches(@edRef, $wits[$iii])]"/>
             <xsl:variable name="prev-pb-no" select="$prev-pb/@n"/>
             <xsl:variable name="fn-break" select="$context/preceding::milestone[@unit = 'fn-break'][matches(@edRef, $wits[$iii])][1]"/>
             <xsl:variable name="fn-break-no" select="replace($fn-break/@n, '[^\d]', '')"/>
@@ -1331,7 +1426,13 @@
                 </xsl:when>
                 <xsl:otherwise>
                     <xsl:value-of select="$wits[$iii]"/>
-                    <xsl:value-of select="$prev-pb/@n"/>                   
+                    <xsl:if test="$prev-pb/@type = 'sp'">
+                        <xsl:text>[</xsl:text>
+                    </xsl:if>
+                    <xsl:value-of select="$prev-pb/@n"/>  
+                    <xsl:if test="$prev-pb/@type = 'sp'">
+                        <xsl:text>]</xsl:text>
+                    </xsl:if>
                 </xsl:otherwise>
             </xsl:choose>
             <xsl:if test="$iii &lt; $limit">
@@ -1345,5 +1446,22 @@
                 <xsl:with-param name="wits" select="$wits"/>
             </xsl:call-template>
         </xsl:if>
+    </xsl:template>
+    
+    <xsl:template name="set-all-variants">
+        <xsl:param name="iii"/>
+        <xsl:param name="limit"/>
+        <xsl:param name="refs"/>
+        
+        <xsl:if test="$iii &lt;= $limit">
+            <xsl:variable name="ref" select="$refs[$iii]"/>
+            <xsl:apply-templates select="//rdg[@id = $ref]" mode="default"/>
+            
+            <xsl:call-template name="set-all-variants">
+                <xsl:with-param name="iii" select="$iii + 1"/>
+                <xsl:with-param name="limit" select="$limit"/>
+                <xsl:with-param name="refs" select="$refs"/>
+            </xsl:call-template> 
+        </xsl:if>       
     </xsl:template>
 </xsl:stylesheet>
