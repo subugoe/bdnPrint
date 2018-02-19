@@ -31,7 +31,11 @@
 \definestructureconversionset [bodypart:pagenumber] [] [numbers]
 
 \definehspace[p]
-  [0.4cm]   
+  [0.4cm] 
+\definehspace[insert]
+  [0.16667em]
+\definehspace[interMarker]
+  [0.14em]
   
 \definehspace[item]
   [-1.5 em]
@@ -534,7 +538,8 @@
   
 \definenote[authorbottomnote][footnote]
 
-\setupnotation[authorbottomnote][]
+\setupnotation[authorbottomnote]
+  [after={\blank[4mm]}]
   
   \definenote[bottomnote]
     [before={\blank[4mm]},
@@ -678,8 +683,7 @@ leftmargin=4mm, rightmargin=0mm]
 \setupregister[bibelIndex]
   [compress=yes,
   indicator=no,
-  pagestyle=\tf,
-  location=middle]
+  pagestyle=\tf]
 
 \defineregister[persIndex]
 \setupregister[persIndex]
@@ -734,7 +738,7 @@ leftmargin=4mm, rightmargin=0mm]
     \typo_injectors_mark_register}
  \protect
 
-\hyphenation{Er-zie-hungs-we-sens Schul-schrif-ten Ab-sicht The-o-phrast's Wis-sen-schaf-ten Er-läu-ter-ungs-schrif-ten Kir-chen-ge-schich-te ge-nomm-ne An-drer wo-rü-ber Mit-thei-lung noth-wen-dig noth-wen-di-ge noth-wen-di-ges noth-wen-di-gen Noth-wen-dig-keit Noth-wen-dig-kei-ten Ein-thei-lung be-ur-theilt Be-ur-thei-lung nach-thei-lig Vor-ur-theil se-ue-ra Ur-thei-le wo-raus groß-en-theils Irr-thum Irr-thü-mer Ra-ti-o-nal-er-kennt-niß Wolf-schen ein-thei-len Haupt\-, mit-thei-len Wa-cker-barth be-ur-thei-len ei-gen-thüm-li-chen Chris-ten-thums un-grie-chisch-e vor-tref-li-ches Pro-fan-scri-ben-ten mit-theilt Ue-ber-ei-lun-gen Ver-mu-thun-gen Prü-fe-stein ver-thei-di-gen un-par-they-isch-e Vor-theil Un-thä-ti-gkeit größ-ten-theils Ver-stan-de Vor-ur-thei-le Lieg-nitz vie-ler-ley Ver-muth-ung der-sel-ben ge-mein-schaft-li-cher letzt-er-wähn-ten Er-kennt-niß-quel-le Re-li-gions-par-they-en un-par-they-isch-en (1725–-1791) die-ie-ni-ge Ver-mu-thung-en Nach-theil Be-ur-theil-ung wohl-thä-tigs-ten ur-theil-en an-ti-qui Be-stand-thei-le Be-ur-thei-lung ur-thei-len ad-iun-xit meis-ten-theils Schul-en-cy-klo-pä-die ver-thei-len Ge-schöp-fe, Ur-theil}
+\hyphenation{Er-zie-hungs-we-sens Schul-schrif-ten Ab-sicht The-o-phrast's Wis-sen-schaf-ten Er-läu-ter-ungs-schrif-ten Kir-chen-ge-schich-te ge-nomm-ne An-drer wo-rü-ber Mit-thei-lung noth-wen-dig noth-wen-di-ge noth-wen-di-ges noth-wen-di-gen Noth-wen-dig-keit Noth-wen-dig-kei-ten Ein-thei-lung be-ur-theilt Be-ur-thei-lung nach-thei-lig Vor-ur-theil se-ue-ra Ur-thei-le wo-raus groß-en-theils Irr-thum Irr-thü-mer Ra-ti-o-nal-er-kennt-niß Wolf-schen ein-thei-len Haupt\-, mit-thei-len Wa-cker-barth be-ur-thei-len ei-gen-thüm-li-chen Chris-ten-thums un-grie-chisch-e vor-tref-li-ches Pro-fan-scri-ben-ten mit-theilt Ue-ber-ei-lun-gen Ver-mu-thun-gen Prü-fe-stein ver-thei-di-gen un-par-they-isch-e Vor-theil Un-thä-ti-gkeit größ-ten-theils Ver-stan-de Vor-ur-thei-le Lieg-nitz vie-ler-ley Ver-muth-ung der-sel-ben ge-mein-schaft-li-cher letzt-er-wähn-ten Er-kennt-niß-quel-le Re-li-gions-par-they-en un-par-they-isch-en (1725–-1791) die-ie-ni-ge Ver-mu-thung-en Nach-theil Be-ur-theil-ung wohl-thä-tigs-ten ur-theil-en an-ti-qui Be-stand-thei-le Be-ur-thei-lung ur-thei-len ad-iun-xit meis-ten-theils Schul-en-cy-klo-pä-die ver-thei-len Ge-schöp-fe Ur-theil be-sitzt un-ver-än-der-lich vor-zu-nehm-en vor-theil-haft Be-trach-tung-en be-sitzt}
 
 
 % lua
@@ -768,9 +772,11 @@ notes = {}
 
 os.remove("id-file.txt")
 os.remove("notes.txt")
+os.remove("comments.txt")
 
 idFile = io.open("id-file.txt", "a") --a is for append mode
 notesFile = io.open("notes.txt", "a")
+commentsFile = io.open("comments.txt", "a")
 
 processMargins = function(head)
   for line in node.traverse_id(node.id("hlist"), head) do -- getting all lines of a paragraph and traversing them
@@ -792,7 +798,7 @@ processMargins = function(head)
       if not hash[v] then
         res[#res + 1] = v
         hash[v] = true
-      end
+      end   
     end
 
     table.sort(res)
@@ -849,6 +855,9 @@ processMargins = function(head)
       end
 
       ::continue::
+      if v1["type"] == "e" then
+	commentsFile:write(v1["id"] .. "\n")
+      end
     end
       
     notesFile:write(lineNote .. "\n")
@@ -881,9 +890,24 @@ nodes.tasks.appendaction("finalizers", "after", "processMargins")
      \dostoptagged}
   
   \protect
+  
+\unprotect
+% \unexpanded\def\registerpageseparator % todo: , configurable
+%   {\ifcase\c_strc_registers_page_state
+%      \hskip\d_strc_registers_distance\relax
+%      \hfill
+%    \or
+%      \dostarttagged\t!registerseparator\empty
+%      \registerpageseparatorsymbol % page
+%      \dostoptagged
+%    \or
+%      \dostarttagged\t!registerseparator\empty
+%      \registerpageseparatorsymbol % see
+%      \dostoptagged
+%    \fi}
 
- 
- 
+\protect
+  
 \starttext
 
 % for lining numbers instead of oldstyle numbers (default)
