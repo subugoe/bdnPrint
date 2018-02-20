@@ -1220,7 +1220,7 @@
         <xsl:for-each select="//choice[corr[@type = 'editorial']]">
             <xsl:text> \NC </xsl:text>
             <xsl:choose>
-                <xsl:when test="ancestor::note[@place = 'bottom']">
+                <xsl:when test="ancestor::note[@place = 'bottom'][not(parent::rdg)]">
                     <xsl:choose>
                         <xsl:when test="parent::lem[not(@wit)] or not(parent::rdg or parent::lem[@wit])"> 
                             <xsl:variable name="prev-fn-break" select="preceding-sibling::milestone[@unit = 'fn-break'][matches(@edRef, $base-text)][1]"/>
@@ -1259,6 +1259,24 @@
                         </xsl:when>
                     </xsl:choose>
                 </xsl:when>
+                <xsl:when test="ancestor::note[parent::rdg]">
+                    <xsl:variable name="wit" select="ancestor::note/parent::rdg/@wit"/>
+                    <xsl:variable name="prev-fn-break" select="preceding-sibling::milestone[@unit = 'fn-break'][matches(@edRef, $wit)][1]"/>
+                    <xsl:variable name="prev-pb" select="ancestor::note/ancestor::app[1]/preceding::pb[matches(@edRef, $wit)][1]"/>
+
+                    <xsl:choose>
+                        <xsl:when test="$prev-fn-break">
+                            <xsl:call-template name="make-pb-content">
+                                <xsl:with-param name="pb" select="$prev-fn-break"/>
+                            </xsl:call-template> 
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:call-template name="make-pb-content">
+                                <xsl:with-param name="pb" select="$prev-pb"/>
+                            </xsl:call-template>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                </xsl:when>
                 <xsl:when test="parent::rdg">
                     <xsl:variable name="wit" select="parent::rdg/@wit"/>
                     <xsl:choose>
@@ -1273,10 +1291,21 @@
                             </xsl:call-template>   
                         </xsl:when>
                         <xsl:otherwise> 
-                            <xsl:variable name="prev-pb" select="ancestor::app[1]/preceding::pb[matches(@edRef, $wit)][1]"/>
-                            <xsl:call-template name="make-pb-content">
-                                <xsl:with-param name="pb" select="$prev-pb"/>
-                            </xsl:call-template>
+                            <xsl:variable name="prev-pb" select="preceding-sibling::pb[matches(@edRef, $wit)][1]"/>
+                            <xsl:variable name="prev-app-pb" select="ancestor::app[1]/preceding::pb[matches(@edRef, $wit)][1]"/>
+                            
+                            <xsl:choose>
+                                <xsl:when test="$prev-pb">
+                                    <xsl:call-template name="make-pb-content">
+                                        <xsl:with-param name="pb" select="$prev-pb"/>
+                                    </xsl:call-template>
+                                </xsl:when>
+                                <xsl:otherwise>
+                                    <xsl:call-template name="make-pb-content">
+                                        <xsl:with-param name="pb" select="$prev-app-pb"/>
+                                    </xsl:call-template>
+                                </xsl:otherwise>
+                            </xsl:choose>
                         </xsl:otherwise>
                     </xsl:choose>
                 </xsl:when>
