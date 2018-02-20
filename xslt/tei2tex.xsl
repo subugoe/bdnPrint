@@ -581,12 +581,19 @@
                 <!--<xsl:variable name="ref" select="./@ref"/>
                 <xsl:apply-templates select="//rdg[@id = $ref]" mode="default"/>  -->
                 
-                
-                <xsl:call-template name="set-all-variants">
-                    <xsl:with-param name="iii" select="1"/>
-                    <xsl:with-param name="limit" select="count($refs-array)"/>
-                    <xsl:with-param name="refs" select="$refs-array"/>
-                </xsl:call-template>
+                <xsl:choose>
+                    <xsl:when test="count($refs-array) = 1">
+                        <xsl:variable name="ref" select="./@ref"/>
+                        <xsl:apply-templates select="//rdg[@id = $ref]" mode="default"/> 
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <xsl:call-template name="set-all-variants">
+                            <xsl:with-param name="iii" select="1"/>
+                            <xsl:with-param name="limit" select="count($refs-array)"/>
+                            <xsl:with-param name="refs" select="$refs-array"/>
+                        </xsl:call-template>  
+                    </xsl:otherwise>
+                </xsl:choose>
             </xsl:when>
             <xsl:when test="(@type = 'ppl' or @type = 'pp') and @context = 'lem'">
                 <xsl:if test="@mark = 'open'">
