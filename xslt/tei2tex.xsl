@@ -84,6 +84,12 @@
                 <xsl:text>\page</xsl:text>
             </xsl:otherwise>
         </xsl:choose>
+        
+        <xsl:if test="ancestor::text[1]/descendant::div[@type = 'preface'][1] = .">
+            <xsl:text>\marking[oddHeader]{Vorreden}</xsl:text>
+            <xsl:text>\writetolist[chapter]{}{Vorreden}</xsl:text>
+        </xsl:if>
+        
         <xsl:apply-templates/>
     </xsl:template>
     
@@ -101,13 +107,7 @@
     </xsl:template>
     
     
-    <xsl:template match="titlePage">
-        <!-- TODO: adjust -->
-        <xsl:if test="ancestor::lem">
-            <xsl:text>\marking[oddHeader]{Vorreden}</xsl:text>
-            <xsl:text>\writetolist[part]{}{Vorreden}</xsl:text>
-        </xsl:if>
-        
+    <xsl:template match="titlePage">     
         <xsl:text>{\startalignment[center]</xsl:text>
         <xsl:apply-templates/>
         <xsl:text>\stopalignment}</xsl:text>
@@ -1228,9 +1228,9 @@
         <xsl:for-each select="//choice[corr[@type = 'editorial']]">
             <xsl:text> \NC </xsl:text>
             <xsl:choose>
-                <xsl:when test="ancestor::note[@place = 'bottom'][not(parent::rdg)]">
+                <xsl:when test="ancestor::note[@place = 'bottom'][not(ancestor::rdg)]">
                     <xsl:choose>
-                        <xsl:when test="parent::lem[not(@wit)] or not(parent::rdg or parent::lem[@wit])"> 
+                        <xsl:when test="ancestor::lem[not(@wit)] or not(ancestor::rdg or ancestor::lem[@wit])"> 
                             <xsl:variable name="prev-fn-break" select="preceding-sibling::milestone[@unit = 'fn-break'][matches(@edRef, $base-text)][1]"/>
                             <xsl:variable name="prev-pb" select="ancestor::note[@place = 'bottom']/preceding::pb[matches(@edRef, $base-text)][1]"/>
                             
@@ -1247,7 +1247,7 @@
                                 </xsl:otherwise>
                             </xsl:choose>
                         </xsl:when>
-                        <xsl:when test="parent::rdg or parent::lem[@wit]">
+                        <xsl:when test="ancestor::rdg or ancestor::lem[@wit]">
                             <xsl:variable name="wit" select="parent::rdg/@wit"/>
                             <xsl:variable name="prev-fn-break" select="ancestor::app[1]/preceding-sibling::milestone[@unit = 'fn-break'][matches(@edRef, $wit)][1]"/>
                             <xsl:variable name="prev-pb" select="ancestor::note[@place = 'bottom']/preceding::pb[matches(@edRef, $wit)][1]"/>
@@ -1267,8 +1267,8 @@
                         </xsl:when>
                     </xsl:choose>
                 </xsl:when>
-                <xsl:when test="ancestor::note[parent::rdg]">
-                    <xsl:variable name="wit" select="ancestor::note/parent::rdg/@wit"/>
+                <xsl:when test="ancestor::note[ancestor::rdg]">
+                    <xsl:variable name="wit" select="ancestor::note/ancestor::rdg[1]/@wit"/>
                     <xsl:variable name="prev-fn-break" select="preceding-sibling::milestone[@unit = 'fn-break'][matches(@edRef, $wit)][1]"/>
                     <xsl:variable name="prev-pb" select="ancestor::note/ancestor::app[1]/preceding::pb[matches(@edRef, $wit)][1]"/>
 
@@ -1285,8 +1285,8 @@
                         </xsl:otherwise>
                     </xsl:choose>
                 </xsl:when>
-                <xsl:when test="parent::rdg">
-                    <xsl:variable name="wit" select="parent::rdg/@wit"/>
+                <xsl:when test="ancestor::rdg">
+                    <xsl:variable name="wit" select="ancestor::rdg[1]/@wit"/>
                     <xsl:choose>
                         <xsl:when test="matches($wit, '# ')">
                             <xsl:variable name="wits" select="replace($wit, '#', '')"/>
@@ -1317,7 +1317,7 @@
                         </xsl:otherwise>
                     </xsl:choose>
                 </xsl:when>
-                <xsl:when test="parent::lem">
+                <xsl:when test="ancestor::lem">
                     <xsl:variable name="prev-pb" select="ancestor::app[1]/preceding::pb[matches(@edRef, $base-text)][1]"/>
                     <xsl:call-template name="make-pb-content">
                         <xsl:with-param name="pb" select="$prev-pb"/>
