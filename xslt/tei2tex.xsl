@@ -559,7 +559,7 @@
     </xsl:template>
     
     
-    <xsl:template match="rdg[@type = 'v']" mode="default">
+    <xsl:template match="rdg[@type = 'v']">
         <xsl:call-template name="make-app-entry">
             <xsl:with-param name="node" select="."/>
             <xsl:with-param name="wit" select="replace(@wit, '[# ]+', '')"/>
@@ -567,8 +567,8 @@
     </xsl:template>
  <!--
     <xsl:template match="rdg[@type = 'om' or @type = 'typo-correction' 
-        or @type = 'varying-structure' or @type = 'v']"/>-->
-    <xsl:template match="rdg[@type = 'om' or @type = 'typo_corr' or @type = 'var-structure' or @type = 'v']"/>
+        or @type = 'varying-structure']"/>-->
+    <xsl:template match="rdg[@type = 'om' or @type = 'typo_corr' or @type = 'var-structure']"/>
     
     
     <xsl:template match="rdgMarker">
