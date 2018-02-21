@@ -858,17 +858,17 @@
         <xsl:choose>
             <xsl:when test="count(term) gt 1">
                 <xsl:text>\seepersonsIndex{</xsl:text>
-                <xsl:value-of select="substring-before(child::term[1], ',')"/>
+                <xsl:value-of select="substring-before(term[1], ',')"/>
                 <xsl:text>}{</xsl:text>
-                <xsl:value-of select="substring-after(child::term[1], 's. ')"/>
+                <xsl:value-of select="substring-after(term[1], 's\. ')"/>
                 <xsl:text>}</xsl:text>  
                 <xsl:text>\personsIndex{</xsl:text>
-                <xsl:value-of select="child::term[2]"/>
+                <xsl:value-of select="term[2]"/>
                 <xsl:text>}</xsl:text>                
             </xsl:when>
             <xsl:otherwise>
                 <xsl:text>\personsIndex{</xsl:text>
-                <xsl:value-of select="child::term"/>
+                <xsl:value-of select="term"/>
                 <xsl:text>}</xsl:text>
             </xsl:otherwise>
         </xsl:choose>
@@ -1193,6 +1193,7 @@
         
         <xsl:text>\blank[9mm]</xsl:text>
         <xsl:text>\starttabulate[|lp(10mm)|xp(103mm)|]</xsl:text>
+        <!-- <xsl:for-each select="//ptr[@type = 'editorial-commentary']">  -->
         <xsl:for-each select="//ptr">
             <xsl:if test="matches(@target, '^#erl_')">
                 <xsl:variable name="target" select="replace(@target, '^#', '')"/>
