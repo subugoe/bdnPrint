@@ -28,10 +28,11 @@
         starts with 1. On the left page (even numbers) a short bibliographic
         info in the column title is displayed, on the right page (odd numbers)
         the current chapter -->
-    <xsl:template match="group">
-        <xsl:text>\noheaderandfooterlines </xsl:text>          
+    <xsl:template match="group">         
         <xsl:text>\startbodymatter </xsl:text>
         <xsl:text>\setuppagenumber[number=1]</xsl:text>
+        
+        <xsl:text>\noheaderandfooterlines </xsl:text> 
         <xsl:text>\marking[evHeader]{{\tfx\it </xsl:text>
         <xsl:apply-templates select="//teiHeader//title[@type = 'condensed'][1]"/>
         <xsl:text>}}</xsl:text>
@@ -182,7 +183,8 @@
     
     <xsl:template match="div[@type = 'part']">
         <!-- <xsl:if test="not(preceding::label[1][@type = 'half-title'])"> -->
-        <xsl:if test="not(preceding::div[1][@type = 'titlePage'])">
+        <xsl:if test="not(preceding::div[1][@type = 'titlePage']) 
+            or ancestor::body[1]/descendant::div[@type = 'titlePage'][1] = .">
             <xsl:text>\newOddPage</xsl:text>
         </xsl:if>    
 
@@ -961,7 +963,8 @@
     <xsl:template match="milestone[@type = 'structure']">
         <xsl:choose>
             <xsl:when test="ancestor::rdg[@type = 'ppl' or @type = 'ptl'] 
-                and preceding-sibling::node() and not(preceding-sibling::pb)">
+                and preceding-sibling::node() and not(preceding-sibling::pb 
+                or preceding-sibling::rdgMarker)">
                 <xsl:text>\crlf </xsl:text>
                 <xsl:choose>
                     <xsl:when test="@unit = 'p' and (not(preceding-sibling::*[1][self::list]) 
@@ -1021,6 +1024,9 @@
         <xsl:text>]</xsl:text>
     </xsl:template>
     
+    <xsl:template match="ptr">
+        <xsl:text> </xsl:text>
+    </xsl:template>
     
     <xsl:template match="ref">
         <xsl:apply-templates/>
