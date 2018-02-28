@@ -18,7 +18,7 @@ compile() {
 	[[ ! -d output/$1_archive ]] && mkdir -p output
 
 	perl perl/core/fix-braces.pl $1 > $1_tmp.xml
-	perl perl/core/preprocess-whitespaces.pl $1 > $1_tmp-2.xml
+	perl perl/core/preprocess-xml.pl $1 > $1_tmp-2.xml
 	perl perl/core/switch-commentary-markers.pl $1 > $1_tmp.xml
 
 	# chance according to XSLT processor
