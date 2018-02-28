@@ -35,6 +35,9 @@ $tail =~ s/\} \\nobreak/\}\\nobreak/g;
 $tail =~ s/ ([,\.;\)\?}])/$1/g;
 $tail =~ s/} ([,\.;\):}])/}$1/g;
 
+# fixing whitespace after punctuation if followed by scribal abbreviation
+$tail =~ s/([,\.;\)\?}]) (\\margin\{.{8}\}\{plClose\})/$1$2/g;
+
 #e2 80 9c: utf8 codepoint for LEFT DOUBLE QUOTATION MARK
 $tail =~ s/ \x{201C}/\x{201C}/g;
 $tail =~ s/ \./\./g;
