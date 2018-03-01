@@ -9,9 +9,24 @@
         elements="abbr byline corr docImprint edition head hi
         item label lem note p pb persName rdg sic term titlePart titlePage"/>
 
-    <xsl:template match="TEI">
-        <xsl:apply-templates/>
-    </xsl:template>
+    <!-- in case of the following elements we only run apply-tempates:
+        - TEI
+        - front[ancestor::group]
+        - text
+        - div
+        - docDate
+        - docImprint
+        - docTitle
+        - byline
+        - abbr 
+        - orig
+        - lem
+        - back
+        - rs
+        - l
+        - lg
+    Thus they have no template match of their own.
+    -->
 
 
     <xsl:template match="teiHeader"/>
@@ -41,14 +56,11 @@
         <xsl:text>}}</xsl:text>
 
         <xsl:apply-templates/>
-        <xsl:text>\newOddPage </xsl:text>
         <xsl:text>\stopbodymatter </xsl:text>
-    </xsl:template>
-
-
-    <!-- within critical text -->
-    <xsl:template match="front[ancestor::group]">
-        <xsl:apply-templates/>
+        <!-- normally a new page is created after \stopbodymatter automatically, but
+        since the column title isn't hideable with \noheaderandfooterlines this has been
+        deactivated in header.tex and a new page without column title is created manually-->
+        <xsl:text>\newOddPage </xsl:text>
     </xsl:template>
 
 
@@ -59,11 +71,6 @@
         <xsl:apply-templates/>
         <xsl:text>\stopfrontmatter </xsl:text>
         <xsl:text>\newPage</xsl:text>
-    </xsl:template>
-
-
-    <xsl:template match="text">
-        <xsl:apply-templates/>
     </xsl:template>
 
 
@@ -195,11 +202,6 @@
     </xsl:template>
 
 
-    <xsl:template match="div">
-        <xsl:apply-templates/>
-    </xsl:template>
-
-
     <xsl:template match="div[@type = 'part']">
         <!-- <xsl:if test="not(preceding::ab[1][@type = 'half-title'])"> -->
         <xsl:if
@@ -263,26 +265,6 @@
         </xsl:call-template>
         <xsl:apply-templates/>
         <xsl:text>\newOddPage</xsl:text>
-    </xsl:template>
-
-
-    <xsl:template match="docDate">
-        <xsl:apply-templates/>
-    </xsl:template>
-
-
-    <xsl:template match="docImprint">
-        <xsl:apply-templates/>
-    </xsl:template>
-
-
-    <xsl:template match="docTitle">
-        <xsl:apply-templates/>
-    </xsl:template>
-
-
-    <xsl:template match="byline">
-        <xsl:apply-templates/>
     </xsl:template>
 
 
@@ -507,11 +489,6 @@
     </xsl:template>
 
 
-    <xsl:template match="abbr">
-        <xsl:apply-templates/>
-    </xsl:template>
-
-
     <xsl:template match="expan"/>
 
 
@@ -519,11 +496,6 @@
 
 
     <xsl:template match="sic" mode="editorial-corrigenda">
-        <xsl:apply-templates/>
-    </xsl:template>
-
-
-    <xsl:template match="orig">
         <xsl:apply-templates/>
     </xsl:template>
 
@@ -687,11 +659,6 @@
                 </xsl:if>
             </xsl:when>
         </xsl:choose>
-    </xsl:template>
-
-
-    <xsl:template match="lem">
-        <xsl:apply-templates/>
     </xsl:template>
 
 
@@ -939,16 +906,6 @@
     <xsl:template match="term"/>
 
 
-    <xsl:template match="l">
-        <xsl:apply-templates/>
-    </xsl:template>
-
-
-    <xsl:template match="lg">
-        <xsl:apply-templates/>
-    </xsl:template>
-
-
     <xsl:template match="list">
         <xsl:text>\crlf </xsl:text>
         <xsl:apply-templates/>
@@ -1065,9 +1022,6 @@
         </xsl:if>
     </xsl:template>
 
-    <xsl:template match="rs">
-        <xsl:apply-templates/>
-    </xsl:template>
 
     <!-- <xsl:template match="ptr[@type = 'editorial-commentary']"> -->
     <xsl:template match="ptr[matches(@target, '^#erl_')]">
@@ -1234,10 +1188,6 @@
         </xsl:if>
     </xsl:template>
 
-
-    <xsl:template match="back">
-        <xsl:apply-templates/>
-    </xsl:template>
 
     <!-- <xsl:template match="divGen[@type = 'toc']"> -->
     <xsl:template match="divGen[@type = 'Inhalt']">
