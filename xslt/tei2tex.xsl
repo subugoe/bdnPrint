@@ -36,6 +36,7 @@
 
         <xsl:text>\noheaderandfooterlines </xsl:text>
         <xsl:text>\marking[evHeader]{{\tfx\it </xsl:text>
+        <!-- <xsl:apply-templates select="//teiHeader//title[@type = 'column-title']"/> -->
         <xsl:apply-templates select="//teiHeader//title[@type = 'condensed'][1]"/>
         <xsl:text>}}</xsl:text>
 
@@ -129,6 +130,14 @@
         <xsl:if test="descendant::seg[@type = 'condensed']">
             <xsl:apply-templates select="descendant::seg[@type = 'condensed']"/>
         </xsl:if>
+        
+        <!--         <xsl:if test="descendant::supplied[@reason = 'toc-item']">
+            <xsl:apply-templates select="descendant::supplied[@reason = 'toc-item']"/>
+        </xsl:if>
+
+        <xsl:if test="descendant::supplied[@reason = 'column-title']">
+            <xsl:apply-templates select="descendant::supplied[@reason = 'column-title']"/>
+        </xsl:if> -->
     </xsl:template>
 
 
@@ -180,6 +189,7 @@
 
     <!-- within modern editorial text -->
     <xsl:template match="div[@type = 'contents' and @subtype = 'print']">
+        <!-- <xsl:apply-templates select="descendant::divGen[@type = 'toc']"/> -->
         <xsl:apply-templates select="descendant::divGen[@type = 'Inhalt']"/>
         <xsl:text>\newOddPage</xsl:text>
     </xsl:template>
@@ -322,6 +332,14 @@
         <xsl:if test="descendant::seg[@type = 'condensed']">
             <xsl:apply-templates select="descendant::seg[@type = 'condensed']"/>
         </xsl:if>
+        
+        <!--         <xsl:if test="descendant::supplied[@reason = 'toc-item']">
+            <xsl:apply-templates select="descendant::supplied[@reason = 'toc-item']"/>
+        </xsl:if>
+
+        <xsl:if test="descendant::supplied[@reason = 'column-title']">
+            <xsl:apply-templates select="descendant::supplied[@reason = 'column-title']"/>
+        </xsl:if> -->
 
         <xsl:choose>
             <!-- adjust -->
@@ -1141,12 +1159,20 @@
     </xsl:template>
 
 
+    <xsl:template match="seg[@type = 'row']">
+        <!-- @TODO adjust -->
+        <xsl:apply-templates/>
+        <xsl:text>\crlf </xsl:text>
+    </xsl:template>
+
+
     <xsl:template match="seg[@type = 'item']">
         <xsl:apply-templates/>
         <xsl:text>\crlf </xsl:text>
     </xsl:template>
 
 
+    <!-- <xsl:template match="supplied[@type = 'toc-item']"> -->
     <xsl:template match="seg[@type = 'toc-item']">
         <xsl:choose>
             <xsl:when test="not(ancestor::titlePart[@type = 'main'])">
@@ -1183,7 +1209,7 @@
         </xsl:choose>
     </xsl:template>
 
-
+    <!-- <xsl:template match="supplied[@type = 'column-title']"> -->
     <xsl:template match="seg[@type = 'condensed']">
         <xsl:text>\marking[oddHeader]{</xsl:text>
         <xsl:apply-templates/>
@@ -1213,7 +1239,7 @@
         <xsl:apply-templates/>
     </xsl:template>
 
-    <!-- <xsl:template match="divGen[@type = 'content']"> -->
+    <!-- <xsl:template match="divGen[@type = 'toc']"> -->
     <xsl:template match="divGen[@type = 'Inhalt']">
         <xsl:call-template name="make-both-columns">
             <xsl:with-param name="contents" select="string('Inhalt')"/>
@@ -1413,7 +1439,8 @@
         <xsl:text>\stoptabulate </xsl:text>
     </xsl:template>
 
-
+    <!-- <xsl:template match="divGen[@type = 'bible-index' or @type = 'persons-index'
+        or @type = 'classics-index' or @type = 'subjects-index']"> -->
     <xsl:template match="divGen[@type = 'bibel' or @type = 'persons'
         or @type = 'classical-authors' or @type = 'subjects']">
         <xsl:call-template name="make-indices">
@@ -1469,15 +1496,19 @@
         <xsl:text>\writetolist[chapter]{}{</xsl:text>
         <!-- TODO: solution with variable leads to dynamic error -->
         <xsl:choose>
+            <!-- <xsl:when test="$type = 'bible-index'"> --> 
             <xsl:when test="$type = 'bibel'">
                 <xsl:text>Bibelstellen</xsl:text>
             </xsl:when>
+            <!-- <xsl:when test="$type = 'classics-index'"> --> 
             <xsl:when test="$type = 'classical-authors'">
                 <xsl:text>Antike Autoren</xsl:text>
             </xsl:when>
+            <!-- <xsl:when test="$type = 'persons-index'"> --> 
             <xsl:when test="$type = 'persons'">
                 <xsl:text>Personen</xsl:text>
             </xsl:when>
+            <!-- <xsl:when test="$type = 'subjects-index'"> --> 
             <xsl:when test="$type = 'subjects'">
                 <xsl:text>Sachen</xsl:text>
             </xsl:when>
@@ -1491,15 +1522,19 @@
 
         <!-- TODO: solution with variable leads to dynamic error -->
         <xsl:choose>
+            <!-- <xsl:when test="$type = 'bible-index'"> --> 
             <xsl:when test="$type = 'bibel'">
                 <xsl:text>Bibelstellen</xsl:text>
             </xsl:when>
+            <!-- <xsl:when test="$type = 'classics-index'"> --> 
             <xsl:when test="$type = 'classical-authors'">
                 <xsl:text>Antike Autoren</xsl:text>
             </xsl:when>
+            <!-- <xsl:when test="$type = 'persons-index'"> --> 
             <xsl:when test="$type = 'persons'">
                 <xsl:text>Personen</xsl:text>
             </xsl:when>
+            <!-- <xsl:when test="$type = 'subjects-index'"> --> 
             <xsl:when test="$type = 'subjects'">
                 <xsl:text>Sachen</xsl:text>
             </xsl:when>
