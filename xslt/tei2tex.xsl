@@ -560,7 +560,7 @@
         <xsl:if test="not(child::*[1][self::note])">
             <xsl:text>\stoprdg </xsl:text>
         </xsl:if>
-        <xsl:if test="not(note[@place = 'bottom'])">
+        <xsl:if test="not(descendant::*[last()][self::note[@place = 'bottom']])">
             <xsl:text>\noindentation </xsl:text>
         </xsl:if>
     </xsl:template>
