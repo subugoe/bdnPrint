@@ -338,7 +338,7 @@
   [number=no,
   header=high,
   before={\blank[none]},
-  after={\blank[none]},
+  after={\blank[6ptpt]},
   style={\switchtobodyfont[10.5pt]},
   interlinespace=14pt,
   align=middle]
@@ -356,7 +356,7 @@
   [number=no,
   header=high,
   before={\blank[none]},
-  after={\blank[none]},
+  after={\blank[12pt]},
   style={\switchtobodyfont[10.5pt]},
   interlinespace=14pt,
   align=middle]  
@@ -683,7 +683,8 @@ leftmargin=4mm, rightmargin=0mm]
 \setupregister[bibelIndex]
   [compress=yes,
   indicator=no,
-  pagestyle=\tf]
+  pagestyle=\tf,
+  n=1]
 
 \defineregister[persIndex]
 \setupregister[persIndex]
@@ -738,7 +739,7 @@ leftmargin=4mm, rightmargin=0mm]
     \typo_injectors_mark_register}
  \protect
 
-\hyphenation{Er-zie-hungs-we-sens Schul-schrif-ten Ab-sicht The-o-phrast's Wis-sen-schaf-ten Er-läu-ter-ungs-schrif-ten Kir-chen-ge-schich-te ge-nomm-ne An-drer wo-rü-ber Mit-thei-lung noth-wen-dig noth-wen-di-ge noth-wen-di-ges noth-wen-di-gen Noth-wen-dig-keit Noth-wen-dig-kei-ten Ein-thei-lung be-ur-theilt Be-ur-thei-lung nach-thei-lig Vor-ur-theil se-ue-ra Ur-thei-le wo-raus groß-en-theils Irr-thum Irr-thü-mer Ra-ti-o-nal-er-kennt-niß Wolf-schen ein-thei-len Haupt\-, mit-thei-len Wa-cker-barth be-ur-thei-len ei-gen-thüm-li-chen Chris-ten-thums un-grie-chisch-e vor-tref-li-ches Pro-fan-scri-ben-ten mit-theilt Ue-ber-ei-lun-gen Ver-mu-thun-gen Prü-fe-stein ver-thei-di-gen un-par-they-isch-e Vor-theil Un-thä-ti-gkeit größ-ten-theils Ver-stan-de Vor-ur-thei-le Lieg-nitz vie-ler-ley Ver-muth-ung der-sel-ben ge-mein-schaft-li-cher letzt-er-wähn-ten Er-kennt-niß-quel-le Re-li-gions-par-they-en un-par-they-isch-en (1725–-1791) die-ie-ni-ge Ver-mu-thung-en Nach-theil Be-ur-theil-ung wohl-thä-tigs-ten ur-theil-en an-ti-qui Be-stand-thei-le Be-ur-thei-lung ur-thei-len ad-iun-xit meis-ten-theils Schul-en-cy-klo-pä-die ver-thei-len Ge-schöp-fe Ur-theil be-sitzt un-ver-än-der-lich vor-zu-nehm-en vor-theil-haft Be-trach-tung-en be-sitzt}
+\hyphenation{Er-zie-hungs-we-sens Schul-schrif-ten Ab-sicht The-o-phrast's Wis-sen-schaf-ten Er-läu-ter-ungs-schrif-ten Kir-chen-ge-schich-te ge-nomm-ne An-drer wo-rü-ber Mit-thei-lung noth-wen-dig noth-wen-di-ge noth-wen-di-ges noth-wen-di-gen Noth-wen-dig-keit Noth-wen-dig-kei-ten Ein-thei-lung be-ur-theilt Be-ur-thei-lung nach-thei-lig Vor-ur-theil se-ue-ra Ur-thei-le wo-raus groß-en-theils Irr-thum Irr-thü-mer Ra-ti-o-nal-er-kennt-niß Wolf-schen ein-thei-len Haupt\-, mit-thei-len Wa-cker-barth be-ur-thei-len ei-gen-thüm-li-chen Chris-ten-thums un-grie-chisch-e vor-tref-li-ches Pro-fan-scri-ben-ten mit-theilt Ue-ber-ei-lun-gen Ver-mu-thun-gen Prü-fe-stein ver-thei-di-gen un-par-they-isch-e Vor-theil Un-thä-ti-gkeit größ-ten-theils Ver-stan-de Vor-ur-thei-le Lieg-nitz vie-ler-ley Ver-muth-ung der-sel-ben ge-mein-schaft-li-cher letzt-er-wähn-ten Er-kennt-niß-quel-le Re-li-gions-par-they-en un-par-they-isch-en (1725–-1791) die-ie-ni-ge Ver-mu-thung-en Nach-theil Be-ur-theil-ung wohl-thä-tigs-ten ur-theil-en an-ti-qui Be-stand-thei-le Be-ur-thei-lung ur-thei-len ad-iun-xit meis-ten-theils Schul-en-cy-klo-pä-die ver-thei-len Ge-schöp-fe Ur-theil be-sitzt un-ver-än-der-lich vor-zu-nehm-en vor-theil-haft Be-trach-tung-en be-sitzt popular-theologischen}
 
 
 % lua
@@ -907,6 +908,13 @@ nodes.tasks.appendaction("finalizers", "after", "processMargins")
 %    \fi}
 
 \protect
+
+% in order to remove the additional page \stopfrontmatter and
+% \stopbodymatter create
+% c.f. http://wiki.contextgarden.net/Titles
+\setupsectionblock[frontpart][page=]
+\setupsectionblock[bodypart] [page=]
+
   
 \starttext
 
