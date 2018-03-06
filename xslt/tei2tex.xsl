@@ -9,7 +9,7 @@
         elements="abbr byline corr docImprint edition head hi
         item label lem note p pb persName rdg sic term titlePart titlePage"/>
 
-    <!-- in case of the following elements we only run apply-tempates:
+    <!-- in case of the following elements we only run apply-templates:
         - TEI
         - front[ancestor::group]
         - text
@@ -57,10 +57,15 @@
 
         <xsl:apply-templates/>
         <xsl:text>\stopbodymatter </xsl:text>
+    </xsl:template>
+    
+    
+    <xsl:template match="text[ancestor::group]">
         <!-- normally a new page is created after \stopbodymatter automatically, but
         since the column title isn't hideable with \noheaderandfooterlines this has been
         deactivated in header.tex and a new page without column title is created manually-->
         <xsl:text>\newOddPage </xsl:text>
+        <xsl:apply-templates/>
     </xsl:template>
 
 
@@ -70,7 +75,7 @@
         <xsl:text>\startfrontmatter </xsl:text>
         <xsl:apply-templates/>
         <xsl:text>\stopfrontmatter </xsl:text>
-        <xsl:text>\newPage</xsl:text>
+        <xsl:text>\newPage </xsl:text>
     </xsl:template>
 
 
@@ -243,11 +248,6 @@
     </xsl:template>
 
 
-    <!--<xsl:template match="div[@type = 'section-group']">
-        <xsl:apply-templates/>
-    </xsl:template>-->
-
-
     <xsl:template match="div[@type = 'section']">
         <xsl:text>\startdivsection </xsl:text>
         <xsl:apply-templates/>
@@ -267,7 +267,7 @@
         <xsl:text>\newOddPage</xsl:text>
     </xsl:template>
 
-
+    <!-- for headings outside the edition text -->
     <xsl:template match="head[not(ancestor::group)]">
         <xsl:choose>
             <xsl:when
@@ -447,6 +447,7 @@
         </xsl:if>
     </xsl:template>
 
+
     <xsl:template match="aligned">
         <xsl:choose>
             <xsl:when test="@rend = 'right-aligned'">
@@ -465,6 +466,9 @@
 
             <xsl:when test="@rend = 'center-aligned'">
                 <xsl:choose>
+                    <!-- actually both options in this xsl:choose should produce the
+                    same outcome, but when we have child::lb, \midaligned{} leads to 
+                    an incorrect layout -->
                     <xsl:when test="child::lb">
                         <xsl:text>\startalignment[center]</xsl:text>
                         <xsl:apply-templates/>
@@ -482,6 +486,7 @@
 
 
     <xsl:template match="choice">
+        <!-- <xsl:apply-templates select="child::*[not(self::supplied or self::sic or self::expan)]"/> -->
         <xsl:apply-templates select="child::*[not(self::seg or self::sic or self::expan)]"/>
         <xsl:if test="@break-after = 'yes'">
             <xsl:text> </xsl:text>
@@ -669,7 +674,8 @@
         </xsl:if>
     </xsl:template>
 
-
+    <!-- because of ascenders and descenders in Hebrew letters the font size has to 
+    be reduced in order to fit into the layout --> 
     <xsl:template match="foreign[@xml:lang = 'he']">
         <xsl:text>{\switchtobodyfont[7pt] </xsl:text>
         <xsl:text>\ezraFont </xsl:text>
@@ -690,6 +696,7 @@
         </xsl:if>
 
         <xsl:choose>
+            <!-- pagebreaks in the critical apparatus have to be displayed as |a123| -->
             <xsl:when test="ancestor::rdg[@type = 'v' or @type = 'pp' or @type = 'pt']">
                 <xsl:text>{\vl}</xsl:text>
                 <xsl:call-template name="make-pb-content">
@@ -700,7 +707,8 @@
             <xsl:otherwise>
                 <xsl:text>\margin{}{pb}{}{</xsl:text>
                 <xsl:choose>
-                    <!-- single vl when several pb occur on the same spot -->
+                    <!-- when several pb occur on the same spot only the first one produces
+                    a scribal abbreviation -->
                     <xsl:when
                         test="
                             preceding-sibling::node()[1][self::pb]
@@ -720,7 +728,7 @@
             </xsl:otherwise>
         </xsl:choose>
 
-        <xsl:if test="@break-after = 'yes'">
+        <xsl:if test="@break-after = 'yes' and not(following-sibling::*[1][self::pb])">
             <xsl:text> </xsl:text>
         </xsl:if>
     </xsl:template>
@@ -729,11 +737,8 @@
     <!-- within critical text -->
     <xsl:template match="note[@type = 'authorial' and ancestor::group]">
         <xsl:choose>
+            <!-- note[@plavce = 'bottom'] has to be treated as a footnote -->
             <xsl:when test="@place = 'bottom'">
-                <!--<xsl:text>{\startbottomnote</xsl:text>
-                <xsl:apply-templates/>
-                <xsl:text>\stopbottomnote}</xsl:text>-->
-                <!--<xsl:text>\footnote{</xsl:text>-->
                 <xsl:text>\authorbottomnote{</xsl:text>
                 <xsl:if
                     test="ancestor::rdg[@type = 'ppl' or @type = 'ptl']/descendant::note[@place = 'bottom'][1] = .">
@@ -767,6 +772,8 @@
                     <xsl:text>}</xsl:text>
                 </xsl:for-each>
             </xsl:when>
+            
+            <!-- note[@place = 'end'] is displayed in the text area -->
             <xsl:otherwise>
                 <xsl:text>\startauthornote </xsl:text>
                 <xsl:apply-templates/>
@@ -787,7 +794,7 @@
 
     <xsl:template match="note[@type = 'editorial']"/>
 
-
+    <!-- <xsl:template match="index[@indexName = 'classicals-index']"> -->
     <xsl:template match="index[@indexName = 'classical-authors']">
         <xsl:text>\classicalauthorsIndex{</xsl:text>
         <xsl:value-of select="persName"/>
@@ -874,7 +881,7 @@
         </xsl:if>
     </xsl:template>
 
-
+    <!-- <xsl:template match="index[@indexName = 'persons-index']"> -->
     <xsl:template match="index[@indexName = 'persons']">
         <xsl:choose>
             <xsl:when test="count(term) gt 1">
@@ -895,7 +902,7 @@
         </xsl:choose>
     </xsl:template>
 
-
+    <!-- <xsl:template match="index[@indexName = 'subjects-index']"> -->
     <xsl:template match="index[@indexName = 'subjects']">
         <xsl:text>\subjectsIndex{</xsl:text>
         <xsl:value-of select="term"/>
@@ -926,7 +933,7 @@
         <xsl:text>\stopitemize </xsl:text>
     </xsl:template>
 
-
+    <!-- for the overview of editions in the modern introduction -->
     <xsl:template match="list[ancestor::div[@type = 'editorial']]">
         <xsl:text>\starttwocolumns </xsl:text>
         <xsl:apply-templates/>
@@ -974,8 +981,8 @@
             <xsl:when
                 test="
                     ancestor::rdg[@type = 'ppl' or @type = 'ptl']
-                    and preceding-sibling::node() and not(preceding-sibling::pb
-                    or preceding-sibling::rdgMarker)">
+                    and preceding-sibling::node() and not(preceding-sibling::*[1][self::pb]
+                    or preceding-sibling::*[1][self::rdgMarker])">
                 <xsl:text>\crlf </xsl:text>
                 <xsl:choose>
                     <xsl:when
@@ -1030,7 +1037,7 @@
                 <xsl:text>[E] </xsl:text>
             </xsl:when>
             <xsl:otherwise>
-                <xsl:text>\margin{</xsl:text>
+                <xsl:text> \margin{</xsl:text>
                 <xsl:value-of select="generate-id()"/>
                 <xsl:text>}{e}{}{\hbox{}}{E}</xsl:text>
             </xsl:otherwise>
@@ -1069,7 +1076,7 @@
         </xsl:for-each>
         <xsl:text>] </xsl:text>
         <xsl:apply-templates/>
-        <xsl:text>\HL </xsl:text>
+        <xsl:text>\BL </xsl:text>
         <xsl:text>\stoptabulate </xsl:text>
     </xsl:template>
 
@@ -1083,7 +1090,7 @@
 
 
     <xsl:template match="row[@rend = 'line']">
-        <xsl:text>\HL </xsl:text>
+        <xsl:text>\LL </xsl:text>
     </xsl:template>
 
 
@@ -1183,6 +1190,7 @@
         <xsl:apply-templates/>
         <xsl:text>]}</xsl:text>
 
+        <!-- nbsp -->
         <xsl:if test="parent::hi[parent::lem/child::*[last()] = .]/child::*[last()] = .">
             <xsl:text>~</xsl:text>
         </xsl:if>
@@ -1399,7 +1407,7 @@
     </xsl:template>
 
 
-    <!-- called templates -->
+    <!-- creates a heading -->
     <xsl:template name="make-subject">
         <xsl:param name="content"/>
 
@@ -1414,6 +1422,9 @@
         <xsl:param name="node"/>
 
         <xsl:choose>
+            <!-- in case of ancestor::note[@place = 'bottom'] entries in the critical
+            apparatus aren't placed in the note itself but right behind it. Otherwise 
+            referencing doesn't work properly -->
             <xsl:when test="$node/ancestor::note[@place = 'bottom']">
                 <xsl:text>\note[</xsl:text>
                 <xsl:value-of select="$wit"/>
@@ -1506,6 +1517,7 @@
         <xsl:param name="milestone"/>
         <xsl:variable name="edition" select="replace(@edRef, '[#\s]+', '')"/>
 
+        <!-- defined in header.tex -->
         <xsl:if test="$milestone/@unit = 'p'">
             <xsl:text> \p{}</xsl:text>
         </xsl:if>
