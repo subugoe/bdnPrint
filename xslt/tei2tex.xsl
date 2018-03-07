@@ -314,9 +314,33 @@
             </xsl:otherwise>
         </xsl:choose>
     </xsl:template>
+    
+    
+    <xsl:template match="head[ancestor::list and ancestor::group]">
+        <xsl:choose>
+            <xsl:when test="ancestor::rdg and (@type = 'main' or not(@type))">
+                <xsl:text>\listmainheadrdg[]{</xsl:text>
+            </xsl:when>
+            <xsl:when test="ancestor::rdg and @type = 'sub'">
+                <xsl:text>\listsubheadrdg[]{</xsl:text>
+            </xsl:when>
+            <xsl:when test="ancestor::lem and (@type = 'main' or not(@type))
+                and ancestor::div[@type = 'contents']/descendant::list[1] = ./parent::list">
+                <xsl:text>\listfirsthead[]{</xsl:text>
+            </xsl:when>
+            <xsl:when test="ancestor::lem and (@type = 'main' or not(@type))">
+                <xsl:text>\listmainhead[]{</xsl:text>
+            </xsl:when>
+            <xsl:when test="ancestor::lem and @type = 'sub'">
+                <xsl:text>\listsubhead[]{</xsl:text>
+            </xsl:when>
+        </xsl:choose>
+        <xsl:apply-templates/>
+        <xsl:text>}</xsl:text>
+    </xsl:template>
 
 
-    <xsl:template match="head">
+    <xsl:template match="head[not(ancestor::list) and ancestor::group]">
         <!--<xsl:if test="parent::div[@type = 'introduction' or @type = 'part' or @type = 'chapter']">-->
         <xsl:if test="descendant::seg[@type = 'toc-item']">
             <xsl:apply-templates select="descendant::seg[@type = 'toc-item']"/>
@@ -334,29 +358,15 @@
         </xsl:if> -->
 
         <xsl:choose>
-            <!-- adjust -->
-            <xsl:when test="ancestor::list">
-                <xsl:choose>
-                    <xsl:when test="ancestor::rdg and (@type = 'main' or not(@type))">
-                        <xsl:text>\listmainheadrdg[]{</xsl:text>
-                    </xsl:when>
-                    <xsl:when test="ancestor::rdg and @type = 'sub'">
-                        <xsl:text>\listsubheadrdg[]{</xsl:text>
-                    </xsl:when>
-                    <xsl:when test="ancestor::lem and (@type = 'main' or not(@type))">
-                        <xsl:text>\listmainhead[]{</xsl:text>
-                    </xsl:when>
-                    <xsl:when test="ancestor::lem and @type = 'sub'">
-                        <xsl:text>\listsubhead[]{</xsl:text>
-                    </xsl:when>
-                </xsl:choose>
-                <xsl:apply-templates/>
-                <xsl:text>}</xsl:text>
-            </xsl:when>
             <xsl:when test="ancestor::rdg">
                 <xsl:text>\rdgsubject[]{</xsl:text>
                 <xsl:apply-templates/>
                 <xsl:text>}</xsl:text>
+            </xsl:when>
+            <xsl:when test="parent::div[@type = 'contents'] and following-sibling::list">
+                <xsl:text>\listhead[]{</xsl:text>
+                <xsl:apply-templates/>
+                <xsl:text>}</xsl:text>               
             </xsl:when>
             <xsl:otherwise>
                 <xsl:text>\subject[]{</xsl:text>
@@ -379,7 +389,10 @@
                 (preceding-sibling::p
                 or not(ancestor::div/descendant::p[1] = .))
                 and not(parent::note[@type = 'editorial'])">
-            <xsl:text>\par </xsl:text>
+            <xsl:if test="not(parent::rdg)">
+                <xsl:text>\crlf </xsl:text>
+                <xsl:text>\starteffect[hidden] . \stopeffect\hspace[p]</xsl:text>
+            </xsl:if>
         </xsl:if>
         <xsl:apply-templates/>
         <xsl:if test="@break-after = 'yes'">
@@ -935,7 +948,8 @@
         <xsl:text>\startitemize[packed, paragraph, joinedup</xsl:text>
 
         <!-- in a TOC the first level shouldn't be indented -->
-        <xsl:if test="ancestor::div[@type = 'contents']/descendant::list[1] = .">
+        <xsl:if test="parent::div[@type = 'contents']">
+        <!--<xsl:if test="ancestor::div[@type = 'contents']/descendant::list[1] = .">-->
             <xsl:text>, inmargin</xsl:text>
         </xsl:if>
         <xsl:text>]</xsl:text>
@@ -1133,7 +1147,7 @@
     <xsl:template match="seg[@type = 'row']">
         <!-- @TODO adjust -->
         <xsl:apply-templates/>
-        <xsl:text>\crlf </xsl:text>
+        <xsl:text>\NC \NR </xsl:text>
     </xsl:template>
 
 
@@ -1179,6 +1193,7 @@
             </xsl:when>
         </xsl:choose>
     </xsl:template>
+
 
     <!-- <xsl:template match="supplied[@type = 'column-title']"> -->
     <xsl:template match="seg[@type = 'condensed']">
