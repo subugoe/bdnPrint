@@ -154,24 +154,12 @@
 
 \definehead[rdgsubject][subject]
 
-\definehead[listmainhead][subject]
-\definehead[listmainheadrdg][subject]
-\definehead[listsubhead][subject]
-\definehead[listsubheadrdg][subject]
-
-\definehead[tablemainhead][subject]
-\definehead[tablesectionhead][subject]
-\definehead[tablefirstsectionhead][subject]
-\definehead[tablesubhead][subject]
-\definehead[tablemainheadrdg][subject]
-\definehead[tablesubheadrdg][subject]
-\definehead[tablehead][subject]
-\definehead[tableheadrdg][subject]
-
-\definehead[tablemainhead][subject]
-\definehead[tablemainheadrdg][subject]
-\definehead[tablesubhead][subject]
-\definehead[tablesubheadrdg][subject]
+\definehead[listmainhead][section]
+\definehead[listmainheadrdg][section]
+\definehead[listsubhead][section]
+\definehead[listsubheadrdg][section]
+\definehead[listhead][section]
+\definehead[listfirsthead][section]
 
 \setuphead[title]
   [number=no,
@@ -263,7 +251,7 @@
   align=middle]  
 
  
-\setuphead[tablehead]  
+\setuphead[listhead]  
   [number=no,
   header=high,
   before={\blank[none]},
@@ -272,73 +260,20 @@
   interlinespace=14pt,
   align=middle]
   
-\setuphead[tableheadrdg]  
+\setuphead[listfirsthead]  
   [number=no,
   header=high,
-  before={\blank[none]},
-  after={\blank[none]},
-  style={\switchtobodyfont[8.5pt]},
-  interlinespace=14pt,
-  align=middle]  
- 
-\setuphead[tablemainhead]  
-  [number=no,
-  header=high,
-  before={\blank[none]},
-  after={\blank[0pt]},
-  style={\switchtobodyfont[10.5pt]},
-  interlinespace=14pt,
-  align=middle]
-  
-\setuphead[tablefirstsectionhead]  
-  [number=no,
-  header=high,
-  before={\blank[10pt]},
-  after={\blank[12pt]},
-  style={\switchtobodyfont[10.5pt]},
-  interlinespace=14pt,
-  align=middle]
-  
-\setuphead[tablesectionhead]  
-  [number=no,
-  header=high,
-  before={\blank[24pt]},
+  before={\blank[6pt]},
   after={\blank[6pt]},
   style={\switchtobodyfont[10.5pt]},
   interlinespace=14pt,
-  align=middle] 
-  
-\setuphead[tablesubhead]  
-  [number=no,
-  before={\blank[-24pt]},
-  after={\blank[12pt]},
-  style={\switchtobodyfont[10.5pt]},
-  interlinespace=14pt,
-  align=middle]  
-  
-\setuphead[tablemainheadrdg]  
-  [number=no,
-  header=high,
-  before={\blank[none]},
-  after={\blank[none]},
-  style={\switchtobodyfont[8.5pt]},
-  interlinespace=14pt,
-  align=middle]   
-  
-\setuphead[tablesubheadrdg]  
-  [number=no,
-  header=high,
-  before={\blank[none]},
-  after={\blank[none]},
-  style={\switchtobodyfont[8.5pt]},
-  interlinespace=14pt,
-  align=middle]  
+  align=middle]    
   
   \setuphead[listmainhead]  
   [number=no,
   header=high,
-  before={\blank[none]},
-  after={\blank[6ptpt]},
+  before={\blank[24pt]},
+  after={\blank[6pt]},
   style={\switchtobodyfont[10.5pt]},
   interlinespace=14pt,
   align=middle]
@@ -417,16 +352,6 @@
    \ifodd\pagenumber\page[empty]\fi%
  }
 
-% \def\newPage{%
-%   \ifodd\pagenumber%
-%     \page[empty]%
-%     \noheaderandfooterlines%
-%     \else%
-%     \page%
-%     \noheaderandfooterlines%
-%   \fi%
-% }
-
 \def\newOddPage{%
   \ifodd\pagenumber%
     \page[empty]%
@@ -446,21 +371,6 @@
   \parfillskip\zeropoint\page\noindent%
 }
 
-% \setuphead[part]
-%   [before={\blank[20mm, force]},
-%    after={\blank[12pt]},
-%    align=middle,
-%    header=empty,
-%    number=no,
-%    placehead=yes,
-%    style=\tfa]
-% 
-% \setuphead[section]
-%   [before={\blank[24pt]},
-%    after={\blank[12pt]},
-%    align=middle,
-%    style=\tfa]
-
 \setuphead[part]
   %[before={\blank[10mm, force]},
    [after={\blank[0pt]},
@@ -477,21 +387,7 @@
    %header=empty,
    number=no,
    placehead=yes,
-   style=\tfa]
-
-%\setuphead[section]
-%  [before={\blank[12pt]},
-%   after={\blank[6pt]},
-%   align=middle,
-%   style=\tfa]
-   
-
-% \setuphead[subject]
-%   [before={\blank[8pt]},
-%    after={\blank[4pt]},
-%    align=middle,
-%    %style=\tfa,
-%    header=high]  
+   style=\tfa] 
    
 \setuphead[rdgsubject]
   [before={\blank[8pt]},
@@ -540,22 +436,6 @@
 
 \setupnotation[authorbottomnote]
   [after={\blank[4mm]}]
-  
-  \definenote[bottomnote]
-    [before={\blank[4mm]},
-     paragraph=yes,
-     rule=off,
-     interlinespace=12.25pt]
-  
-   \setupnotation[bottomnote]
-    [alternative=serried,
-     numbercommand=\gobbleoneargument,
-     style={\switchtobodyfont[8.5pt]},
-     way=bysection, % bypage does not work properly at the moment
-     width=broad,
-     split=tolerant,
-     interlinespace=12.25pt,
-     color=red]
 
 
 \setuplanguage[de]
@@ -607,18 +487,7 @@ leftmargin=4mm, rightmargin=0mm]
 	
 \definedelimitedtext[divsection]
 \setupdelimitedtext[divsection]
-  [after={\blank[12pt]}]
-
-%   \definedelimitedtext[bottomnote][location=bottom]
-%   \setupdelimitedtext
-%           [bottomnote]
-%           [before={\blank[medium]
-%           \noindentation
-%           \switchtobodyfont[8pt]},
-%   	after={\blank[medium]
-%   	\noindentation
-%   	\switchtobodyfont[default]},
-%   	leftmargin=4mm, rightmargin=0mm, color=blue, location=text]	
+  [after={\blank[12pt]}]	
 
 % TODO: optimize inter word spacing
 \setuptolerance
@@ -685,14 +554,6 @@ leftmargin=4mm, rightmargin=0mm]
   indicator=no,
   pagestyle=\tf,
   n=1]
-
-\defineregister[persIndex]
-\setupregister[persIndex]
-  [compress=yes,
-   indicator=no,
-   pagestyle=\tf,
-   n=1,
-   method={zc}]
    
 \defineregister[personsIndex]
 \setupregister[personsIndex]
@@ -709,16 +570,7 @@ leftmargin=4mm, rightmargin=0mm]
    pagestyle=\tf,
    n=1,
    %method={zc,mm,uc}]   
-   method={zc}]   
-   
-\defineregister[sachIndex]
-\setupregister[sachIndex]
-  [compress=yes,
-   indicator=no,
-   pagestyle=\tf,
-   n=1,
-   %method={zc,mm,uc}]
-   method={zc}]   
+   method={zc}]     
    
 \defineconversion[s][,,,]
 
@@ -857,10 +709,11 @@ processMargins = function(head)
 
       ::continue::
       if v1["type"] == "e" then
-	commentsFile:write(v1["id"] .. "\n")
+	commentsFile:write(v1["id"] .. " ")
       end
     end
-      
+    
+    commentsFile:write("\n")
     notesFile:write(lineNote .. "\n")
   end
 
@@ -891,23 +744,6 @@ nodes.tasks.appendaction("finalizers", "after", "processMargins")
      \dostoptagged}
   
   \protect
-  
-\unprotect
-% \unexpanded\def\registerpageseparator % todo: , configurable
-%   {\ifcase\c_strc_registers_page_state
-%      \hskip\d_strc_registers_distance\relax
-%      \hfill
-%    \or
-%      \dostarttagged\t!registerseparator\empty
-%      \registerpageseparatorsymbol % page
-%      \dostoptagged
-%    \or
-%      \dostarttagged\t!registerseparator\empty
-%      \registerpageseparatorsymbol % see
-%      \dostoptagged
-%    \fi}
-
-\protect
 
 % in order to remove the additional page \stopfrontmatter and
 % \stopbodymatter create
