@@ -130,6 +130,16 @@
         <xsl:apply-templates/>
         <xsl:text>\stopalignment}</xsl:text>
     </xsl:template>
+    
+    
+    <!-- <xsl:template match="ab[@type = 'half-title']">  -->
+    <xsl:template match="div[@type = 'titlePage']">
+        <!-- <xsl:if test="ancestor::body[1]/descendant::ab[@type = 'half-title'][1] = ."> -->
+        <xsl:if test="ancestor::body[1]/descendant::div[@type = 'titlePage'][1] = .">
+            <xsl:text>\newOddPage </xsl:text>
+        </xsl:if>
+        <xsl:apply-templates/>
+    </xsl:template>
 
 
     <xsl:template match="titlePart">
