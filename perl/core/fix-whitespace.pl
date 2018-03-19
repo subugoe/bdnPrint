@@ -10,7 +10,6 @@ use File::Slurp;
 my $head = "";
 
 my $tail = read_file("tmp/" . $ARGV[0] . "_tmp-1.tex");
-#my $tail = read_file("test.tex");
 
 $tail =~ s/\s+/ /g;
 $tail =~ s/ +/ /g;
@@ -35,21 +34,17 @@ $tail =~ s/\} \\nobreak/\}\\nobreak/g;
 $tail =~ s/ ([,\.;\)\?}])/$1/g;
 $tail =~ s/} ([,\.;\):}])/}$1/g;
 
-# fixing whitespace after punctuation if followed by scribal abbreviation
+# fixing whitespace after punctuation 
+# if followed by scribal abbreviation
 $tail =~ s/([,\.;\)\?}]) (\\margin\{.{8}\}\{plClose\})/$1$2/g;
 
 #e2 80 9c: utf8 codepoint for LEFT DOUBLE QUOTATION MARK
 $tail =~ s/ \x{201C}/\x{201C}/g;
+$tail =~ s/ \xe2\x80\x9c/\xe2\x80\x9c/g;
+
 $tail =~ s/ \./\./g;
-#$tail =~ s/} \./}\./g;
-#$tail =~ s/ ;/;/g;
-#$tail =~ s/} ;/};/g;
-#$tail =~ s/ \)/\)/g;
-#$tail =~ s/} \)/}\)/g;
 $tail =~ s/\( \\/\(\\/g;
-#$tail =~ s/ \?/\?/g;
 $tail =~ s/} \\italic\{,/}\\italic\{,/g;
-#$tail =~ s/} :/}:/g;
 $tail =~ s/} \\italic\{:/}\\italic\{:/g;
 $tail =~ s/\\tfx\\high\{\/a}} \{\\tfx\\high\{\/c}/\\tfx\\high\{\/a}}\{\\tfx\\high\{\/c}/g;
 $tail =~ s/\{\/a} \{\\tfx\\high\{\/c}/\{\/a}\{\\tfx\\high\{\/c}/g;
@@ -68,13 +63,12 @@ $tail =~ s/ \x{030E}/\x{059E}/g;
 $tail =~ s/\.\.\.\./\. \.\.\./g;
 
 # individual cases of whitespace problems
-$tail =~ s/c119}\\italic\{Pfaff,/c119} \\italic\{Pfaff,/g;
-$tail =~ s/\\italic\{Weisman,}\\/\\italic\{Weisman,} \\/g;
-$tail =~ s/c16} 12/c16}12/g;
-$tail =~ s/b51} 38/b51}38/g;
-$tail =~ s/ \{\\startalignment/\{\\startalignment/g;
-$tail =~ s/a595, b17, c16} /a595, b17, c16}/g;
-$tail =~ s/\\stopalignment} \\margin/\\stopalignment}\\margin/g;
+#$tail =~ s/c119}\\italic\{Pfaff,/c119} \\italic\{Pfaff,/g;
+#$tail =~ s/\\italic\{Weisman,}\\/\\italic\{Weisman,} \\/g;
+#$tail =~ s/b51} 38/b51}38/g;
+#$tail =~ s/ \{\\startalignment/\{\\startalignment/g;
+#$tail =~ s/a595, b17, c16} /a595, b17, c16}/g;
+#$tail =~ s/\\stopalignment} \\margin/\\stopalignment}\\margin/g;
 
 # remove vertical whitespace before headings, might need further improvement
 for (my $i=0; $i <= 9; $i++) {
