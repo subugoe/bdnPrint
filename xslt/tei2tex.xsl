@@ -96,6 +96,7 @@
         <xsl:choose>
             <xsl:when test="ancestor::front/descendant::div[@type = 'preface'][1] = .">
                 <xsl:text>\newOddPage</xsl:text>
+                <xsl:call-template name="make-top-margin"/>
             </xsl:when>
             <!-- only first preface has to be on an odd page -->
             <xsl:otherwise>
@@ -137,6 +138,17 @@
         <!-- <xsl:if test="ancestor::body[1]/descendant::ab[@type = 'half-title'][1] = ."> -->
         <xsl:if test="ancestor::body[1]/descendant::div[@type = 'titlePage'][1] = .">
             <xsl:text>\newOddPage </xsl:text>
+            <xsl:text>\starteffect[hidden].\stopeffect</xsl:text>
+            
+            <!-- since the interlinespace in rdgs is smaller we need less vertical space -->
+            <xsl:choose>
+                <xsl:when test="ancestor::rdg">
+                    <xsl:text>\blank[50pt]</xsl:text>
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:text>\blank[60pt]</xsl:text>
+                </xsl:otherwise>
+            </xsl:choose>
         </xsl:if>
         <xsl:apply-templates/>
     </xsl:template>
@@ -167,14 +179,7 @@
         <xsl:text>\blank \noindentation </xsl:text>
         <xsl:apply-templates/>
     </xsl:template>
-
-
-    <xsl:template match="div[@type = 'corrigenda']">
-        <xsl:text>\corrigendaheading[]{</xsl:text>
-        <xsl:apply-templates select="head"/>
-        <xsl:text>}</xsl:text>
-        <xsl:apply-templates select="*[not(self::head)]"/>
-    </xsl:template>
+    
 
     <xsl:template match="div[@type = 'index']">
         <xsl:call-template name="make-both-columns">
@@ -290,11 +295,11 @@
             </xsl:when>
             <xsl:when test="parent::div[@type]">
                 <xsl:choose>
-                    <xsl:when
-                        test="
-                            parent::div[@type = 'editorial'
-                            or @type = 'introduction']">
+                    <xsl:when test="parent::div[@type = 'editorial' or @type = 'introduction']">
                         <xsl:text>\maintitle[]{</xsl:text>
+                    </xsl:when>
+                    <xsl:when test="parent::div[@type = 'editorialNotes']">
+                        <xsl:text>\editorialtitle[]{</xsl:text>
                     </xsl:when>
                     <xsl:otherwise>
                         <xsl:text>\title[]{</xsl:text>
@@ -364,11 +369,33 @@
                 <xsl:text>}</xsl:text>
             </xsl:when>
             <xsl:when test="parent::div[@type = 'contents'] and following-sibling::list">
+                <xsl:if test="ancestor::text[1]/descendant::div[@type = 'contents'][1] 
+                    = parent::div[@type = 'contents']">
+                    <xsl:call-template name="make-top-margin"/>
+                </xsl:if>
                 <xsl:text>\listhead[]{</xsl:text>
                 <xsl:apply-templates/>
                 <xsl:text>}</xsl:text>               
             </xsl:when>
+            <xsl:when test="parent::div[@type = 'preface']">
+                <xsl:text>\prefacehead[]{</xsl:text>
+                <xsl:apply-templates/>
+                <xsl:text>}</xsl:text>                   
+            </xsl:when>
+            <xsl:when test="parent::div[@type = 'corrigenda']">
+                <xsl:text>\subject[]{</xsl:text>
+                <xsl:apply-templates/>
+                <xsl:text>}</xsl:text>
+            </xsl:when>
+            <xsl:when test="ancestor::div[@type = 'chapter']/descendant::head[1] = .">
+                <xsl:text>\chapterhead[]{</xsl:text>
+                <xsl:apply-templates/>
+                <xsl:text>}</xsl:text>               
+            </xsl:when>
             <xsl:otherwise>
+                <xsl:if test="ancestor::div[@type = 'chapter']/descendant::head[1] = .">
+                    <xsl:call-template name="make-top-margin"/>                     
+                </xsl:if>
                 <xsl:text>\subject[]{</xsl:text>
                 <xsl:apply-templates/>
                 <xsl:text>}</xsl:text>
@@ -556,7 +583,7 @@
                 test="
                     count(child::*[self::note[@place = 'bottom']]) > 1
                     and not(child::*[not(self::note[@place = 'bottom'])])">
-                <xsl:text>\authorbottomnote{</xsl:text>
+                <xsl:text>\authorbottomnote{\startbottommargin </xsl:text>
                 <xsl:apply-templates select="descendant::rdgMarker[@mark = 'open']"/>
                 <xsl:for-each select="child::note[@place = 'bottom']/text()">
                     <xsl:apply-templates select="."/>
@@ -565,7 +592,7 @@
                     </xsl:if>
                 </xsl:for-each>
                 <xsl:apply-templates select="descendant::rdgMarker[@mark = 'close']"/>
-                <xsl:text>}</xsl:text>
+                <xsl:text>\stopbottommargin}</xsl:text>
             </xsl:when>
             <xsl:otherwise>
                 <xsl:apply-templates/>
@@ -584,7 +611,18 @@
     </xsl:template>
 
 
-    <xsl:template match="rdg[@type = 'pp' or @type = 'pt']">
+    <xsl:template match="rdg[@type = 'pt']">
+        <xsl:if test="not(preceding-sibling::rdg[@type = 'pp' or @type = 'pt'])">
+            <xsl:text>\hspace[insert]{\dvl}</xsl:text>
+        </xsl:if>
+        <xsl:call-template name="make-app-entry">
+            <xsl:with-param name="node" select="."/>
+            <xsl:with-param name="wit" select="replace(@wit, '[# ]+', '')"/>
+        </xsl:call-template>
+    </xsl:template>
+    
+    
+    <xsl:template match="rdg[@type = 'pp']" mode="default">
         <xsl:if test="not(preceding-sibling::rdg[@type = 'pp' or @type = 'pt'])">
             <xsl:text>\hspace[insert]{\dvl}</xsl:text>
         </xsl:if>
@@ -605,7 +643,7 @@
     <xsl:template match="rdg[@type = 'om' or @type = 'typo-correction' 
         or @type = 'varying-structure']"/>-->
     <xsl:template
-        match="rdg[@type = 'om' or @type = 'typo_corr' or @type = 'var-structure' or @type = 'v']"/>
+        match="rdg[@type = 'om' or @type = 'typo_corr' or @type = 'var-structure' or @type = 'v' or @type = 'pp']"/>
 
 
     <xsl:template match="rdgMarker">
@@ -644,6 +682,23 @@
                     <xsl:text>{\tfx\high{</xsl:text>
                     <xsl:value-of select="$wit"/>
                     <xsl:text>\textbackslash}}</xsl:text>
+                    
+                    <xsl:if test="@type = 'pp'">
+                        <xsl:variable name="ref" select="./@ref"/>
+                        <xsl:variable name="refs-array" select="tokenize(@ref, ' ')"/>
+                        <xsl:choose>
+                            <xsl:when test="count($refs-array) = 1">
+                                <xsl:apply-templates select="//rdg[@id = $ref]" mode="default"/>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <xsl:call-template name="set-all-variants">
+                                    <xsl:with-param name="iii" select="1"/>
+                                    <xsl:with-param name="limit" select="count($refs-array)"/>
+                                    <xsl:with-param name="refs" select="$refs-array"/>
+                                </xsl:call-template>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                    </xsl:if>
                 </xsl:if>
             </xsl:when>
             <xsl:when test="@type = 'ptl' or (@type = 'ppl' and @context = 'rdg')">
@@ -687,6 +742,13 @@
                 </xsl:if>
             </xsl:when>
         </xsl:choose>
+        
+        <!-- scribal abbreviations that don't have the same type and end at the same place should be
+        seperated in order to avoid confusion -->
+        <xsl:if test="@mark = 'close' and (@type = 'v' or @type = 'pp' or @type = 'ppl' or @type = 'ptl')
+            and following-sibling::node()[1][self::rdgMarker[@mark = 'close']]">
+            <xsl:text>~</xsl:text>
+        </xsl:if>
     </xsl:template>
 
 
@@ -762,7 +824,7 @@
         <xsl:choose>
             <!-- note[@plavce = 'bottom'] has to be treated as a footnote -->
             <xsl:when test="@place = 'bottom'">
-                <xsl:text>\authorbottomnote{</xsl:text>
+                <xsl:text>\authorbottomnote{\startbottommargin </xsl:text>
                 <xsl:if
                     test="ancestor::rdg[@type = 'ppl' or @type = 'ptl']/descendant::note[@place = 'bottom'][1] = .">
                     <xsl:apply-templates
@@ -780,7 +842,7 @@
                             or @type = 'ptl']/@id and @mark = 'close']"
                     />
                 </xsl:if>
-                <xsl:text>}</xsl:text>
+                <xsl:text>\stopbottommargin}</xsl:text>
 
                 <xsl:variable name="rdgs"
                     select="descendant::rdg[@type = 'v' or @type = 'pp' or @type = 'pt']"/>
@@ -817,15 +879,16 @@
 
     <xsl:template match="note[@type = 'editorial']"/>
 
+    <!-- <index indexName="classical-authors">
+							<term><persName ref="#textgrid:2553z">Gellius</persName>
+								<title>noct. att.</title>
+								<measure>XIII, 15</measure></term>
+						</index> -->
+
     <!-- <xsl:template match="index[@indexName = 'classicals-index']"> -->
     <xsl:template match="index[@indexName = 'classical-authors']">
         <xsl:text>\classicalauthorsIndex{</xsl:text>
-        <xsl:value-of select="persName"/>
-
-        <!-- Achtung: auch Fälle mit zwei term-Elementen!! -->
-        <!-- OS: Wir haben bislang nur wenige Fälle der Indexierung mit zwei <terms>. 
-            Hier sollte sich die Seitenanzeige im Print nur bei dem zweiten Term ausgegeben werden.-->
-
+        <xsl:value-of select="term/persName"/>
         <xsl:if test="term/title">
             <xsl:text>+</xsl:text>
         </xsl:if>
@@ -853,21 +916,34 @@
                 <xsl:text>\bibelIndex{</xsl:text>
                 <xsl:value-of select="$from-bibl-book"/>
                 <xsl:text>+</xsl:text>
-                <xsl:value-of select="$from-passage"/>
+                <xsl:choose>
+                    <xsl:when test="$from-verse">
+                        <xsl:value-of select="$from-passage"/>
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <xsl:value-of select="$from-chapter"/>
+                    </xsl:otherwise>
+                </xsl:choose>
                 <xsl:choose>
                     <xsl:when test="matches($to-bibl-book, 'f')">
                         <xsl:value-of select="$to-bibl-book"/>
                     </xsl:when>
-                    <xsl:when
-                        test="
+                    <xsl:when test="
                             $from-bibl-book = $to-bibl-book
                             and $from-chapter = $to-chapter">
-                        <xsl:text>\endash</xsl:text>
+                        <xsl:text>\endash </xsl:text>
                         <xsl:value-of select="$to-verse"/>
                     </xsl:when>
                     <xsl:when test="$from-bibl-book = $to-bibl-book">
-                        <xsl:text>\endash</xsl:text>
-                        <xsl:value-of select="$to-passage"/>
+                        <xsl:text>\endash </xsl:text>
+                        <xsl:choose>
+                            <xsl:when test="$to-verse">
+                                <xsl:value-of select="$to-passage"/>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <xsl:value-of select="$to-chapter"/>
+                            </xsl:otherwise>
+                        </xsl:choose>                        
                     </xsl:when>
                     <!-- does the other case ever occur? -->
                     <xsl:otherwise/>
@@ -911,7 +987,7 @@
                 <xsl:text>\seepersonsIndex{</xsl:text>
                 <xsl:value-of select="substring-before(term[1], ',')"/>
                 <xsl:text>}{</xsl:text>
-                <xsl:value-of select="substring-after(term[1], 's\. ')"/>
+                <xsl:value-of select="substring-after(term[1], 's. ')"/>
                 <xsl:text>}</xsl:text>
                 <xsl:text>\personsIndex{</xsl:text>
                 <xsl:value-of select="term[2]"/>
@@ -1057,11 +1133,12 @@
     <!-- <xsl:template match="ptr[@type = 'editorial-commentary']"> -->
     <xsl:template match="ptr[matches(@target, '^#erl_')]">
         <xsl:choose>
-            <xsl:when test="ancestor::rdg[not(@type = 'ppl' or @type = 'ptl')]">
+            <xsl:when test="ancestor::rdg[not(@type = 'ppl' or @type = 'ptl')] 
+                or ancestor::note[@place = 'bottom']">
                 <xsl:text>[E] </xsl:text>
             </xsl:when>
             <xsl:otherwise>
-                <xsl:text> \margin{</xsl:text>
+                <xsl:text>\margin{</xsl:text>
                 <xsl:value-of select="generate-id()"/>
                 <xsl:text>}{e}{}{\hbox{}}{E}</xsl:text>
             </xsl:otherwise>
@@ -1071,9 +1148,13 @@
         <xsl:text>]</xsl:text>
     </xsl:template>
 
+
     <xsl:template match="ptr">
-        <xsl:text> </xsl:text>
+        <xsl:if test="not(following-sibling::rdgMarker[@mark = 'close'])">
+            <xsl:text> </xsl:text>
+        </xsl:if>
     </xsl:template>
+
 
     <xsl:template match="ref">
         <xsl:apply-templates/>
@@ -1250,7 +1331,7 @@
 
         <xsl:text>\setuplayout</xsl:text>
 
-        <xsl:text>\blank[9mm]</xsl:text>
+        <!--<xsl:text>\blank[9mm]</xsl:text>-->
         <xsl:text>\starttabulate[|lp(10mm)|xp(103mm)|]</xsl:text>
         <!-- <xsl:for-each select="//ptr[@type = 'editorial-commentary']">  -->
         <xsl:for-each select="//ptr">
@@ -1266,7 +1347,7 @@
             </xsl:if>
         </xsl:for-each>
         <xsl:text>\stoptabulate </xsl:text>
-        <xsl:text>\stoppart </xsl:text>
+        <!--<xsl:text>\stoppart </xsl:text>-->
         <xsl:text>\newOddPage </xsl:text>
     </xsl:template>
 
@@ -1655,5 +1736,14 @@
                 <xsl:with-param name="refs" select="$refs"/>
             </xsl:call-template>
         </xsl:if>
+    </xsl:template>
+    
+    
+    <xsl:template name="make-top-margin">
+        <!-- publisher guidelines: new chapters should have a top margin of 36pt. 
+                a hidden character has to be inserted, otherwise ConTeXt won't display the 
+                empty space -->
+        <xsl:text>\starteffect[hidden] . \stopeffect\blank[48pt]</xsl:text>
+        <xsl:text>\noindentation </xsl:text>
     </xsl:template>
 </xsl:stylesheet>
