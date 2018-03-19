@@ -14,21 +14,18 @@ compile() {
 	cd tmp
 	rm $1_*
 	cd ..
-	[[ -d log ]] && rm -rf log; mkdir log
+	[[ ! -d log ]] && mkdir log
 	[[ ! -d output/$1_archive ]] && mkdir -p output
 
 	perl perl/core/fix-braces.pl $1 > $1_tmp.xml
 	perl perl/core/preprocess-xml.pl $1 > $1_tmp-2.xml
 	perl perl/core/switch-commentary-markers.pl $1 > $1_tmp.xml
+	#mv $1_tmp-2.xml $1_tmp.xml
 
 	# chance according to XSLT processor
 	processorlocation="$(locate saxon9he.jar)"
 
-	#if [ $1 == 'noesselt' ]; then
-	#	java -cp $processorlocation net.sf.saxon.Transform -o:tmp/$1_tmp-1.tex $1_tmp.xml xslt/transform-to-tex.xsl
-	#else
-		java -cp $processorlocation net.sf.saxon.Transform -o:tmp/$1_tmp-1.tex $1_tmp.xml xslt/tei2tex.xsl
-	#fi
+	java -cp $processorlocation net.sf.saxon.Transform -o:tmp/$1_tmp-1.tex $1_tmp.xml xslt/tei2tex.xsl
 
 	echo "$(timestamp) fix-whitespace begin" > log/log_$1_$(datestamp).txt
 
@@ -90,13 +87,17 @@ compile() {
 	echo "$(timestamp) postprocess margins begin" >> log/log_$1_$(datestamp).txt
 
 	perl perl/core/postprocess-margins.pl $1 > tmp/$1_tmp-3.tex
+	perl perl/authors/$1-postprocessing.pl $1 > tmp/$1_tmp-4.tex
 	perl perl/core/remove-moved-elements.pl $1 >> tmp/$1_tmp-2.tex
+
+#	
+#	mv tmp/$1_tmp-2.tex tmp/$1_tmp-1.tex
 	cat context/footer.tex >> tmp/$1_tmp-2.tex
 
 	echo "$(timestamp) postprocess margins finished" >> log/log_$1_$(datestamp).txt
 	echo "$(timestamp) compiling begin" >> log/log_$1_$(datestamp).txt
 
-	mv tmp/comments.txt tmp/comments_save.txt
+	mv tmp/comments.txt tmp/comments_$1_save.txt
 
 	notify-send "Entering second stage of $1"
 
