@@ -98,6 +98,8 @@ compile() {
 	echo "$(timestamp) compiling begin" >> log/log_$1_$(datestamp).txt
 
 	mv tmp/comments.txt tmp/comments_$1_save.txt
+	mv tmp/id-file.txt tmp/id-file_$1.txt
+	mv tmp/notes.txt tmp/notes_$1.txt
 
 	notify-send "Entering second stage of $1"
 
