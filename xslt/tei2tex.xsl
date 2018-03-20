@@ -39,7 +39,13 @@
         </xsl:if>
         <xsl:apply-templates/>
     </xsl:template>
-
+    
+    
+    <xsl:template match="back">
+        <xsl:text>\noheaderandfooterlines </xsl:text>
+        <xsl:apply-templates/>        
+    </xsl:template>
+    
 
     <!-- when edition text starts, page numbering in Arabic letters 
         starts with 1. On the left page (even numbers) a short bibliographic
@@ -383,7 +389,7 @@
                 <xsl:text>}</xsl:text>                   
             </xsl:when>
             <xsl:when test="parent::div[@type = 'corrigenda']">
-                <xsl:text>\subject[]{</xsl:text>
+                <xsl:text>\corrigendaheading[]{</xsl:text>
                 <xsl:apply-templates/>
                 <xsl:text>}</xsl:text>
             </xsl:when>

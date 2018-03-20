@@ -799,8 +799,9 @@ nodes.tasks.appendaction("finalizers", "after", "processMargins")
 % in order to remove the additional page \stopfrontmatter and
 % \stopbodymatter create
 % c.f. http://wiki.contextgarden.net/Titles
-\setupsectionblock[frontpart][page=]
-\setupsectionblock[bodypart] [page=]
+% and http://wiki.contextgarden.net/Command/setupsectionblock
+\setupsectionblock[frontpart][page=yes]
+\setupsectionblock[bodypart][page=yes]
 
   
 \starttext
