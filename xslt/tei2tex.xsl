@@ -1258,7 +1258,7 @@
                     <xsl:when test="ancestor::div[@type = 'section']">
                         <xsl:text>part</xsl:text>
                     </xsl:when>
-                    <xsl:when test="ancestor::div[@type = 'chapter']">
+                    <xsl:when test="ancestor::div[@type = 'chapter' or @type = 'contents']">
                         <xsl:text>section</xsl:text>
                     </xsl:when>
                     <xsl:when test="ancestor::div[@type = 'part' or @type = 'introduction']">
