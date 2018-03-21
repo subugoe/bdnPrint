@@ -40,12 +40,6 @@
         <xsl:apply-templates/>
     </xsl:template>
     
-    
-    <xsl:template match="back">
-        <xsl:text>\noheaderandfooterlines </xsl:text>
-        <xsl:apply-templates/>        
-    </xsl:template>
-    
 
     <!-- when edition text starts, page numbering in Arabic letters 
         starts with 1. On the left page (even numbers) a short bibliographic
@@ -63,6 +57,7 @@
 
         <xsl:apply-templates/>
         <xsl:text>\stopbodymatter </xsl:text>
+        <xsl:text>\noheaderandfooterlines </xsl:text>
     </xsl:template>
     
     
@@ -833,20 +828,14 @@
                 <xsl:text>\authorbottomnote{\startbottommargin </xsl:text>
                 <xsl:if
                     test="ancestor::rdg[@type = 'ppl' or @type = 'ptl']/descendant::note[@place = 'bottom'][1] = .">
-                    <xsl:apply-templates
-                        select="
-                            preceding::rdgMarker[1][@ref = ancestor::rdg[@type = 'ppl'
-                            or @type = 'ptl']/@id and @mark = 'open']"
-                    />
+                    <xsl:apply-templates select="preceding::rdgMarker[1][@ref = ancestor::rdg[@type = 'ppl'
+                        or @type = 'ptl']/@id and @mark = 'open']"/>
                 </xsl:if>
                 <xsl:apply-templates/>
                 <xsl:if
                     test="ancestor::rdg[@type = 'ppl' or @type = 'ptl']/descendant::note[@place = 'bottom'][last()] = .">
-                    <xsl:apply-templates
-                        select="
-                            following::rdgMarker[1][@ref = ancestor::rdg[@type = 'ppl'
-                            or @type = 'ptl']/@id and @mark = 'close']"
-                    />
+                    <xsl:apply-templates select="following::rdgMarker[1][@ref = ancestor::rdg[@type = 'ppl'
+                        or @type = 'ptl']/@id and @mark = 'close']"/>
                 </xsl:if>
                 <xsl:text>\stopbottommargin}</xsl:text>
 
