@@ -62,6 +62,11 @@ for (my $i = 0; $i < @idFile; $i++) {
 		if($note =~ m/\[[\dXVI]+?\]/) {
 			$note =~ s/\[([\dXVI]+?)\]/!$1!/g;
 		}
+
+	# merging note indicators
+	$tmp1 =~ s/E, E/E/g;
+	$tmp1 =~ s/E, ([\w\\\d\s,]+) E/E, $1/g;
+
  
 		if($moveIntoNextMargindata =~ m/[\w]/) {
 			# move pb from original \margindata[inouter] to the current one
@@ -112,7 +117,7 @@ for (my $i = 0; $i < @idFile; $i++) {
 			if($notes[$i+1] !~ m/[\w]/ and $noOfElements - 1 == $j
 			# estimation: either a lot of small elements ...
 			and (($marginSize >= 20 and $noOfElements >= 3) 
-				# ... or a few large elements. 17 is gained from experience, 22 is the
+				# ... or a few large elements. 16 is gained from experience, 22 is the
 				# maximum size a combination of two elements can have (e.g. c[XXXVIII], d[XXXVIII])
 				or ($marginSize >= 16 and $marginSize <= 22 and $noOfElements < 3))) {
 					# workaround: if the pb doesn't have an hbox, the semicolon would otherwise be set in the next
@@ -132,7 +137,7 @@ for (my $i = 0; $i < @idFile; $i++) {
 			# has to be copied into the next \\margindata[inouter] at the beginning of the next loop iteration.
 			#@TODO documentation! may also occur in margin notes, where last pb is the only one (isn't considered at the moment
 			if($noOfElements > 1 and $noOfElements - 1 == $j
-			and $marginSize >= 17
+			and $marginSize >= 17 and $noOfElements < 3
 			# assure that the following line has content in margin, too
 			and $notes[$i+1] =~ m/[\w]/
 			# experience shows that removal is only necessary when we have >= 2 pagebreaks
@@ -154,9 +159,6 @@ close $file;
 $tmp1 =~ s/, ([\w]):([!]{0,1}[0-9XVI]{1,4}[!]{0,1})/, $1$2/g;
 # remove superfluous \margin
 $tmp1 =~ s/ \\margin\{[\w]{8}\}\{pb\}\{\}\{\\hbox\{\}\}\{.*?\}//g;
-# merging note indicators
-$tmp1 =~ s/E,\sE/E/g;
-$tmp1 =~ s/E, ([\w\\\d\s,]+) E/E, $1/g;
 
 print $tmp1;
 
