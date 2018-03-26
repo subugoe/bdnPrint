@@ -134,10 +134,10 @@
     </xsl:template>
     
     
-    <!-- <xsl:template match="ab[@type = 'half-title']">  -->
-    <xsl:template match="div[@type = 'titlePage']">
-        <!-- <xsl:if test="ancestor::body[1]/descendant::ab[@type = 'half-title'][1] = ."> -->
-        <xsl:if test="ancestor::body[1]/descendant::div[@type = 'titlePage'][1] = .">
+     <xsl:template match="ab[@type = 'half-title']">  
+    <!--<xsl:template match="div[@type = 'titlePage']">-->
+         <xsl:if test="ancestor::body[1]/descendant::ab[@type = 'half-title'][1] = ."> 
+        <!--<xsl:if test="ancestor::body[1]/descendant::div[@type = 'titlePage'][1] = .">-->
             <xsl:text>\newOddPage </xsl:text>
             <xsl:text>\starteffect[hidden].\stopeffect</xsl:text>
             
@@ -244,8 +244,7 @@
 
     <!-- within critical text -->
     <xsl:template match="div[@type = 'introduction' and ancestor::group]">
-        <!--<xsl:if test="not(preceding-sibling::*[1][descendant::ab[@type = 'half-title']])">  -->
-        <xsl:if test="not(preceding-sibling::*[1][descendant::div[@type = 'titlePage']])">
+        <xsl:if test="not(preceding-sibling::*[1][descendant::ab[@type = 'half-title']])"> 
             <xsl:text>\newOddPage</xsl:text>
         </xsl:if>
         <xsl:text>\noheaderandfooterlines </xsl:text>
