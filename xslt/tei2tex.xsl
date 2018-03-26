@@ -135,9 +135,7 @@
     
     
      <xsl:template match="ab[@type = 'half-title']">  
-    <!--<xsl:template match="div[@type = 'titlePage']">-->
          <xsl:if test="ancestor::body[1]/descendant::ab[@type = 'half-title'][1] = ."> 
-        <!--<xsl:if test="ancestor::body[1]/descendant::div[@type = 'titlePage'][1] = .">-->
             <xsl:text>\newOddPage </xsl:text>
             <xsl:text>\starteffect[hidden].\stopeffect</xsl:text>
             
@@ -224,10 +222,9 @@
 
 
     <xsl:template match="div[@type = 'part']">
-        <!-- <xsl:if test="not(preceding::ab[1][@type = 'half-title'])"> -->
         <xsl:if
             test="
-                not(preceding::div[1][@type = 'titlePage'])
+                not(preceding::ab[1][@type = 'half-title'])
                 or ancestor::body[1]/descendant::div[@type = 'titlePage'][1] = .">
             <xsl:text>\newOddPage</xsl:text>
         </xsl:if>
@@ -405,22 +402,21 @@
 
 
     <xsl:template match="p">
-        <xsl:if
-            test="
-                ancestor::div/descendant::p[1] = .
-                or parent::note[@type = 'editorial']/descendant::p[1] = .">
-            <xsl:text>\noindentation </xsl:text>
-        </xsl:if>
-        <xsl:if
-            test="
-                (preceding-sibling::p
-                or not(ancestor::div/descendant::p[1] = .))
-                and not(parent::note[@type = 'editorial'])">
-            <xsl:if test="not(parent::rdg)">
-                <xsl:text>\crlf </xsl:text>
-                <xsl:text>\starteffect[hidden] . \stopeffect\hspace[p]</xsl:text>
-            </xsl:if>
-        </xsl:if>
+        <xsl:choose>
+            <xsl:when test="ancestor::div/descendant::p[1] = .
+                or parent::note/descendant::p[1] = .">
+                <xsl:text>\noindentation </xsl:text>
+            </xsl:when>
+            <xsl:when test="preceding-sibling::p
+                or not(ancestor::div/descendant::p[1] = .)">
+                <xsl:if test="not(parent::rdg)">
+                    <xsl:if test="not(preceding-sibling::*[1][child::*[last()][self::list]])">
+                        <xsl:text>\crlf </xsl:text>
+                        <xsl:text>\starteffect[hidden] . \stopeffect\hspace[p]</xsl:text>
+                    </xsl:if>
+                </xsl:if>
+            </xsl:when> 
+        </xsl:choose>
         <xsl:apply-templates/>
         <xsl:if test="@break-after = 'yes'">
             <xsl:text> </xsl:text>
@@ -1012,7 +1008,9 @@
     </xsl:template>
 
 
-    <xsl:template match="list[ancestor::div[@type = 'contents']]">
+    <!-- second part of conditional is necessary to distinguish normal lists from 
+    TOC-ish lists in the text. Example: Nösselt §176-->
+    <xsl:template match="list[ancestor::div[@type = 'contents'] or descendant::list or ancestor::list]">
         <xsl:text>\setupindenting[yes,medium]</xsl:text>
         <xsl:text>\setupitemgroup[itemize][indenting={40pt,next}]</xsl:text>
         <xsl:text>\startitemize[packed, paragraph, joinedup</xsl:text>
@@ -1076,19 +1074,16 @@
                 test="
                     ancestor::rdg[@type = 'ppl' or @type = 'ptl']
                     and preceding-sibling::node() and not(preceding-sibling::*[1][self::pb]
-                    or preceding-sibling::*[1][self::rdgMarker])">
+                    or preceding-sibling::*[1][self::rdgMarker]
+                    or preceding-sibling::*[1][child::*[last()][self::list]])">
                 <xsl:text>\crlf </xsl:text>
                 <xsl:choose>
-                    <xsl:when
-                        test="
-                            @unit = 'p' and (not(preceding-sibling::*[1][self::list])
-                            and not(preceding-sibling::*[1][self::seg][child::*[last()][self::list]]))">
+                    <xsl:when test="@unit = 'p' and (not(preceding-sibling::*[1][self::list])
+                        and not(preceding-sibling::*[1][self::seg][child::*[last()][self::list]]))">
                         <xsl:call-template name="paragraph-indent"/>
                     </xsl:when>
-                    <xsl:when
-                        test="
-                            @unit = 'p' and (preceding-sibling::*[1][self::list]
-                            or preceding-sibling::*[1][self::seg][child::*[last()][self::list]])">
+                    <xsl:when test="@unit = 'p' and (preceding-sibling::*[1][self::list]
+                        or preceding-sibling::*[1][self::seg][child::*[last()][self::list]])">
                         <xsl:text>\hspace[p] </xsl:text>
                     </xsl:when>
                 </xsl:choose>
@@ -1144,7 +1139,7 @@
 
 
     <xsl:template match="ptr">
-        <xsl:if test="not(following-sibling::rdgMarker[@mark = 'close'])">
+        <xsl:if test="not(following::rdgMarker[@mark = 'close'])">
             <xsl:text> </xsl:text>
         </xsl:if>
     </xsl:template>
