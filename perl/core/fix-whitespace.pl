@@ -47,6 +47,7 @@ $tail =~ s/\( \\/\(\\/g;
 $tail =~ s/} \\italic\{,/}\\italic\{,/g;
 $tail =~ s/} \\italic\{:/}\\italic\{:/g;
 $tail =~ s/\\tfx\\high\{\/a}} \{\\tfx\\high\{\/c}/\\tfx\\high\{\/a}}\{\\tfx\\high\{\/c}/g;
+$tail =~ s/(\{\\tfx\\high\{[a-z]\\textbackslash\}\}) (\\margin\{.{0,8}\}\{omClose)/$1$2/g;
 $tail =~ s/\{\/a} \{\\tfx\\high\{\/c}/\{\/a}\{\\tfx\\high\{\/c}/g;
 $tail =~ s/\\margindata\[inouter\]\{\/a} \{\\tfx\\high\{\/c}}/\\margindata\[inouter\]\{\/a}\{\\tfx\\high\{\/c}}/g;
 $tail =~ s/\s\x{201C}/\x{201C}/g;
