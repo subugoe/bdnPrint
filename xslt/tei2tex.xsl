@@ -222,10 +222,8 @@
 
 
     <xsl:template match="div[@type = 'part']">
-        <xsl:if
-            test="
-                not(preceding::ab[1][@type = 'half-title'])
-                or ancestor::body[1]/descendant::div[@type = 'titlePage'][1] = .">
+        <xsl:if test="not(preceding-sibling::*[1][self::ab][@type = 'half-title'])">
+            <!-- ??? or ancestor::body[1]/descendant::div[@type = 'titlePage'][1] = ."> --> 
             <xsl:text>\newOddPage</xsl:text>
         </xsl:if>
 
@@ -638,8 +636,8 @@
     <!--
     <xsl:template match="rdg[@type = 'om' or @type = 'typo-correction' 
         or @type = 'varying-structure']"/>-->
-    <xsl:template
-        match="rdg[@type = 'om' or @type = 'typo_corr' or @type = 'var-structure' or @type = 'v' or @type = 'pp']"/>
+    <xsl:template match="rdg[@type = 'om' or @type = 'typo_corr' 
+        or @type = 'var-structure' or @type = 'v' or @type = 'pp']"/>
 
 
     <xsl:template match="rdgMarker">
@@ -740,8 +738,11 @@
         </xsl:choose>
         
         <!-- scribal abbreviations that don't have the same type and end at the same place should be
-        seperated in order to avoid confusion -->
-        <xsl:if test="@mark = 'close' and (@type = 'v' or @type = 'pp' or @type = 'ppl' or @type = 'ptl')
+        seperated in order to avoid confusion.
+        Exception: when an om and a ppl end at the same place, no extra whitespace is needed. the can 
+        easily distinguished by their backslashes. -->
+        <xsl:if test="@mark = 'close' and (@type = 'v' or @type = 'pp' 
+            or (@type = 'ptl' and @context = 'rdg'))
             and following-sibling::node()[1][self::rdgMarker[@mark = 'close']]">
             <xsl:text>~</xsl:text>
         </xsl:if>
@@ -1139,7 +1140,7 @@
 
 
     <xsl:template match="ptr">
-        <xsl:if test="not(following::rdgMarker[@mark = 'close'])">
+        <xsl:if test="not(following::rdgMarker[@mark = 'close']) or @break-after = 'yes'">
             <xsl:text> </xsl:text>
         </xsl:if>
     </xsl:template>
