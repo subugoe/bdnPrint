@@ -607,10 +607,12 @@
 
     <xsl:template match="rdg[@type = 'pt']">
         <xsl:if test="not(preceding-sibling::rdg[@type = 'pp' or @type = 'pt'])">
-            <!-- when the first descendant node of a p is a rdg[@type = 'pt'], we don't need this
-            hspace since it would interfere with \hspace[p] (resulting in no whitespace at all)-->
+            <!-- when the first descendant node of a non-first p is a rdg[@type = 'pt'], we don't 
+                need this hspace since it would interfere with \hspace[p] (resulting in no 
+                whitespace at all)-->
             <xsl:if test="not(descendant::text()[matches(., '[\w]')][1] = 
-                ancestor::p[1]/descendant::text()[matches(., '[\w]')][1])">
+                ancestor::p[1]/descendant::text()[matches(., '[\w]')][1])
+                or ../preceding-sibling::*[1][self::rdgMarker[(@type = 'om'or @type = 'ppl') and @mark = 'open']]">
                 <xsl:text>\hspace[insert]</xsl:text>
             </xsl:if>
             <xsl:text>{\dvl}</xsl:text>
