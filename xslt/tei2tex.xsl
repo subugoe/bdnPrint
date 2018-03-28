@@ -607,7 +607,13 @@
 
     <xsl:template match="rdg[@type = 'pt']">
         <xsl:if test="not(preceding-sibling::rdg[@type = 'pp' or @type = 'pt'])">
-            <xsl:text>\hspace[insert]{\dvl}</xsl:text>
+            <!-- when the first descendant node of a p is a rdg[@type = 'pt'], we don't need this
+            hspace since it would interfere with \hspace[p] (resulting in no whitespace at all)-->
+            <xsl:if test="not(descendant::text()[matches(., '[\w]')][1] = 
+                ancestor::p[1]/descendant::text()[matches(., '[\w]')][1])">
+                <xsl:text>\hspace[insert]</xsl:text>
+            </xsl:if>
+            <xsl:text>{\dvl}</xsl:text>
         </xsl:if>
         <xsl:call-template name="make-app-entry">
             <xsl:with-param name="node" select="."/>
