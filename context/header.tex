@@ -529,6 +529,11 @@ leftmargin=4mm, rightmargin=0mm]
 \setupdelimitedtext[divsection]
   [after={\blank[12pt]}]	
 
+\definedelimitedtext[corrsection]
+\setupdelimitedtext[corrsection]
+  [after={\blank[18pt]}]
+  
+  
 % TODO: optimize inter word spacing
 \setuptolerance
   [verytolerant]
@@ -809,6 +814,6 @@ nodes.tasks.appendaction("finalizers", "after", "processMargins")
 
 % for lining numbers instead of oldstyle numbers (default)
 \addff{f:lnum}
-%\showframe 
-%\showgrid 
+\showframe 
+\showgrid 
 

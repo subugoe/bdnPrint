@@ -266,6 +266,13 @@
         </xsl:if>-->
         <xsl:text>\stopdivsection </xsl:text>
     </xsl:template>
+    
+    
+    <xsl:template match="div[@type = 'corrigenda']">
+        <xsl:text>\startcorrsection </xsl:text>
+        <xsl:apply-templates/>
+        <xsl:text>\stopcorrsection</xsl:text>
+    </xsl:template>
 
 
     <xsl:template match="div[@type = 'editorial']">
