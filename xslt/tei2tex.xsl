@@ -652,7 +652,8 @@
     <xsl:template match="rdg[@type = 'om' or @type = 'typo-correction' 
         or @type = 'varying-structure']"/>-->
     <xsl:template match="rdg[@type = 'om' or @type = 'typo_corr' 
-        or @type = 'var-structure' or @type = 'v' or @type = 'pp']"/>
+        or @type = 'var-structure' or @type = 'v' or @type = 'pp'
+        or @type = 'invisible-ref']"/>
 
 
     <xsl:template match="rdgMarker">
