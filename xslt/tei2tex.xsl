@@ -758,7 +758,7 @@
         Exception: when an om and a ppl end at the same place, no extra whitespace is needed. the can 
         easily distinguished by their backslashes. -->
         <xsl:if test="@mark = 'close' and (@type = 'v' or @type = 'pp' 
-            or (@type = 'ptl' and @context = 'rdg'))
+            or ((@type = 'ptl' or @type = 'ppl') and @context = 'rdg'))
             and following-sibling::node()[1][self::rdgMarker[@mark = 'close']]">
             <xsl:text>~</xsl:text>
         </xsl:if>
