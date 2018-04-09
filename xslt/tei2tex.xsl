@@ -1032,8 +1032,9 @@
         <xsl:text>\setupitemgroup[itemize][indenting={40pt,next}]</xsl:text>
         <xsl:text>\startitemize[packed, paragraph, joinedup</xsl:text>
 
-        <!-- in a TOC the first level shouldn't be indented -->
-        <xsl:if test="parent::div[@type = 'contents']">
+        <!-- in a TOC or a nested list the first level shouldn't be indented -->
+        <xsl:if test="parent::div[@type = 'contents'] 
+            or (not(ancestor::list) and descendant::list)">
         <!--<xsl:if test="ancestor::div[@type = 'contents']/descendant::list[1] = .">-->
             <xsl:text>, inmargin</xsl:text>
         </xsl:if>
