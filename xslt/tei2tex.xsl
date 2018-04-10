@@ -222,10 +222,13 @@
 
 
     <xsl:template match="div[@type = 'part']">
-        <xsl:if test="not(preceding-sibling::*[1][self::ab][@type = 'half-title'])">
-            <!-- ??? or ancestor::body[1]/descendant::div[@type = 'titlePage'][1] = ."> --> 
-            <xsl:text>\newOddPage</xsl:text>
-        </xsl:if>
+        <xsl:choose>
+            <xsl:when test="preceding-sibling::*[1][self::ab][@type = 'half-title']
+                or preceding-sibling::*[1][self::app[rdg/child::*[matches(., '[\w]')][last()][self::ab]]]"/>
+            <xsl:otherwise>
+                <xsl:text>\newOddPage</xsl:text>
+            </xsl:otherwise>
+        </xsl:choose>
 
         <xsl:apply-templates/>
     </xsl:template>
