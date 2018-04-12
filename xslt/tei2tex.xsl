@@ -874,7 +874,7 @@
 						</index> -->
 
      <xsl:template match="index[@indexName = 'classics-index']"> 
-        <xsl:text>\classicalauthorsIndex{</xsl:text>
+        <xsl:text>\classicsIndex{</xsl:text>
         <xsl:value-of select="term/persName"/>
         <xsl:if test="term/title">
             <xsl:text>+</xsl:text>
