@@ -578,22 +578,15 @@ leftmargin=4mm, rightmargin=0mm]
 % registers
 
 \setupcolumns[align=flushleft]
-
-\defineregister[antIndex]
-\setupregister[antIndex]
-  [compress=yes,
-   indicator=no,
-   pagestyle=\tf,
-   n=1]
    
-\defineregister[classicalauthorsIndex]
+\defineregister[classicsIndex]
 \setupregister[classicalauthorsIndex]
   [compress=yes,
    indicator=no,
    pagestyle=\tf,
    n=1]
 
-\defineregister[bibelIndex]
+\defineregister[bibleIndex]
 \setupregister[bibelIndex]
   [compress=yes,
   indicator=no,
@@ -670,11 +663,9 @@ notes = {}
 
 os.remove("id-file.txt")
 os.remove("notes.txt")
-os.remove("comments.txt")
 
 idFile = io.open("id-file.txt", "a") --a is for append mode
 notesFile = io.open("notes.txt", "a")
-commentsFile = io.open("comments.txt", "a")
 
 processMargins = function(head)
   for line in node.traverse_id(node.id("hlist"), head) do -- getting all lines of a paragraph and traversing them
@@ -753,12 +744,7 @@ processMargins = function(head)
       end
 
       ::continue::
-      if v1["type"] == "e" then
-	commentsFile:write(v1["id"] .. " ")
-      end
     end
-    
-    commentsFile:write("\n")
     notesFile:write(lineNote .. "\n")
   end
 
@@ -815,5 +801,5 @@ nodes.tasks.appendaction("finalizers", "after", "processMargins")
 % for lining numbers instead of oldstyle numbers (default)
 \addff{f:lnum}
 \showframe 
-\showgrid 
+%\showgrid 
 

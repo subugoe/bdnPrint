@@ -51,8 +51,7 @@
 
         <xsl:text>\noheaderandfooterlines </xsl:text>
         <xsl:text>\marking[evHeader]{{\tfx\it </xsl:text>
-        <!-- <xsl:apply-templates select="//teiHeader//title[@type = 'column-title']"/> -->
-        <xsl:apply-templates select="//teiHeader//title[@type = 'condensed'][1]"/>
+         <xsl:apply-templates select="//teiHeader//title[@type = 'column-title']"/> 
         <xsl:text>}}</xsl:text>
 
         <xsl:apply-templates/>
@@ -155,22 +154,14 @@
 
     <xsl:template match="titlePart">
         <xsl:apply-templates/>
-
-        <xsl:if test="descendant::seg[@type = 'toc-item']">
-            <xsl:apply-templates select="descendant::seg[@type = 'toc-item']"/>
-        </xsl:if>
-
-        <xsl:if test="descendant::seg[@type = 'condensed']">
-            <xsl:apply-templates select="descendant::seg[@type = 'condensed']"/>
-        </xsl:if>
         
-        <!--         <xsl:if test="descendant::supplied[@reason = 'toc-item']">
+        <xsl:if test="descendant::supplied[@reason = 'toc-item']">
             <xsl:apply-templates select="descendant::supplied[@reason = 'toc-item']"/>
         </xsl:if>
 
         <xsl:if test="descendant::supplied[@reason = 'column-title']">
             <xsl:apply-templates select="descendant::supplied[@reason = 'column-title']"/>
-        </xsl:if> -->
+        </xsl:if> 
     </xsl:template>
 
 
@@ -188,13 +179,13 @@
     </xsl:template>
 
 
-    <!--<xsl:template match="div[@type = 'editorial-notes']">-->
-    <xsl:template match="div[@type = 'editorialNotes']">
+    <xsl:template match="div[@type = 'editorial-notes']">
         <xsl:call-template name="make-both-columns">
             <xsl:with-param name="contents" select="head[1]"/>
         </xsl:call-template>
         <xsl:apply-templates/>
     </xsl:template>
+    
 
 
     <!-- within critical text -->
@@ -215,8 +206,7 @@
 
     <!-- within modern editorial text -->
     <xsl:template match="div[@type = 'contents' and @subtype = 'print']">
-        <!-- <xsl:apply-templates select="descendant::divGen[@type = 'toc']"/> -->
-        <xsl:apply-templates select="descendant::divGen[@type = 'Inhalt']"/>
+         <xsl:apply-templates select="descendant::divGen[@type = 'contents']"/> 
         <xsl:text>\newOddPage</xsl:text>
     </xsl:template>
 
@@ -352,20 +342,14 @@
 
     <xsl:template match="head[not(ancestor::list) and ancestor::group]">
         <!--<xsl:if test="parent::div[@type = 'introduction' or @type = 'part' or @type = 'chapter']">-->
-        <xsl:if test="descendant::seg[@type = 'toc-item']">
-            <xsl:apply-templates select="descendant::seg[@type = 'toc-item']"/>
-        </xsl:if>
-        <xsl:if test="descendant::seg[@type = 'condensed']">
-            <xsl:apply-templates select="descendant::seg[@type = 'condensed']"/>
-        </xsl:if>
         
-        <!--         <xsl:if test="descendant::supplied[@reason = 'toc-item']">
+        <xsl:if test="descendant::supplied[@reason = 'toc-item']">
             <xsl:apply-templates select="descendant::supplied[@reason = 'toc-item']"/>
         </xsl:if>
 
         <xsl:if test="descendant::supplied[@reason = 'column-title']">
             <xsl:apply-templates select="descendant::supplied[@reason = 'column-title']"/>
-        </xsl:if> -->
+        </xsl:if> 
 
         <xsl:choose>
             <xsl:when test="ancestor::rdg">
@@ -540,8 +524,7 @@
 
 
     <xsl:template match="choice">
-        <!-- <xsl:apply-templates select="child::*[not(self::supplied or self::sic or self::expan)]"/> -->
-        <xsl:apply-templates select="child::*[not(self::seg or self::sic or self::expan)]"/>
+        <xsl:apply-templates select="child::*[not(self::supplied or self::sic or self::expan)]"/> 
         <xsl:if test="@break-after = 'yes'">
             <xsl:text> </xsl:text>
         </xsl:if>
@@ -651,22 +634,17 @@
             <xsl:with-param name="wit" select="replace(@wit, '[# ]+', '')"/>
         </xsl:call-template>
     </xsl:template>
-    <!--
+    
+    
     <xsl:template match="rdg[@type = 'om' or @type = 'typo-correction' 
-        or @type = 'varying-structure']"/>-->
-    <xsl:template match="rdg[@type = 'om' or @type = 'typo_corr' 
-        or @type = 'var-structure' or @type = 'v' or @type = 'pp'
-        or @type = 'invisible-ref']"/>
+        or @type = 'varying-structure' or @type = 'v' or @type = 'pp']"/>
 
 
     <xsl:template match="rdgMarker">
         <xsl:variable name="wit" select="replace(@wit, ' ', '')"/>
 
         <xsl:choose>
-            <xsl:when
-                test="
-                    @type = 'v' and @mark = 'close'
-                    and parent::lem">
+            <xsl:when test="@type = 'v' and @mark = 'close' and parent::lem">
                 <xsl:variable name="refs-array" select="tokenize(@ref, ' ')"/>
                 <!--<xsl:variable name="ref" select="./@ref"/>
                 <xsl:apply-templates select="//rdg[@id = $ref]" mode="default"/>  -->
@@ -887,7 +865,7 @@
     </xsl:template>
 
 
-    <xsl:template match="note[@type = 'editorial']"/>
+    <xsl:template match="note[@type = 'editorial-commentary']"/>
 
     <!-- <index indexName="classical-authors">
 							<term><persName ref="#textgrid:2553z">Gellius</persName>
@@ -895,8 +873,7 @@
 								<measure>XIII, 15</measure></term>
 						</index> -->
 
-    <!-- <xsl:template match="index[@indexName = 'classicals-index']"> -->
-    <xsl:template match="index[@indexName = 'classical-authors']">
+     <xsl:template match="index[@indexName = 'classics-index']"> 
         <xsl:text>\classicalauthorsIndex{</xsl:text>
         <xsl:value-of select="term/persName"/>
         <xsl:if test="term/title">
@@ -923,7 +900,7 @@
                 <xsl:variable name="to-verse" select="$to[3]"/>
                 <xsl:variable name="to-passage" select="concat($to-chapter, ',', $to-verse)"/>
 
-                <xsl:text>\bibelIndex{</xsl:text>
+                <xsl:text>\bibleIndex{</xsl:text>
                 <xsl:value-of select="$from-bibl-book"/>
                 <xsl:text>+</xsl:text>
                 <xsl:choose>
@@ -969,7 +946,7 @@
                     <xsl:variable name="verse" select="$n[3]"/>
                     <xsl:variable name="passage" select="concat($chapter, ',', $verse)"/>
 
-                    <xsl:text>\bibelIndex{</xsl:text>
+                    <xsl:text>\bibleIndex{</xsl:text>
                     <xsl:value-of select="$bibl-book"/>
                     <xsl:text>+</xsl:text>
                     <xsl:choose>
@@ -990,8 +967,7 @@
         </xsl:if>
     </xsl:template>
 
-    <!-- <xsl:template match="index[@indexName = 'persons-index']"> -->
-    <xsl:template match="index[@indexName = 'persons']">
+     <xsl:template match="index[@indexName = 'persons-index']"> 
         <xsl:choose>
             <xsl:when test="count(term) gt 1">
                 <xsl:text>\seepersonsIndex{</xsl:text>
@@ -1011,8 +987,7 @@
         </xsl:choose>
     </xsl:template>
 
-    <!-- <xsl:template match="index[@indexName = 'subjects-index']"> -->
-    <xsl:template match="index[@indexName = 'subjects']">
+     <xsl:template match="index[@indexName = 'subjects-index']"> 
         <xsl:text>\subjectsIndex{</xsl:text>
         <xsl:value-of select="term"/>
         <xsl:text>}</xsl:text>
@@ -1140,8 +1115,7 @@
     </xsl:template>
 
 
-    <!-- <xsl:template match="ptr[@type = 'editorial-commentary']"> -->
-    <xsl:template match="ptr[matches(@target, '^#erl_')]">
+     <xsl:template match="ptr[@type = 'editorial-commentary']"> 
         <xsl:choose>
             <xsl:when test="ancestor::rdg[not(@type = 'ppl' or @type = 'ptl')] 
                 or ancestor::note[@place = 'bottom']">
@@ -1248,8 +1222,7 @@
     </xsl:template>
 
 
-    <!-- <xsl:template match="supplied[@type = 'toc-item']"> -->
-    <xsl:template match="seg[@type = 'toc-item']">
+     <xsl:template match="supplied[@reason = 'toc-item']"> 
         <xsl:choose>
             <xsl:when test="not(ancestor::titlePart[@type = 'main'])">
                 <xsl:text>\writetolist[</xsl:text>
@@ -1286,8 +1259,7 @@
     </xsl:template>
 
 
-    <!-- <xsl:template match="supplied[@type = 'column-title']"> -->
-    <xsl:template match="seg[@type = 'condensed']">
+     <xsl:template match="supplied[@reason = 'column-title']"> 
         <xsl:text>\marking[oddHeader]{</xsl:text>
         <xsl:apply-templates/>
         <xsl:text>}</xsl:text>
@@ -1313,8 +1285,7 @@
     </xsl:template>
 
 
-    <!-- <xsl:template match="divGen[@type = 'toc']"> -->
-    <xsl:template match="divGen[@type = 'Inhalt']">
+     <xsl:template match="divGen[@type = 'contents']"> 
         <xsl:call-template name="make-both-columns">
             <xsl:with-param name="contents" select="string('Inhalt')"/>
         </xsl:call-template>
@@ -1327,8 +1298,7 @@
         <xsl:text>\placecontent </xsl:text>
     </xsl:template>
 
-    <!--    <xsl:template match="divGen[@type = 'editorial-notes']">-->
-    <xsl:template match="divGen[@type = 'editorialNotes']">
+    <xsl:template match="divGen[@type = 'editorial-notes']">
         <xsl:text>\definelayout[odd]</xsl:text>
         <xsl:text>[backspace=48.5mm,</xsl:text>
         <xsl:text>width=113mm,</xsl:text>
@@ -1362,11 +1332,8 @@
     </xsl:template>
 
 
-    <!--    <xsl:template match="divGen[@type = 'editorial-corrigenda']">-->
-    <xsl:template match="divGen[@type = 'editorial_corrigenda']">
-        <xsl:variable name="base-text"
-            select="//desc[@type = 'base-text']/ancestor::witness/@xml:id"/>
-        <!--<xsl:variable name="base-text" select="//witness[@n = 'base-text']/@n"/>-->
+ <!--   <xsl:template match="divGen[@type = 'editorial-corrigenda']">
+        <xsl:variable name="base-text" select="//witness[@n = 'base-text']/@xml:id"/>
 
         <xsl:text>\starttabulatehead</xsl:text>
         <xsl:text>\FL </xsl:text>
@@ -1443,8 +1410,8 @@
                         </xsl:otherwise>
                     </xsl:choose>
                 </xsl:when>
-                <!-- change of guidance text. In this case lem[@wit] is always descendant of a rdg 
-                    that acts as new guidance text that is specified in lem/@wit -->
+                <!-\- change of guidance text. In this case lem[@wit] is always descendant of a rdg 
+                    that acts as new guidance text that is specified in lem/@wit -\->
                 <xsl:when test="ancestor::lem[@wit]">
                     <xsl:variable name="wit" select="string(ancestor::lem/@wit)"/>
                     <xsl:variable name="prev-pb"
@@ -1511,12 +1478,11 @@
         <xsl:apply-templates/>
         <xsl:text>\HL </xsl:text>
         <xsl:text>\stoptabulate </xsl:text>
-    </xsl:template>
+    </xsl:template>-->
+    
 
-    <!-- <xsl:template match="divGen[@type = 'bible-index' or @type = 'persons-index'
-        or @type = 'classics-index' or @type = 'subjects-index']"> -->
-    <xsl:template match="divGen[@type = 'bibel' or @type = 'persons'
-        or @type = 'classical-authors' or @type = 'subjects']">
+    <xsl:template match="divGen[@type = 'bible-index' or @type = 'persons-index'
+        or @type = 'classics-index' or @type = 'subjects-index']"> 
         <xsl:call-template name="make-indices">
             <xsl:with-param name="divGen" select="."/>
         </xsl:call-template>
@@ -1573,20 +1539,16 @@
         <xsl:text>\writetolist[chapter]{}{</xsl:text>
         <!-- TODO: solution with variable leads to dynamic error -->
         <xsl:choose>
-            <!-- <xsl:when test="$type = 'bible-index'"> --> 
-            <xsl:when test="$type = 'bibel'">
+            <xsl:when test="$type = 'bible-index'">  
                 <xsl:text>Bibelstellen</xsl:text>
             </xsl:when>
-            <!-- <xsl:when test="$type = 'classics-index'"> --> 
-            <xsl:when test="$type = 'classical-authors'">
+            <xsl:when test="$type = 'classics-index'">  
                 <xsl:text>Antike Autoren</xsl:text>
             </xsl:when>
-            <!-- <xsl:when test="$type = 'persons-index'"> --> 
-            <xsl:when test="$type = 'persons'">
+            <xsl:when test="$type = 'persons-index'">  
                 <xsl:text>Personen</xsl:text>
             </xsl:when>
-            <!-- <xsl:when test="$type = 'subjects-index'"> --> 
-            <xsl:when test="$type = 'subjects'">
+            <xsl:when test="$type = 'subjects-index'">  
                 <xsl:text>Sachen</xsl:text>
             </xsl:when>
         </xsl:choose>
@@ -1599,20 +1561,16 @@
 
         <!-- TODO: solution with variable leads to dynamic error -->
         <xsl:choose>
-            <!-- <xsl:when test="$type = 'bible-index'"> --> 
-            <xsl:when test="$type = 'bibel'">
+            <xsl:when test="$type = 'bible-index'">  
                 <xsl:text>Bibelstellen</xsl:text>
             </xsl:when>
-            <!-- <xsl:when test="$type = 'classics-index'"> --> 
-            <xsl:when test="$type = 'classical-authors'">
+            <xsl:when test="$type = 'classics-index'">  
                 <xsl:text>Antike Autoren</xsl:text>
             </xsl:when>
-            <!-- <xsl:when test="$type = 'persons-index'"> --> 
-            <xsl:when test="$type = 'persons'">
+            <xsl:when test="$type = 'persons-index'">  
                 <xsl:text>Personen</xsl:text>
             </xsl:when>
-            <!-- <xsl:when test="$type = 'subjects-index'"> --> 
-            <xsl:when test="$type = 'subjects'">
+            <xsl:when test="$type = 'subjects-index'">  
                 <xsl:text>Sachen</xsl:text>
             </xsl:when>
         </xsl:choose>
@@ -1623,8 +1581,7 @@
         <xsl:text>\stopsetups</xsl:text>
         <xsl:text>{\startcolumns</xsl:text>
         <xsl:text>\place</xsl:text>
-        <xsl:value-of select="replace($type, '-', '')"/>
-        <xsl:text>Index</xsl:text>
+        <xsl:value-of select="replace($type, '-i', 'I')"/>
         <xsl:text>\stopcolumns}</xsl:text>
     </xsl:template>
 
