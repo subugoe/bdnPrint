@@ -11,26 +11,26 @@ my $tmp1 = read_file("tmp/" . $ARGV[0] . "_tmp-1.tex");
 
 ### Editorial comments
 
-open(FILE, "<tmp/comments.txt") or die "$!\n";
-my @commentsFile = <FILE>;
-close(FILE);
+#open(FILE, "<tmp/comments.txt") or die "$!\n";
+#my @commentsFile = <FILE>;
+#close(FILE);
 
 # iterate lines in document
-for (my $i = 0; $i < @commentsFile; $i++) {
-	my $comments = $commentsFile[$i];
+#for (my $i = 0; $i < @commentsFile; $i++) {
+#	my $comments = $commentsFile[$i];
 	
-	if($comments and $comments =~ m/\s/) {
+#	if($comments and $comments =~ m/\s/) {
 		# iterate single comments
 		# apart from the first comment every margin entry of an editorial comment is deleted in $tmp1,
 		# hence we start at $j = 1 instead of $j = 0 
-		my @commentElements = split(' ', $comments);
-		for (my $j = 1; $j < @commentElements; $j++) {
-			my $comment = $commentElements[$j];
+#		my @commentElements = split(' ', $comments);
+#		for (my $j = 1; $j < @commentElements; $j++) {
+#			my $comment = $commentElements[$j];
 
-			$tmp1 =~ s/\\margin\{$comment\}\{e\}\{\}\{\\hbox\{\}\}\{E\}//g;
-		}
-	}
-}
+#			$tmp1 =~ s/\\margin\{$comment\}\{e\}\{\}\{\\hbox\{\}\}\{E\}//g;
+#		}
+#	}
+#}
 
 
 ### Pagebreaks and general margin data
@@ -57,15 +57,16 @@ for (my $i = 0; $i < @idFile; $i++) {
   my $note = $notes[$i];
   chomp($note);
 
+#	if ($note) {
   if ($id and $note) {
 		# workaround, otherwise [ and ] are treated as part of regex
 		if($note =~ m/\[[\dXVI]+?\]/) {
 			$note =~ s/\[([\dXVI]+?)\]/!$1!/g;
 		}
 
-	# merging note indicators
-	$tmp1 =~ s/E, E/E/g;
-	$tmp1 =~ s/E, ([\w\\\d\s,]+) E/E, $1/g;
+		# merging note indicators
+		$tmp1 =~ s/E, E/E/g;
+		$tmp1 =~ s/E, ([a-z\\\d\s,\/]+), E/E, $1/g;
 
  
 		if($moveIntoNextMargindata =~ m/[\w]/) {
@@ -159,6 +160,8 @@ close $file;
 $tmp1 =~ s/, ([\w]):([!]{0,1}[0-9XVI]{1,4}[!]{0,1})/, $1$2/g;
 # remove superfluous \margin
 $tmp1 =~ s/ \\margin\{[\w]{8}\}\{pb\}\{\}\{\\hbox\{\}\}\{.*?\}//g;
+# switching commentary markers
+$tmp1 =~ s/(\\startauthornote )(\\margin\{.{0,8}\}\{e\}\{\}\{\\hbox\{\}\}\{E\}\\pagereference\[.{0,8}\])([\w].*? )/$1$3$2/g;
 
 print $tmp1;
 
