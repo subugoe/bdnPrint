@@ -814,7 +814,7 @@
 
 
     <!-- within critical text -->
-    <xsl:template match="note[@type = 'authorial' and ancestor::group]">
+    <xsl:template match="note[ancestor::group]">
         <xsl:choose>
             <!-- note[@plavce = 'bottom'] has to be treated as a footnote -->
             <xsl:when test="@place = 'bottom'">
@@ -858,7 +858,7 @@
 
 
     <!-- within modern editorial text -->
-    <xsl:template match="note[@type = 'authorial' and not(ancestor::group)]">
+    <xsl:template match="note[not(ancestor::group or ancestor::editorialNotes)]">
         <xsl:text>\footnote{</xsl:text>
         <xsl:apply-templates/>
         <xsl:text>}</xsl:text>
