@@ -19,8 +19,8 @@ compile() {
 
 	perl perl/core/fix-braces.pl $1 > $1_tmp.xml
 	perl perl/core/preprocess-xml.pl $1 > $1_tmp-2.xml
-	perl perl/core/switch-commentary-markers.pl $1 > $1_tmp.xml
-	#mv $1_tmp-2.xml $1_tmp.xml
+	#perl perl/core/switch-commentary-markers.pl $1 > $1_tmp.xml
+	mv $1_tmp-2.xml $1_tmp.xml
 
 	# chance according to XSLT processor
 	processorlocation="$(locate saxon9he.jar)"
@@ -90,16 +90,14 @@ compile() {
 	perl perl/authors/$1-postprocessing.pl $1 > tmp/$1_tmp-4.tex
 	perl perl/core/remove-moved-elements.pl $1 >> tmp/$1_tmp-2.tex
 
-#	
-#	mv tmp/$1_tmp-2.tex tmp/$1_tmp-1.tex
 	cat context/footer.tex >> tmp/$1_tmp-2.tex
 
 	echo "$(timestamp) postprocess margins finished" >> log/log_$1_$(datestamp).txt
 	echo "$(timestamp) compiling begin" >> log/log_$1_$(datestamp).txt
 
-	mv tmp/comments.txt tmp/comments_$1_save.txt
-	mv tmp/id-file.txt tmp/id-file_$1.txt
-	mv tmp/notes.txt tmp/notes_$1.txt
+	#mv tmp/comments.txt tmp/comments_$1_save.txt
+	#mv tmp/id-file.txt tmp/id-file_$1.txt
+	#mv tmp/notes.txt tmp/notes_$1.txt
 
 	notify-send "Entering second stage of $1"
 
