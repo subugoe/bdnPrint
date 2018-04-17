@@ -376,15 +376,13 @@
                 <xsl:apply-templates/>
                 <xsl:text>}</xsl:text>
             </xsl:when>
-            <xsl:when test="ancestor::div[@type = 'chapter']/descendant::head[1] = .">
+            <xsl:when test="ancestor::div[@type = 'chapter']/descendant::head[1] = . or
+                ancestor::div[@type = 'part']/descendant::head[1] = .">
                 <xsl:text>\chapterhead[]{</xsl:text>
                 <xsl:apply-templates/>
                 <xsl:text>}</xsl:text>               
             </xsl:when>
             <xsl:otherwise>
-                <xsl:if test="ancestor::div[@type = 'chapter']/descendant::head[1] = .">
-                    <xsl:call-template name="make-top-margin"/>                     
-                </xsl:if>
                 <xsl:text>\subject[]{</xsl:text>
                 <xsl:apply-templates/>
                 <xsl:text>}</xsl:text>
