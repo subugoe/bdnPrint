@@ -79,14 +79,14 @@
     </xsl:template>
 
 
-    <xsl:template match="div[@type = 'epilog']">
-        <xsl:text>\newOddPage</xsl:text>
+   <xsl:template match="div[@type = 'epilog']">
+        <xsl:text>\newOddPage </xsl:text>
         <xsl:apply-templates/>
     </xsl:template>
 
 
     <xsl:template match="div[@type = 'imprimatur']">
-        <xsl:text>\newOddPage</xsl:text>
+        <xsl:text>\newOddPage </xsl:text>
         <xsl:apply-templates/>
     </xsl:template>
 
@@ -95,12 +95,12 @@
     <xsl:template match="div[@type = 'preface' and ancestor::group]">
         <xsl:choose>
             <xsl:when test="ancestor::front/descendant::div[@type = 'preface'][1] = .">
-                <xsl:text>\newOddPage</xsl:text>
+                <xsl:text>\newOddPage </xsl:text>
                 <xsl:call-template name="make-top-margin"/>
             </xsl:when>
             <!-- only first preface has to be on an odd page -->
             <xsl:otherwise>
-                <xsl:text>\page</xsl:text>
+                <xsl:text>\page </xsl:text>
             </xsl:otherwise>
         </xsl:choose>
 
@@ -122,7 +122,7 @@
             <xsl:with-param name="contents" select="head"/>
         </xsl:call-template>
         <xsl:apply-templates/>
-        <xsl:text>\newOddPage</xsl:text>
+        <xsl:text>\newOddPage </xsl:text>
     </xsl:template>
 
 
@@ -133,7 +133,7 @@
     </xsl:template>
     
     
-     <xsl:template match="ab[@type = 'half-title']">  
+    <xsl:template match="ab[@type = 'half-title']">  
          <xsl:if test="ancestor::body[1]/descendant::ab[@type = 'half-title'][1] = ."> 
             <xsl:text>\newOddPage </xsl:text>
             <xsl:text>\starteffect[hidden].\stopeffect</xsl:text>
@@ -155,8 +155,8 @@
     <xsl:template match="titlePart">
         <xsl:apply-templates/>
         
-        <xsl:if test="descendant::supplied[@reason = 'toc-item']">
-            <xsl:apply-templates select="descendant::supplied[@reason = 'toc-item']"/>
+        <xsl:if test="descendant::supplied[@reason = 'toc-title']">
+            <xsl:apply-templates select="descendant::supplied[@reason = 'toc-title']"/>
         </xsl:if>
 
         <xsl:if test="descendant::supplied[@reason = 'column-title']">
@@ -193,11 +193,11 @@
         <xsl:text>\marking[oddHeader]{Inhalt}</xsl:text>
         <xsl:choose>
             <xsl:when test="ancestor::front/descendant::div[@type = 'contents'][1] = .">
-                <xsl:text>\newOddPage</xsl:text>
+                <xsl:text>\newOddPage </xsl:text>
             </xsl:when>
             <!-- only first toc has to be on an odd page -->
             <xsl:otherwise>
-                <xsl:text>\newPage</xsl:text>
+                <xsl:text>\newPage </xsl:text>
             </xsl:otherwise>
         </xsl:choose>
         <xsl:apply-templates/>
@@ -207,7 +207,7 @@
     <!-- within modern editorial text -->
     <xsl:template match="div[@type = 'contents' and @subtype = 'print']">
          <xsl:apply-templates select="descendant::divGen[@type = 'contents']"/> 
-        <xsl:text>\newOddPage</xsl:text>
+        <xsl:text>\newOddPage </xsl:text>
     </xsl:template>
 
 
@@ -216,7 +216,7 @@
             <xsl:when test="preceding-sibling::*[1][self::ab][@type = 'half-title']
                 or preceding-sibling::*[1][self::app[rdg/child::*[matches(., '[\w]')][last()][self::ab]]]"/>
             <xsl:otherwise>
-                <xsl:text>\newOddPage</xsl:text>
+                <xsl:text>\newOddPage </xsl:text>
             </xsl:otherwise>
         </xsl:choose>
 
@@ -225,7 +225,7 @@
 
 
     <xsl:template match="div[@type = 'chapter']">
-        <xsl:text>\newOddPage</xsl:text>
+        <xsl:text>\newOddPage </xsl:text>
         <xsl:apply-templates/>
     </xsl:template>
 
@@ -343,8 +343,8 @@
     <xsl:template match="head[not(ancestor::list) and ancestor::group]">
         <!--<xsl:if test="parent::div[@type = 'introduction' or @type = 'part' or @type = 'chapter']">-->
         
-        <xsl:if test="descendant::supplied[@reason = 'toc-item']">
-            <xsl:apply-templates select="descendant::supplied[@reason = 'toc-item']"/>
+        <xsl:if test="descendant::supplied[@reason = 'toc-title']">
+            <xsl:apply-templates select="descendant::supplied[@reason = 'toc-title']"/>
         </xsl:if>
 
         <xsl:if test="descendant::supplied[@reason = 'column-title']">
@@ -510,7 +510,7 @@
                     <xsl:when test="child::lb">
                         <xsl:text>\startalignment[center]</xsl:text>
                         <xsl:apply-templates/>
-                        <xsl:text>\stopalignment</xsl:text>
+                        <xsl:text>\stopalignment </xsl:text>
                     </xsl:when>
                     <xsl:otherwise>
                         <xsl:text>\midaligned{</xsl:text>
@@ -867,12 +867,6 @@
 
     <xsl:template match="note[@type = 'editorial-commentary']"/>
 
-    <!-- <index indexName="classical-authors">
-							<term><persName ref="#textgrid:2553z">Gellius</persName>
-								<title>noct. att.</title>
-								<measure>XIII, 15</measure></term>
-						</index> -->
-
      <xsl:template match="index[@indexName = 'classics-index']"> 
         <xsl:text>\classicsIndex{</xsl:text>
         <xsl:value-of select="term/persName"/>
@@ -914,6 +908,7 @@
                 <xsl:choose>
                     <xsl:when test="matches($to-bibl-book, 'f')">
                         <xsl:value-of select="$to-bibl-book"/>
+                        <xsl:text>.</xsl:text>
                     </xsl:when>
                     <xsl:when test="
                             $from-bibl-book = $to-bibl-book
@@ -1050,7 +1045,7 @@
 
 
     <xsl:template match="label">
-        <xsl:if test="not(ancestor::note[@type = 'editorial'])">
+        <xsl:if test="not(ancestor::note[@type = 'editorial-commentary'])">
             <xsl:text>\NC </xsl:text>
         </xsl:if>
         <xsl:apply-templates/>
@@ -1115,7 +1110,7 @@
     </xsl:template>
 
 
-     <xsl:template match="ptr[@type = 'editorial-commentary']"> 
+    <xsl:template match="ptr[@type = 'editorial-commentary']"> 
         <xsl:choose>
             <xsl:when test="ancestor::rdg[not(@type = 'ppl' or @type = 'ptl')] 
                 or ancestor::note[@place = 'bottom']">
@@ -1222,7 +1217,7 @@
     </xsl:template>
 
 
-     <xsl:template match="supplied[@reason = 'toc-item']"> 
+    <xsl:template match="supplied[@reason = 'toc-title']"> 
         <xsl:choose>
             <xsl:when test="not(ancestor::titlePart[@type = 'main'])">
                 <xsl:text>\writetolist[</xsl:text>
@@ -1313,9 +1308,7 @@
 
         <!--<xsl:text>\blank[9mm]</xsl:text>-->
         <xsl:text>\starttabulate[|lp(10mm)|xp(103mm)|]</xsl:text>
-        <!-- <xsl:for-each select="//ptr[@type = 'editorial-commentary']">  -->
-        <xsl:for-each select="//ptr">
-            <xsl:if test="matches(@target, '^#erl_')">
+        <xsl:for-each select="//ptr[@type = 'editorial-commentary']">  
                 <xsl:variable name="target" select="replace(@target, '^#', '')"/>
                 <xsl:text>\NC\at[</xsl:text>
                 <xsl:value-of select="generate-id()"/>
@@ -1324,15 +1317,14 @@
                 <xsl:text>}\crlf\setupindenting[yes, 4mm, next] </xsl:text>
                 <xsl:apply-templates select="//note[@xml:id = $target]/p"/>
                 <xsl:text>\NC\AR</xsl:text>
-            </xsl:if>
         </xsl:for-each>
         <xsl:text>\stoptabulate </xsl:text>
-        <!--<xsl:text>\stoppart </xsl:text>-->
+        <xsl:text>\stoppart </xsl:text>
         <xsl:text>\newOddPage </xsl:text>
     </xsl:template>
 
 
- <!--   <xsl:template match="divGen[@type = 'editorial-corrigenda']">
+    <xsl:template match="divGen[@type = 'editorial-corrigenda']">
         <xsl:variable name="base-text" select="//witness[@n = 'base-text']/@xml:id"/>
 
         <xsl:text>\starttabulatehead</xsl:text>
@@ -1410,8 +1402,8 @@
                         </xsl:otherwise>
                     </xsl:choose>
                 </xsl:when>
-                <!-\- change of guidance text. In this case lem[@wit] is always descendant of a rdg 
-                    that acts as new guidance text that is specified in lem/@wit -\->
+                <!-- change of guidance text. In this case lem[@wit] is always descendant of a rdg 
+                    that acts as new guidance text that is specified in lem/@wit -->
                 <xsl:when test="ancestor::lem[@wit]">
                     <xsl:variable name="wit" select="string(ancestor::lem/@wit)"/>
                     <xsl:variable name="prev-pb"
@@ -1478,7 +1470,7 @@
         <xsl:apply-templates/>
         <xsl:text>\HL </xsl:text>
         <xsl:text>\stoptabulate </xsl:text>
-    </xsl:template>-->
+    </xsl:template>
     
 
     <xsl:template match="divGen[@type = 'bible-index' or @type = 'persons-index'
