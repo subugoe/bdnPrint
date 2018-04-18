@@ -92,7 +92,7 @@ my %sortingMap = (
 );
 
 
-while ($tail =~ /(\\bibelIndex\{.*?\})/g) {
+while ($tail =~ /(\\bibleIndex\{.*?\})/g) {
   my $move = $tail;
 
   my $passage = $1;
@@ -101,7 +101,7 @@ while ($tail =~ /(\\bibelIndex\{.*?\})/g) {
 
   my $sortingValue = $sortingMap{$sortingKey};
 
-  $move =~ s/(.*?\\bibelIndex).*/$1/;
+  $move =~ s/(.*?\\bibleIndex).*/$1/;
   my $length = length($move);
 
   $move = $move . "[$sortingValue $passage]";
