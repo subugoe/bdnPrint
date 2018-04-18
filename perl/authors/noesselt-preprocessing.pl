@@ -26,7 +26,7 @@ $tail =~ s/(ersetzender Einschub vermerkt\.)\\crlf/$1\\page\\noindentation /g;
 $tail =~ s/(Entwurf der folgenden Abhandlung .+?\. 52\.\\stopitemize)/$1\\page\\noindentation /g;
 $tail =~ s/(er hat viel dazu beigetragen, den Blick)/$1\\page\\noindentation /g;
 $tail =~ s/(Geschichte 208\. 209\.\\stopitemize) (\\sym\{\}\\italic\{Vierter Abschnitt: Symbolische Theologie)/$1\\page$2/g;
-$tail =~ s/(klassischen theologischen Enzyklopä.*?die auf)/$1\\page\\noindentation /g;
+$tail =~ s/(eine von ihm wiederum)/$1\\page\\noindentation /g;
 $tail =~ s/(eigenen Uebung darin zu thun sey 60.*?67\.\\stopitemize \\stopitemize)/$1\\page\\noindentation /g;
 
 # in order to have an empty column heading

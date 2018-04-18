@@ -28,14 +28,19 @@ $tmp =~ s/(\\rightaligned\{Der Herausgeber\.\\margin\{.{0,8}\}\{plClose\}\{.{10,
 $tmp =~ s/(\\rightaligned\{\\classicsIndex\{Cicero\}\\italic\{Cic\.\}\\margin\{.{0,8}\}\{plClose\}\{.{10,50}\}\{\\tfx\\high\{c\}\}\{c\}\})/$1\\margindata\[inouter\]\{c\}/g;
 
 # margin overflow
-#$tmp =~ s(/\\margindata\[inouter\]\{a\[289\], b\[3\], c\[3\])/$1\]/g;
-# margin overflows
 $tmp =~ s/(c!3!)(\} Zweyter)/$1\]$2/g;
 
 # wrong separation of pagebreaks
 $tmp =~ s/(a413),( b128, E)/$1;$2/g;
 $tmp =~ s/(c130),( b148)/$1;$2/g;
 $tmp =~ s/(a117),( b143)/$1;$2/g;
+$tmp =~ s/(a414\[!\]),( b146)/$1;$2/g;
+$tmp =~ s/(b189),( c164)/$1;$2/g;
+$tmp =~ s/(a748),( c156)/$1;$2/g;
+
+
+# wrong order of sigla
+#$tmp =~ s/(\/c)(\\textbackslash)(, \/a\\textbackslash, E)/$1$3, c$2/g;
 
 
 # hyphenation
