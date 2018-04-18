@@ -318,6 +318,10 @@
     
     <xsl:template match="head[ancestor::list and ancestor::group]">
         <xsl:choose>
+            <xsl:when test="ancestor::rdg and (@type = 'main' or not(@type))
+                and ancestor::list[1]/preceding::sibling[1][self::head]">
+                <xsl:text>\listmainheadrdgfirst[]{</xsl:text>
+            </xsl:when>            
             <xsl:when test="ancestor::rdg and (@type = 'main' or not(@type))">
                 <xsl:text>\listmainheadrdg[]{</xsl:text>
             </xsl:when>
@@ -400,7 +404,8 @@
             <xsl:when test="preceding-sibling::p
                 or not(ancestor::div/descendant::p[1] = .)">
                 <xsl:if test="not(parent::rdg)">
-                    <xsl:if test="not(preceding-sibling::*[1][child::*[last()][self::list]])">
+                    <xsl:if test="not(preceding-sibling::*[1][child::*[last()][self::list]] 
+                        or preceding-sibling::*[1][self::app[rdg[@type = 'varying-structure']]][lem[descendant::*[last()][ancestor::list]]])">
                         <xsl:text>\crlf </xsl:text>
                         <xsl:text>\starteffect[hidden] . \stopeffect\hspace[p]</xsl:text>
                     </xsl:if>
@@ -1336,7 +1341,7 @@
         <xsl:text>\starttabulate[|p(1cm)|p|p|] </xsl:text>
         <xsl:for-each select="//choice[corr[@type = 'editorial']]">
             <xsl:text> \NC </xsl:text>
-            <xsl:choose>
+            <xsl:choose>        
                 <xsl:when test="ancestor::note[@place = 'bottom'][not(ancestor::rdg)]">
                     <xsl:choose>
                         <xsl:when
@@ -1414,7 +1419,7 @@
                 <xsl:when test="ancestor::rdg">
                     <xsl:variable name="wit" select="ancestor::rdg[1]/@wit"/>
                     <xsl:choose>
-                        <xsl:when test="matches($wit, '# ')">
+                        <xsl:when test="matches($wit, ' #')">
                             <xsl:variable name="wits" select="replace($wit, '#', '')"/>
                             <xsl:variable name="wits-array" select="tokenize($wits, '\s')"/>
                             <xsl:call-template name="find-prev-pbs">
@@ -1644,7 +1649,7 @@
 
         <xsl:if test="$iii &lt;= $limit">
             <xsl:variable name="prev-pb"
-                select="$context/preceding::pb[1][matches(@edRef, $wits[$iii])]"/>
+                select="$context/preceding::pb[matches(@edRef, $wits[$iii])][1]"/>
             <xsl:variable name="prev-pb-no" select="$prev-pb/@n"/>
             <xsl:variable name="fn-break"
                 select="$context/preceding::milestone[@unit = 'fn-break'][matches(@edRef, $wits[$iii])][1]"/>
