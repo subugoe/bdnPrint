@@ -17,7 +17,7 @@ compile() {
 	[[ ! -d log ]] && mkdir log
 	[[ ! -d output/$1_archive ]] && mkdir -p output
 
-	perl perl/core/fix-braces.pl $1 > $1_tmp.xml
+	perl perl/core/fix-braces-and-milestones.pl $1 > $1_tmp.xml
 	perl perl/core/preprocess-xml.pl $1 > $1_tmp-2.xml
 	mv $1_tmp-2.xml $1_tmp.xml
 
