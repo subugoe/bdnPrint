@@ -32,8 +32,9 @@ $tail =~ s/(eigenen Uebung darin zu thun sey 60.*?67\.\\stopitemize \\stopitemiz
 # in order to have an empty column heading
 $tail =~ s/(\\startrdg) (\\newOddPage)/$2$1/g;
 
-# right top margin (has to be set manually since heading of the first preface is part of a reading)
+# correct top margin (has to be set manually since heading of the first preface is part of a reading)
 $tail =~ s/(\\startrdg\\starteffect\[hidden\]\. \\stopeffect)\\blank\[26pt\]/$1\\blank\[30pt\]/g;
+$tail =~ s/(\\blank)\[36pt(\]\\noindentation \\marking\[oddHeader\]\{Vorreden\})/$1\[30pt$2/g;
 
 
 $head = $head . $tail;
