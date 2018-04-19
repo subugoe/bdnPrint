@@ -319,7 +319,7 @@
     <xsl:template match="head[ancestor::list and ancestor::group]">
         <xsl:choose>
             <xsl:when test="ancestor::rdg and (@type = 'main' or not(@type))
-                and ancestor::list[1]/preceding::sibling[1][self::head]">
+                and ancestor::list[1]/preceding-sibling::*[1][self::head]">
                 <xsl:text>\listmainheadrdgfirst[]{</xsl:text>
             </xsl:when>            
             <xsl:when test="ancestor::rdg and (@type = 'main' or not(@type))">
@@ -1706,7 +1706,7 @@
         <!-- publisher guidelines: new chapters should have a top margin of 36pt. 
                 a hidden character has to be inserted, otherwise ConTeXt won't display the 
                 empty space -->
-        <xsl:text>\starteffect[hidden] . \stopeffect\blank[48pt]</xsl:text>
+        <xsl:text>\starteffect[hidden] . \stopeffect\blank[36pt]</xsl:text>
         <xsl:text>\noindentation </xsl:text>
     </xsl:template>
 </xsl:stylesheet>
