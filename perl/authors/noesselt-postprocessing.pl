@@ -47,7 +47,7 @@ $tmp =~ s/(a748),( c156)/$1;$2/g;
 $tmp =~ s/(\{\/c\\textbackslash\}der)(selben)/$1-\\hskip0pt $2/g;
 # aufhören zu sündigen
 # ce b8: utf-8 codepoint for theta
-# ce b5: urf-8 codepoint for epsilon
+# ce b5: utf-8 codepoint for epsilon
 $tmp =~ s/(\xce\xb8\xce\xb5\\cNote\{)/-\\hskip0pt $1/g;
 
 # editorial comments that cause empty lines
