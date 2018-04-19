@@ -481,6 +481,12 @@
                 <xsl:apply-templates/>
                 <xsl:text>}</xsl:text>
             </xsl:when>
+            
+            <xsl:when test="@rend = 'strike-through'">
+                <xsl:text>\overstrike{</xsl:text>
+                <xsl:apply-templates/>
+                <xsl:text>}</xsl:text>               
+            </xsl:when>
         </xsl:choose>
 
         <xsl:if test="@break-after = 'yes'">
