@@ -878,15 +878,35 @@
     <xsl:template match="note[@type = 'editorial-commentary']"/>
 
      <xsl:template match="index[@indexName = 'classics-index']"> 
-        <xsl:text>\classicsIndex{</xsl:text>
-        <xsl:value-of select="term/persName"/>
-        <xsl:if test="term/title">
-            <xsl:text>+</xsl:text>
-        </xsl:if>
-        <xsl:apply-templates select="term/title"/>
-        <xsl:text> </xsl:text>
-        <xsl:apply-templates select="term/measure"/>
-        <xsl:text>}</xsl:text>
+         <xsl:choose>
+             <xsl:when test="count(term) gt 1">
+                 <xsl:text>\seeclassicsIndex{</xsl:text>
+                 <xsl:value-of select="substring-before(term[1], ',')"/>
+                 <xsl:text>}{</xsl:text>
+                 <xsl:value-of select="substring-after(term[1], 's. ')"/>
+                 <xsl:text>}</xsl:text>
+                 <xsl:text>\classicsIndex{</xsl:text>
+                 <xsl:value-of select="term[2]/persName"/>
+                 <xsl:if test="term[2]/title">
+                     <xsl:text>+</xsl:text>
+                 </xsl:if>
+                 <xsl:apply-templates select="term[2]/title"/>
+                 <xsl:text> </xsl:text>
+                 <xsl:apply-templates select="term[2]/measure"/>
+                 <xsl:text>}</xsl:text>                
+             </xsl:when>
+             <xsl:otherwise>
+                 <xsl:text>\classicsIndex{</xsl:text>
+                 <xsl:value-of select="term/persName"/>
+                 <xsl:if test="term/title">
+                     <xsl:text>+</xsl:text>
+                 </xsl:if>
+                 <xsl:apply-templates select="term/title"/>
+                 <xsl:text> </xsl:text>
+                 <xsl:apply-templates select="term/measure"/>
+                 <xsl:text>}</xsl:text>                
+             </xsl:otherwise>
+         </xsl:choose>
     </xsl:template>
 
 
