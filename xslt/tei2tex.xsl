@@ -880,30 +880,18 @@
      <xsl:template match="index[@indexName = 'classics-index']"> 
          <xsl:choose>
              <xsl:when test="count(term) gt 1">
-                 <xsl:text>\seeclassicsIndex{</xsl:text>
-                 <xsl:value-of select="substring-before(term[1], ',')"/>
-                 <xsl:text>}{</xsl:text>
-                 <xsl:value-of select="substring-after(term[1], 's. ')"/>
-                 <xsl:text>}</xsl:text>
-                 <xsl:text>\classicsIndex{</xsl:text>
-                 <xsl:value-of select="term[2]/persName"/>
-                 <xsl:if test="term[2]/title">
-                     <xsl:text>+</xsl:text>
-                 </xsl:if>
-                 <xsl:apply-templates select="term[2]/title"/>
-                 <xsl:text> </xsl:text>
-                 <xsl:apply-templates select="term[2]/measure"/>
-                 <xsl:text>}</xsl:text>                
+                <xsl:call-template name="make-crossreference">
+                    <xsl:with-param name="this" select="."/>
+                </xsl:call-template>              
              </xsl:when>
              <xsl:otherwise>
                  <xsl:text>\classicsIndex{</xsl:text>
                  <xsl:value-of select="term/persName"/>
                  <xsl:if test="term/title">
-                     <xsl:text>+</xsl:text>
+                     <xsl:call-template name="make-title-measure">
+                         <xsl:with-param name="this" select="."/>
+                     </xsl:call-template>
                  </xsl:if>
-                 <xsl:apply-templates select="term/title"/>
-                 <xsl:text> </xsl:text>
-                 <xsl:apply-templates select="term/measure"/>
                  <xsl:text>}</xsl:text>                
              </xsl:otherwise>
          </xsl:choose>
@@ -995,14 +983,9 @@
      <xsl:template match="index[@indexName = 'persons-index']"> 
         <xsl:choose>
             <xsl:when test="count(term) gt 1">
-                <xsl:text>\seepersonsIndex{</xsl:text>
-                <xsl:value-of select="substring-before(term[1], ',')"/>
-                <xsl:text>}{</xsl:text>
-                <xsl:value-of select="substring-after(term[1], 's. ')"/>
-                <xsl:text>}</xsl:text>
-                <xsl:text>\personsIndex{</xsl:text>
-                <xsl:value-of select="term[2]"/>
-                <xsl:text>}</xsl:text>
+                <xsl:call-template name="make-crossreference">
+                    <xsl:with-param name="this" select="."/>
+                </xsl:call-template>
             </xsl:when>
             <xsl:otherwise>
                 <xsl:text>\personsIndex{</xsl:text>
@@ -1734,5 +1717,40 @@
                 empty space -->
         <xsl:text>\starteffect[hidden] . \stopeffect\blank[36pt]</xsl:text>
         <xsl:text>\noindentation </xsl:text>
+    </xsl:template>
+    
+    
+    <xsl:template name="make-crossreference">
+        <xsl:param name="this"/>
+        
+        <xsl:text>\see</xsl:text>
+        <xsl:value-of select="substring-before($this/@indexName, '-')"/>
+        <xsl:text>Index{</xsl:text>
+        <xsl:value-of select="substring-before($this/term[matches(., 's\.')], ',')"/>
+        <xsl:text>}{</xsl:text>
+        <xsl:value-of select="substring-after($this/term[matches(., 's\.')], 's. ')"/>
+        <xsl:text>}</xsl:text>
+        
+        <xsl:text>\</xsl:text>
+        <xsl:value-of select="substring-before($this/@indexName, '-')"/>
+        <xsl:text>Index{</xsl:text>
+        <xsl:value-of select="$this/term[not(matches(., 's\.'))]//text()"/>
+        
+        <xsl:if test="$this/term[not(matches(., 's\.'))]/title">
+            <xsl:call-template name="make-title-measure">
+                <xsl:with-param name="this" select="$this"/>
+            </xsl:call-template>   
+        </xsl:if>
+        <xsl:text>}</xsl:text>
+    </xsl:template>
+    
+    
+    <xsl:template name="make-title-measure">
+        <xsl:param name="this"/>
+        
+        <xsl:text>+</xsl:text>           
+        <xsl:apply-templates select="$this/term[not(matches(., 's\.'))]/title"/>
+        <xsl:text> </xsl:text>
+        <xsl:apply-templates select="$this/term[not(matches(., 's\.'))]/measure"/>
     </xsl:template>
 </xsl:stylesheet>
