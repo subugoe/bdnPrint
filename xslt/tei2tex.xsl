@@ -47,12 +47,11 @@
         the current chapter -->
     <xsl:template match="group">
         <xsl:text>\startbodymatter </xsl:text>
-        <xsl:text>\setuppagenumber[number=1]</xsl:text>
-
         <xsl:text>\noheaderandfooterlines </xsl:text>
         <xsl:text>\marking[evHeader]{{\tfx\it </xsl:text>
          <xsl:apply-templates select="//teiHeader//title[@type = 'column-title']"/> 
         <xsl:text>}}</xsl:text>
+        <xsl:text>\page[empty]</xsl:text>
 
         <xsl:apply-templates/>
         <xsl:text>\stopbodymatter </xsl:text>
@@ -64,7 +63,11 @@
         <!-- normally a new page is created after \stopbodymatter automatically, but
         since the column title isn't hideable with \noheaderandfooterlines this has been
         deactivated in header.tex and a new page without column title is created manually-->
-        <xsl:text>\newOddPage </xsl:text>
+        <xsl:if test="ancestor::group/descendant::text[1] = .">
+            <xsl:text>\noheaderandfooterlines</xsl:text>
+            <xsl:text>\setuppagenumber[number=1]</xsl:text>
+        </xsl:if>
+
         <xsl:apply-templates/>
     </xsl:template>
 
@@ -75,7 +78,6 @@
         <xsl:text>\startfrontmatter </xsl:text>
         <xsl:apply-templates/>
         <xsl:text>\stopfrontmatter </xsl:text>
-        <xsl:text>\newPage </xsl:text>
     </xsl:template>
 
 
@@ -127,6 +129,9 @@
 
 
     <xsl:template match="titlePage">
+        <xsl:if test="not(ancestor::rdg or ancestor::group/descendant::titlePage[1] = .)">
+            <xsl:text>\newOddPage </xsl:text>
+        </xsl:if>
         <xsl:text>{\startalignment[center]</xsl:text>
         <xsl:apply-templates/>
         <xsl:text>\stopalignment}</xsl:text>
@@ -172,10 +177,12 @@
     
 
     <xsl:template match="div[@type = 'index']">
+        <xsl:text>{\switchtobodyfont[8.5pt] </xsl:text>
         <xsl:call-template name="make-both-columns">
             <xsl:with-param name="contents" select="head[1]"/>
         </xsl:call-template>
         <xsl:apply-templates/>
+        <xsl:text>}</xsl:text>
     </xsl:template>
 
 
@@ -247,16 +254,12 @@
             <xsl:with-param name="contents" select="head[1]"/>
         </xsl:call-template>
         <xsl:apply-templates/>
-        <!--<xsl:text>\newOddPage</xsl:text>-->
     </xsl:template>
 
 
     <xsl:template match="div[@type = 'section']">
         <xsl:text>\startdivsection </xsl:text>
         <xsl:apply-templates/>
-        <!--<xsl:if test="not(head)">
-            <xsl:text>\blank[12pt] </xsl:text>
-        </xsl:if>-->
         <xsl:text>\stopdivsection </xsl:text>
     </xsl:template>
     
@@ -293,7 +296,7 @@
                     <xsl:when test="parent::div[@type = 'editorial' or @type = 'introduction']">
                         <xsl:text>\maintitle[]{</xsl:text>
                     </xsl:when>
-                    <xsl:when test="parent::div[@type = 'editorialNotes']">
+                    <xsl:when test="parent::editorial-notes">
                         <xsl:text>\editorialtitle[]{</xsl:text>
                     </xsl:when>
                     <xsl:otherwise>
@@ -563,43 +566,29 @@
 
 
     <xsl:template match="rdg[@type = 'ppl' or @type = 'ptl']">
-        <xsl:if test="not(child::*[1][self::note])">
+        <!-- second and third part: avoid vertical space when a head is followed directly by a rdg[@type = 'ppl' or @type = 'ptl'] -->
+        <xsl:if test="not(child::*[1][self::note]
+            or parent::app/parent::p/preceding-sibling::*[1][self::head])">
             <xsl:text>\startrdg </xsl:text>
+        </xsl:if>
+        <xsl:if test="parent::app/parent::p/preceding-sibling::*[1][self::head]">
+            <xsl:text>\startrdgbeforehead</xsl:text>
         </xsl:if>
         <xsl:if test="child::*[1][self::p]">
             <xsl:call-template name="paragraph-indent"/>
         </xsl:if>
-
-        <xsl:choose>
-            <!-- special case: when a rdg[@type = 'ppl' or @type = 'ptl']
-            has only bottom notes as children then summarize these single notes
-            to one. this is done because otherwise these notes might be displayed
-            on seperate pages in the book (which is unwanted) -->
-            <xsl:when
-                test="
-                    count(child::*[self::note[@place = 'bottom']]) > 1
-                    and not(child::*[not(self::note[@place = 'bottom'])])">
-                <xsl:text>\authorbottomnote{\startbottommargin </xsl:text>
-                <xsl:apply-templates select="descendant::rdgMarker[@mark = 'open']"/>
-                <xsl:for-each select="child::note[@place = 'bottom']/text()">
-                    <xsl:apply-templates select="."/>
-                    <xsl:if test="not(ancestor::rdg[1]/child::note[@place = 'bottom'][last()] = .)">
-                        <xsl:text>\crlf </xsl:text>
-                    </xsl:if>
-                </xsl:for-each>
-                <xsl:apply-templates select="descendant::rdgMarker[@mark = 'close']"/>
-                <xsl:text>\stopbottommargin}</xsl:text>
-            </xsl:when>
-            <xsl:otherwise>
-                <xsl:apply-templates/>
-            </xsl:otherwise>
-        </xsl:choose>
+        
+        <xsl:apply-templates/>
 
         <xsl:if test="position() != last() and not(titlePage)">
             <xsl:text>\par </xsl:text>
         </xsl:if>
-        <xsl:if test="not(child::*[1][self::note])">
+        <xsl:if test="not(child::*[1][self::note]
+            or parent::app/parent::p/preceding-sibling::*[1][self::head])">
             <xsl:text>\stoprdg </xsl:text>
+        </xsl:if>
+        <xsl:if test="parent::app/parent::p/preceding-sibling::*[1][self::head]">
+            <xsl:text>\stoprdgbeforehead</xsl:text>
         </xsl:if>
         <xsl:if test="not(descendant::*[last()][self::note[@place = 'bottom']])">
             <xsl:text>\noindentation </xsl:text>
@@ -656,8 +645,6 @@
         <xsl:choose>
             <xsl:when test="@type = 'v' and @mark = 'close' and parent::lem">
                 <xsl:variable name="refs-array" select="tokenize(@ref, ' ')"/>
-                <!--<xsl:variable name="ref" select="./@ref"/>
-                <xsl:apply-templates select="//rdg[@id = $ref]" mode="default"/>  -->
 
                 <xsl:choose>
                     <xsl:when test="count($refs-array) = 1">
@@ -794,26 +781,9 @@
                 <xsl:text>{\vl}</xsl:text>
             </xsl:when>
             <xsl:otherwise>
-                <xsl:text>\margin{}{pb}{}{</xsl:text>
-                <xsl:choose>
-                    <!-- when several pb occur on the same spot only the first one produces
-                    a scribal abbreviation -->
-                    <xsl:when
-                        test="
-                            preceding-sibling::node()[1][self::pb]
-                            or not(preceding-sibling::node()[1][matches(., '\w')])
-                            and preceding-sibling::node()[2][self::pb]">
-                        <xsl:text>\hbox{}</xsl:text>
-                    </xsl:when>
-                    <xsl:otherwise>
-                        <xsl:text>\vl</xsl:text>
-                    </xsl:otherwise>
-                </xsl:choose>
-                <xsl:text>}{</xsl:text>
-                <xsl:call-template name="make-pb-content">
-                    <xsl:with-param name="pb" select="."/>
+                <xsl:call-template name="make-regular-pb">
+                    <xsl:with-param name="current" select="."/>
                 </xsl:call-template>
-                <xsl:text>}</xsl:text>
             </xsl:otherwise>
         </xsl:choose>
 
@@ -824,51 +794,16 @@
 
 
     <!-- within critical text -->
-    <xsl:template match="note[ancestor::group]">
-        <xsl:choose>
-            <!-- note[@plavce = 'bottom'] has to be treated as a footnote -->
-            <xsl:when test="@place = 'bottom'">
-                <xsl:text>\authorbottomnote{\startbottommargin </xsl:text>
-                <xsl:if
-                    test="ancestor::rdg[@type = 'ppl' or @type = 'ptl']/descendant::note[@place = 'bottom'][1] = .">
-                    <xsl:apply-templates select="preceding::rdgMarker[1][@ref = ancestor::rdg[@type = 'ppl'
-                        or @type = 'ptl']/@id and @mark = 'open']"/>
-                </xsl:if>
-                <xsl:apply-templates/>
-                <xsl:if
-                    test="ancestor::rdg[@type = 'ppl' or @type = 'ptl']/descendant::note[@place = 'bottom'][last()] = .">
-                    <xsl:apply-templates select="following::rdgMarker[1][@ref = ancestor::rdg[@type = 'ppl'
-                        or @type = 'ptl']/@id and @mark = 'close']"/>
-                </xsl:if>
-                <xsl:text>\stopbottommargin}</xsl:text>
-
-                <xsl:variable name="rdgs"
-                    select="descendant::rdg[@type = 'v' or @type = 'pp' or @type = 'pt']"/>
-                <xsl:for-each select="$rdgs">
-                    <xsl:variable name="wit" select="replace(./@wit, '[# ]+', '')"/>
-                    <xsl:text>\setnotetext[</xsl:text>
-                    <xsl:value-of select="$wit"/>
-                    <xsl:text>Note][</xsl:text>
-                    <xsl:value-of select="@id"/>
-                    <xsl:text>]{</xsl:text>
-                    <xsl:apply-templates/>
-                    <xsl:text>}</xsl:text>
-                </xsl:for-each>
-            </xsl:when>
-            
-            <!-- note[@place = 'end'] is displayed in the text area -->
-            <xsl:otherwise>
-                <xsl:text>\startauthornote </xsl:text>
-                <xsl:apply-templates/>
-                <xsl:text>\stopauthornote </xsl:text>
-                <xsl:text>\noindentation </xsl:text>
-            </xsl:otherwise>
-        </xsl:choose>
+    <xsl:template match="note[ancestor::group and not(@type = 'editorial-commentary')]">        
+        <xsl:text>\startauthornote </xsl:text>
+        <xsl:apply-templates/>
+        <xsl:text>\stopauthornote </xsl:text>
+        <xsl:text>\noindentation </xsl:text>
     </xsl:template>
 
 
     <!-- within modern editorial text -->
-    <xsl:template match="note[not(ancestor::group or ancestor::editorialNotes)]">
+    <xsl:template match="note[not(ancestor::group or ancestor::editorial-notes)]">
         <xsl:text>\footnote{</xsl:text>
         <xsl:apply-templates/>
         <xsl:text>}</xsl:text>
@@ -1021,7 +956,6 @@
         <!-- in a TOC or a nested list the first level shouldn't be indented -->
         <xsl:if test="parent::div[@type = 'contents'] 
             or (not(ancestor::list) and descendant::list)">
-        <!--<xsl:if test="ancestor::div[@type = 'contents']/descendant::list[1] = .">-->
             <xsl:text>, inmargin</xsl:text>
         </xsl:if>
         <xsl:text>]</xsl:text>
@@ -1092,6 +1026,11 @@
                     </xsl:when>
                 </xsl:choose>
             </xsl:when>
+            <xsl:when test="ancestor::rdg[@type = 'ppl' or @type = 'ptl']
+                and preceding-sibling::node() and @unit = 'p' and (preceding-sibling::*[1][self::list]
+                or preceding-sibling::*[1][self::seg][child::*[last()][self::list]])">
+                <xsl:call-template name="paragraph-indent"/>
+            </xsl:when>
             <xsl:otherwise>
                 <xsl:call-template name="make-milestone">
                     <xsl:with-param name="milestone" select="."/>
@@ -1102,12 +1041,9 @@
 
 
     <xsl:template match="milestone[@unit = 'fn-break']">
-        <xsl:variable name="edt" select="replace(replace(@edRef, '#', ''), ' ', '')"/>
-        <xsl:variable name="n" select="@n"/>
-
-        <xsl:text>{\vl}</xsl:text>
-        <xsl:value-of select="concat($edt, $n)"/>
-        <xsl:text>{\vl}</xsl:text>
+        <xsl:call-template name="make-regular-pb">
+            <xsl:with-param name="current" select="."/>
+        </xsl:call-template>
 
         <xsl:if test="@break-after = 'yes'">
             <xsl:text> </xsl:text>
@@ -1124,17 +1060,9 @@
 
 
     <xsl:template match="ptr[@type = 'editorial-commentary']"> 
-        <xsl:choose>
-            <xsl:when test="ancestor::rdg[not(@type = 'ppl' or @type = 'ptl')] 
-                or ancestor::note[@place = 'bottom']">
-                <xsl:text>[E] </xsl:text>
-            </xsl:when>
-            <xsl:otherwise>
-                <xsl:text>\margin{</xsl:text>
-                <xsl:value-of select="generate-id()"/>
-                <xsl:text>}{e}{}{\hbox{}}{E}</xsl:text>
-            </xsl:otherwise>
-        </xsl:choose>
+        <xsl:text>\margin{</xsl:text>
+        <xsl:value-of select="generate-id()"/>
+        <xsl:text>}{e}{}{\hbox{}}{E}</xsl:text>
         <xsl:text>\pagereference[</xsl:text>
         <xsl:value-of select="generate-id()"/>
         <xsl:text>]</xsl:text>
@@ -1319,7 +1247,6 @@
 
         <xsl:text>\setuplayout</xsl:text>
 
-        <!--<xsl:text>\blank[9mm]</xsl:text>-->
         <xsl:text>\starttabulate[|lp(10mm)|xp(103mm)|]</xsl:text>
         <xsl:for-each select="//ptr[@type = 'editorial-commentary']">  
                 <xsl:variable name="target" select="replace(@target, '^#', '')"/>
@@ -1507,26 +1434,12 @@
     <xsl:template name="make-app-entry">
         <xsl:param name="wit"/>
         <xsl:param name="node"/>
-
-        <xsl:choose>
-            <!-- in case of ancestor::note[@place = 'bottom'] entries in the critical
-            apparatus aren't placed in the note itself but right behind it. Otherwise 
-            referencing doesn't work properly -->
-            <xsl:when test="$node/ancestor::note[@place = 'bottom']">
-                <xsl:text>\note[</xsl:text>
-                <xsl:value-of select="$wit"/>
-                <xsl:text>Note][</xsl:text>
-                <xsl:value-of select="$node/@id"/>
-                <xsl:text>]</xsl:text>
-            </xsl:when>
-            <xsl:otherwise>
-                <xsl:text>\</xsl:text>
-                <xsl:value-of select="$wit"/>
-                <xsl:text>Note{</xsl:text>
-                <xsl:apply-templates/>
-                <xsl:text>}</xsl:text>
-            </xsl:otherwise>
-        </xsl:choose>
+        
+        <xsl:text>\</xsl:text>
+        <xsl:value-of select="$wit"/>
+        <xsl:text>Note{</xsl:text>
+        <xsl:apply-templates/>
+        <xsl:text>}</xsl:text>
 
         <xsl:if
             test="
@@ -1613,6 +1526,32 @@
         <xsl:value-of select="$edition"/>
         <xsl:text>}} </xsl:text>
     </xsl:template>
+    
+    
+    <xsl:template name="make-regular-pb">
+        <xsl:param name="current"/>
+        
+        <xsl:text>\margin{}{pb}{}{</xsl:text>
+        <xsl:choose>
+            <!-- when several pb occur on the same spot only the first one produces
+                    a scribal abbreviation -->
+            <xsl:when
+                test="
+                $current/preceding-sibling::node()[1][self::pb]
+                or not($current/preceding-sibling::node()[1][matches(., '\w')])
+                and $current/preceding-sibling::node()[2][self::pb]">
+                <xsl:text>\hbox{}</xsl:text>
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:text>\vl</xsl:text>
+            </xsl:otherwise>
+        </xsl:choose>
+        <xsl:text>}{</xsl:text>
+        <xsl:call-template name="make-pb-content">
+            <xsl:with-param name="pb" select="$current"/>
+        </xsl:call-template>
+        <xsl:text>}</xsl:text>
+    </xsl:template>
 
 
     <xsl:template name="make-pb-content">
@@ -1622,7 +1561,7 @@
         <xsl:if test="$pb/@type = 'sp'">
             <xsl:text>[</xsl:text>
         </xsl:if>
-        <xsl:value-of select="replace($pb/@n, '\*', '')"/>
+        <xsl:value-of select="$pb/@n"/>
         <xsl:if test="$pb/@type = 'sp'">
             <xsl:text>]</xsl:text>
         </xsl:if>
