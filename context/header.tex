@@ -38,7 +38,7 @@
 \definehspace[insert]
   [0.16667em]
 \definehspace[interMarker]
-  [0.14em]
+  [0.1cm]
   
 \definehspace[item]
   [-1.5 em]
@@ -56,6 +56,10 @@
 
 \setuplayout[setups=*lessstrict]
 
+
+% Hebrew
+
+\setupdirections[bidi=on]
 
 % font
 
@@ -95,6 +99,21 @@
   
 \definefont[linlibFont]
   [linlibSynonym]
+  
+\definefontsynonym[liberSynonym]
+  [name: linlibertinemob]
+  
+\definefont[liber]
+  [liberSynonym] 
+  
+  
+% FreeSerif widely supports Unicode characters, e.g. the rotunda  
+\definefontsynonym[freeSynonym]
+  [name: freeserif]
+  
+\definefont[freeserif]
+  [freeSynonym]  
+  
 
 \def\dvl{{\termesFont\char"2016}}
 
@@ -107,6 +126,8 @@
 \def\p{{\linlibFont \char"222C}}			% 222C: double integral
 \def\noline{{\linlibFont \overstrike{\char"222B}}}	% 222B: integral (struck through)
 \def\nop{{\linlibFont \overstrike{\char"222C}}}		% 222C: double integral(struck through)
+\def\bb{{\switchtobodyfont[8.25pt]\liber\char"005D}}	% 005D: Right square bracket
+
 
 % main 
 \definebodyfontenvironment[10pt]
@@ -118,7 +139,11 @@
 % footnotes, notes, rdg[@type = 'ppl'/'ptl']
 \definebodyfontenvironment[8.5pt]
   [interlinespace=10.5pt, % xx for footnote markers
-   a=9.78pt, x=7.23pt, xx=6.59pt]  
+   a=9.78pt, x=7.23pt, xx=6.59pt] 
+   
+\definebodyfontenvironment[8.25pt]
+  [interlinespace=10.5pt, % xx for footnote markers
+   a=9.78pt, x=7.23pt, xx=6.59pt]    
   
 % for headers. check publisher guidelines!
 \definebodyfontenvironment[9.5pt]
@@ -406,6 +431,16 @@
     \noheaderandfooterlines%
 }
 
+\def\firstTextPage{
+  \ifodd\pagenumber%
+    \page%
+    \noheaderandfooterlines%
+    \else%
+    \page[empty]%
+    \noheaderandfooterlines%
+  \fi%
+}
+
 \def\justifiedPageBreak{%
   \parfillskip\zeropoint\page\noindent%
 }
@@ -513,6 +548,19 @@
         \switchtobodyfont[default]},
         leftmargin=0pt, rightmargin=0mm,
         interlinespace=10.5]
+        
+\definedelimitedtext[rdgbeforehead]
+\setupdelimitedtext
+        [rdgbeforehead]
+        [before={\crlf
+        \noindentation
+        \switchtobodyfont[8.5pt]},
+        after={\removeunwantedspaces
+        \blank[6pt]
+        \noindentation
+        \switchtobodyfont[default]},
+        leftmargin=0pt, rightmargin=0mm,
+        interlinespace=10.5]        
 
 \definedelimitedtext[narrow]
 \setupdelimitedtext
@@ -639,7 +687,7 @@ leftmargin=4mm, rightmargin=0mm]
     \typo_injectors_mark_register}
  \protect
 
-\hyphenation{Er-zie-hungs-we-sens Schul-schrif-ten Ab-sicht The-o-phrast's Wis-sen-schaf-ten Er-läu-ter-ungs-schrif-ten Kir-chen-ge-schich-te ge-nomm-ne An-drer wo-rü-ber Mit-thei-lung noth-wen-dig noth-wen-di-ge noth-wen-di-ges noth-wen-di-gen Noth-wen-dig-keit Noth-wen-dig-kei-ten Ein-thei-lung be-ur-theilt Be-ur-thei-lung nach-thei-lig Vor-ur-theil se-ue-ra Ur-thei-le wo-raus groß-en-theils Irr-thum Irr-thü-mer Ra-ti-o-nal-er-kennt-niß Wolf-schen ein-thei-len Haupt\-, mit-thei-len Wa-cker-barth be-ur-thei-len ei-gen-thüm-li-chen Chris-ten-thums un-grie-chisch-e vor-tref-li-ches Pro-fan-scri-ben-ten mit-theilt Ue-ber-ei-lun-gen Ver-mu-thun-gen Prü-fe-stein ver-thei-di-gen un-par-they-isch-e Vor-theil Un-thä-ti-gkeit größ-ten-theils Ver-stan-de Vor-ur-thei-le Lieg-nitz vie-ler-ley Ver-muth-ung der-sel-ben ge-mein-schaft-li-cher letzt-er-wähn-ten Er-kennt-niß-quel-le Re-li-gions-par-they-en un-par-they-isch-en (1725–-1791) die-ie-ni-ge Ver-mu-thung-en Nach-theil Be-ur-theil-ung wohl-thä-tigs-ten ur-theil-en an-ti-qui Be-stand-thei-le Be-ur-thei-lung ur-thei-len ad-iun-xit meis-ten-theils Schul-en-cy-klo-pä-die ver-thei-len Ge-schöp-fe Ur-theil be-sitzt un-ver-än-der-lich vor-zu-nehm-en vor-theil-haft Be-trach-tung-en be-sitzt popular-theologischen un-par-thei-isch vor-theil-haf-ter nach-theil-ig Ge-gen-theile nach-theil-ig-er }
+\hyphenation{Er-zie-hungs-we-sens Schul-schrif-ten Ab-sicht The-o-phrast's Wis-sen-schaf-ten Er-läu-ter-ungs-schrif-ten Kir-chen-ge-schich-te ge-nomm-ne An-drer wo-rü-ber Mit-thei-lung noth-wen-dig noth-wen-di-ge noth-wen-di-ges noth-wen-di-gen Noth-wen-dig-keit Noth-wen-dig-kei-ten Ein-thei-lung be-ur-theilt Be-ur-thei-lung nach-thei-lig Vor-ur-theil se-ue-ra Ur-thei-le wo-raus groß-en-theils Irr-thum Irr-thü-mer Ra-ti-o-nal-er-kennt-niß Wolf-schen ein-thei-len Haupt\-, mit-thei-len Wa-cker-barth be-ur-thei-len ei-gen-thüm-li-chen Chris-ten-thums un-grie-chisch-e vor-tref-li-ches Pro-fan-scri-ben-ten mit-theilt Ue-ber-ei-lun-gen Ver-mu-thun-gen Prü-fe-stein ver-thei-di-gen un-par-they-isch-e Vor-theil Un-thä-ti-gkeit größ-ten-theils Ver-stan-de Vor-ur-thei-le Lieg-nitz vie-ler-ley Ver-muth-ung der-sel-ben ge-mein-schaft-li-cher letzt-er-wähn-ten Er-kennt-niß-quel-le Re-li-gions-par-they-en un-par-they-isch-en (1725–-1791) die-ie-ni-ge Ver-mu-thung-en Nach-theil Be-ur-theil-ung wohl-thä-tigs-ten ur-theil-en an-ti-qui Be-stand-thei-le Be-ur-thei-lung ur-thei-len ad-iun-xit meis-ten-theils Schul-en-cy-klo-pä-die ver-thei-len Ge-schöp-fe Ur-theil be-sitzt un-ver-än-der-lich vor-zu-nehm-en vor-theil-haft Be-trach-tung-en be-sitzt popular-theologischen un-par-thei-isch vor-theil-haf-ter Ge-gen-theile Ge-gen-theil nach-theil-ig-er desto-mehr Be-trachtun-gen Bar-thelemy Ha-ririum grossen-theils Le-ßing Ueber-eilungen Vermuthun-gen Hie-ronymus Kirchenpar-theyen Wachs-thum mit-ge-theilt ur-theilenden Wacker-barths Nikodemus-evangelium Chrysos-tomus in-ter-eß-irt be-kommt}
 
 
 % lua
