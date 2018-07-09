@@ -72,7 +72,7 @@ for (my $i = 0; $i < @idFile; $i++) {
 		if($moveIntoNextMargindata =~ m/[\w]/) {
 			# move pb from original \margindata[inouter] to the current one
 			$tmp1 =~ s/(\\margin\{$id\}\{.*?\}\{.*?\}\{.*?\}\{)/$1$moveIntoNextMargindata, /g;
-			$tmp1 =~ s/(\\margin\{$id\}\{.*?\}\{.*?\}\{.*?\}\{.*?\})/$1\\margindata\[inouter\]\{$moveIntoNextMargindata\], $note\}/g;
+			$tmp1 =~ s/(\\margin\{$id\}\{.*?\}\{.*?\}\{.*?\}\{.*?\})/$1\\margindata\[inouter\]\{$moveIntoNextMargindata\\bb\{\}, $note\}/g;
 			$moveIntoNextMargindata = "";
 		} 
 		else {
@@ -130,7 +130,7 @@ for (my $i = 0; $i < @idFile; $i++) {
 					} 
 					my $pattern = $note;
 					$pattern =~ s/([\/\\;])/\\$1/g;
-					$tmp1 =~ s/$pattern/$note\]/g;
+					$tmp1 =~ s/$pattern/$note\\bb\{\}/g;
 				
 			}
 
